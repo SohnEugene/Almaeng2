@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
 import Home from './pages/Home';
+import WeighingPage from './pages/WeighingPage';
 
 function App() {
   return (
@@ -9,7 +10,7 @@ function App() {
       <div className="App">
         <Routes>
           <Route path="/" element={<Home />} />
-          {/* Add more routes as needed */}
+          <Route path="/weighing" element={<WeighingPage />} />
         </Routes>
       </div>
     </Router>
