@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 function Home() {
   return (
     <div className="container">
-      <h1>알맹 상점에 오신 것을 환영합니다</h1>
+      <h1>알맹 상점에 오신 것을 환영합니다 (버셀 배포 확인용)</h1>
       <p>무포장 친환경 상점</p>
       <Link to="/weighing" style={linkStyle}>
         계량 시작하기
