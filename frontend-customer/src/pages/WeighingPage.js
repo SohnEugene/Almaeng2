@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import api from '../services/api';
-import { MOCK_PRODUCTS } from '../constants/mockProducts';
+import { getProductByCode } from '../services/productService';
+import useProducts from '../hooks/useProducts';
 import { STEP_NUMBERS, STEP_LABELS, STEP_TITLES } from '../constants/steps';
 import './WeighingPage.css';
 
@@ -19,6 +20,9 @@ import './WeighingPage.css';
  * @returns {JSX.Element} 계량 시스템 UI
  */
 function WeighingPage() {
+  // 백엔드에서 제품 데이터 가져오기
+  const { products, loading: productsLoading, error: productsError } = useProducts();
+
   // 현재 단계 상태 (1: 저울 번호, 2: 공병 무게, 3: 제품 선택, 4: 전체 무게, 5: 결과)
   const [step, setStep] = useState(STEP_NUMBERS.SCALE_INPUT);
   const [scaleNumber, setScaleNumber] = useState('');
@@ -82,23 +86,20 @@ function WeighingPage() {
     setError('');
 
     try {
-      // 실제로는 백엔드에서 가격을 가져옴
-      // const response = await api.get(`/api/products/${productNumber}`);
-      // setProductPrice(response.data.price);
+      // 백엔드에서 제품 정보 가져오기
+      const response = await getProductByCode(productNumber);
 
-      // Mock data 사용
-      const product = MOCK_PRODUCTS[productNumber];
-      if (!product) {
+      if (!response.success) {
         setError('존재하지 않는 제품 번호입니다');
         setLoading(false);
         return;
       }
 
-      setProductPrice(product);
+      setProductPrice(response.data);
       setLoading(false);
       setStep(STEP_NUMBERS.WEIGHT2_INPUT);
     } catch (err) {
-      setError('제품 정보를 가져오는데 실패했습니다');
+      setError(err.response?.data?.error || '제품 정보를 가져오는데 실패했습니다');
       setLoading(false);
     }
   };
@@ -209,14 +210,21 @@ function WeighingPage() {
           <form onSubmit={handleProductSubmit} className="input-form">
             <h2>{STEP_TITLES[STEP_NUMBERS.PRODUCT_SELECTION]}</h2>
             <p className="info-text">저울: {scaleNumber} | 공병 무게: {bottleWeight}g</p>
-            <div className="product-list">
-              <p>사용 가능한 제품:</p>
-              <ul>
-                {Object.entries(MOCK_PRODUCTS).map(([code, product]) => (
-                  <li key={code}>{code}: {product.name} ({product.price.toLocaleString()}원/g)</li>
-                ))}
-              </ul>
-            </div>
+
+            {productsLoading ? (
+              <div className="info-text">제품 목록을 불러오는 중...</div>
+            ) : productsError ? (
+              <div className="error-message">{productsError}</div>
+            ) : (
+              <div className="product-list">
+                <p>사용 가능한 제품:</p>
+                <ul>
+                  {Object.entries(products).map(([code, product]) => (
+                    <li key={code}>{code}: {product.name} ({product.price.toLocaleString()}원/g)</li>
+                  ))}
+                </ul>
+              </div>
+            )}
             <input
               type="text"
               value={productNumber}

@@ -17,11 +17,8 @@ app.get('/', (req, res) => {
   res.json({ message: 'Welcome to Almaeng API' });
 });
 
-// API Routes will be added here
-// Example structure:
-// app.use('/api/customers', require('./routes/customerRoutes'));
-// app.use('/api/shops', require('./routes/shopRoutes'));
-// app.use('/api/products', require('./routes/productRoutes'));
+// API Routes
+app.use('/api/products', require('./routes/productRoutes'));
 
 // Error handling middleware
 app.use((err, req, res, next) => {
