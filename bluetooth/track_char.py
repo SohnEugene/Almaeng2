@@ -43,6 +43,7 @@ else:
 
 GOTOBAKE_ADDRESS = os.getenv("GOTOBAKE_ADDRESS")
 HOTO_ADDRESS = os.getenv("HOTO_ADDRESS")
+LFC_ADDRESS = os.getenv("LFC_ADDRESS")
 
 ENV_TARGET = GOTOBAKE_ADDRESS
 # Helper parse attempts for raw bytes
