@@ -1,8 +1,19 @@
 import asyncio
 from bleak import BleakClient, BleakScanner
+import os
+from pathlib import Path
+from dotenv import load_dotenv
+
+# .env 파일에서 환경 변수를 로드
+dotenv_path = Path(__file__).resolve().parent.parent / ".env"
+load_dotenv(dotenv_path)
+
+# 환경변수 불러오기
+GOTOBAKE_ADDRESS = os.getenv("GOTOBAKE_ADDRESS")
+HOTO_ADDRESS = os.getenv("HOTO_ADDRESS")
 
 # 연결할 장치의 주소
-TARGET_ADDRESS = "EC:4D:3E:BE:39:EA"
+TARGET_ADDRESS = GOTOBAKE_ADDRESS  # 또는 HOTO_ADDRESS
 
 async def main(address):
     print(f"'{address}' 주소를 가진 장치를 찾고 연결을 시도합니다...")
@@ -35,6 +46,8 @@ async def main(address):
             print(f"'{address}' 장치에 연결하지 못했습니다.")
 
 if __name__ == "__main__":
+    print("GOTOBAKE_ADDRESS:", GOTOBAKE_ADDRESS)
+    print("HOTO_ADDRESS:", HOTO_ADDRESS)
     try:
         asyncio.run(main(TARGET_ADDRESS))
     except Exception as e:
