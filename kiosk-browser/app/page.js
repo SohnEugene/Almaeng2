@@ -8,7 +8,7 @@ export default function HomePage() {
   useEffect(() => {
     const fetchWeight = async () => {
       try {
-        const res = await fetch("http://localhost:8000/weight");
+        const res = await fetch("http://10.0.2.2:8000/weight");
         const data = await res.json();
         setWeight(data.weight);
       } catch (err) {
