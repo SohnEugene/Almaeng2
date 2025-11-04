@@ -1,19 +1,42 @@
 // src/App.jsx
-import { useState } from 'react';
-import { connectScale } from './hooks/scale';
+import { useScale } from './hooks/scale';
 
 export default function App() {
-  const [weight, setWeight] = useState(0);
-
-  const handleConnect = () => {
-    connectScale(setWeight);
-  };
+  const { weight, isConnected, isConnecting, error, deviceName, connect, disconnect } = useScale();
 
   return (
     <div style={{ padding: 20 }}>
       <h1>BLE Scale Monitor</h1>
-      <button onClick={handleConnect}>Connect to Scale</button>
-      <div style={{ marginTop: 20 }}>Current weight: <strong>{weight}</strong></div>
+
+      <div style={{ marginBottom: 20 }}>
+        {!isConnected ? (
+          <button onClick={connect} disabled={isConnecting}>
+            {isConnecting ? 'Connecting...' : 'Connect to Scale'}
+          </button>
+        ) : (
+          <button onClick={disconnect}>Disconnect</button>
+        )}
+      </div>
+
+      {error && (
+        <div style={{ color: 'red', marginBottom: 20 }}>
+          Error: {error}
+        </div>
+      )}
+
+      <div>
+        Status: <strong>{isConnected ? 'Connected' : 'Disconnected'}</strong>
+      </div>
+
+      {deviceName && (
+        <div style={{ marginTop: 10 }}>
+          Device: <strong>{deviceName}</strong>
+        </div>
+      )}
+
+      <div style={{ marginTop: 20 }}>
+        Current weight: <strong>{weight}</strong>
+      </div>
     </div>
   );
 }
