@@ -52,7 +52,8 @@ export function useScale() {
     try {
       // ⚙️ optionalServices 대신 filters 사용 (Android 호환성 개선)
       const device = await navigator.bluetooth.requestDevice({
-        filters: [{ services: [SCALE_SERVICE_UUID] }]
+        acceptAllDevices: true,
+        optionalServices: [SCALE_SERVICE_UUID]
       });
 
       deviceRef.current = device;
