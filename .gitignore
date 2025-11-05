@@ -151,3 +151,4 @@ backend/.env
 .idea/
 .vscode/
 .claude
+screenshots/

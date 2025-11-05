@@ -1,0 +1,119 @@
+/**
+ * Components Module CSS
+ * 모든 재사용 가능한 컴포넌트의 스타일을 정의합니다.
+ *
+ * 네이밍 규칙: {componentName}{ElementName}
+ * 예: button, buttonPrimary, productCard
+ */
+
+/* ============================================================
+   Button Component Styles
+   ============================================================ */
+
+.button {
+  font-size: 64px;
+  font-weight: 900;
+  border: none;
+  cursor: pointer;
+  width: 600px;
+  height: 160px;
+  border-radius: 80px;
+}
+
+.button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.buttonPrimary {
+  background-color: var(--btn-primary);
+  color: var(--btn-primary-text);
+  border: none;
+}
+
+.buttonPrimary:hover:not(:disabled) {
+  background-color: var(--btn-primary-hover);
+}
+
+.buttonOutlined {
+  background-color: transparent;
+  color: var(--btn-outline);
+  border: 2px solid var(--btn-outline);
+}
+
+.buttonOutlined:hover:not(:disabled) {
+  background-color: var(--btn-primary);
+  color: var(--btn-primary-text);
+}
+
+/* ============================================================
+   ProductCard Component Styles
+   ============================================================ */
+
+.productCard {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-lg);
+  border: 2px solid var(--ui-border-light);
+  border-radius: var(--radius-lg);
+  background-color: var(--bg-content);
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: var(--spacing-md);
+}
+
+.productCard:hover {
+  border-color: var(--ui-border);
+  box-shadow: var(--shadow-sm);
+}
+
+.productCardSelected {
+  border: 3px solid var(--ui-border-accent);
+  box-shadow: var(--shadow-md);
+}
+
+.productCardImage {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  margin-right: var(--spacing-md);
+  background-color: var(--ui-hover);
+  flex-shrink: 0;
+}
+
+.productCardInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.productCardBrand {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+
+.productCardName {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-sm);
+}
+
+.productCardPriceContainer {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.productCardOriginalPrice {
+  font-size: var(--font-size-sm);
+  color: var(--text-tertiary);
+  text-decoration: line-through;
+  margin-right: var(--spacing-sm);
+}
+
+.productCardPrice {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--accent-price);
+}
