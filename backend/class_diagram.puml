@@ -1,0 +1,227 @@
+@startuml Kiosk Management System Class Diagram
+
+skinparam classAttributeIconSize 0
+skinparam backgroundColor #FFFFFF
+skinparam class {
+    BackgroundColor<<Model>> LightBlue
+    BackgroundColor<<Service>> LightGreen
+    BackgroundColor<<Router>> LightYellow
+    BackgroundColor<<Util>> LightPink
+    BorderColor Black
+    ArrowColor Black
+}
+
+package "Models (Pydantic)" <<Rectangle>> {
+    class ProductOption <<Model>> {
+        + name: str
+        + value: str
+        + price_modifier: float
+    }
+
+    class Product <<Model>> {
+        + product_id: str
+        + name: str
+        + price: float
+        + description: Optional[str]
+        + category: Optional[str]
+        + image_url: Optional[str]
+        + available: bool
+        + options: List[ProductOption]
+    }
+
+    class Kiosk <<Model>> {
+        + kiosk_id: str
+        + location: str
+        + name: str
+        + status: str
+        + products: List[str]
+        + created_at: Optional[datetime]
+        + updated_at: Optional[datetime]
+    }
+
+    class TransactionItem <<Model>> {
+        + product_id: str
+        + product_name: str
+        + quantity: int
+        + unit_price: float
+        + options: Optional[List[ProductOption]]
+        + subtotal: float
+    }
+
+    class Transaction <<Model>> {
+        + transaction_id: str
+        + kiosk_id: str
+        + items: List[TransactionItem]
+        + total_amount: float
+        + payment_method: str
+        + payment_status: str
+        + timestamp: datetime
+        + customer_id: Optional[str]
+        + receipt_number: Optional[str]
+    }
+
+    class AdminStats <<Model>> {
+        + total_kiosks: int
+        + total_products: int
+        + total_transactions: int
+        + total_revenue: float
+        + transactions_today: int
+        + revenue_today: float
+        + top_products: List[Dict]
+        + kiosk_performance: List[Dict]
+    }
+}
+
+package "Services" <<Rectangle>> {
+    class FirebaseService <<Service>> {
+        - db: Firestore
+        + initialize()
+        + get_all_kiosks(): List[Dict]
+        + get_kiosk_by_id(kiosk_id): Dict
+        + create_kiosk(kiosk_data): str
+        + update_kiosk(kiosk_id, data): bool
+        + get_all_products(): List[Dict]
+        + get_product_by_id(product_id): Dict
+        + create_product(product_data): str
+        + update_product(product_id, data): bool
+        + get_all_transactions(limit): List[Dict]
+        + get_transaction_by_id(transaction_id): Dict
+        + create_transaction(transaction_data): str
+        + get_transactions_by_kiosk(kiosk_id): List[Dict]
+    }
+
+    class PaymentService <<Service>> {
+        - api_key: str
+        - api_secret: str
+        - base_url: str
+        + initialize_payment(data): Dict
+        + confirm_payment(payment_id): Dict
+        + cancel_payment(payment_id, reason): Dict
+        + refund_payment(payment_id, amount): Dict
+        + get_payment_status(payment_id): Dict
+    }
+}
+
+package "Routes (FastAPI)" <<Rectangle>> {
+    class KioskRouter <<Router>> {
+        + GET /kiosks
+        + GET /kiosks/{kiosk_id}
+        + POST /kiosks
+        + PUT /kiosks/{kiosk_id}
+        + DELETE /kiosks/{kiosk_id}
+        + GET /kiosks/{kiosk_id}/products
+    }
+
+    class ProductRouter <<Router>> {
+        + GET /products
+        + GET /products/{product_id}
+        + POST /products
+        + PUT /products/{product_id}
+        + DELETE /products/{product_id}
+        + PATCH /products/{product_id}/availability
+    }
+
+    class TransactionRouter <<Router>> {
+        + GET /transactions
+        + GET /transactions/{transaction_id}
+        + POST /transactions
+        + POST /transactions/{transaction_id}/confirm
+        + POST /transactions/{transaction_id}/cancel
+        + POST /transactions/{transaction_id}/refund
+        + GET /transactions/{transaction_id}/receipt
+    }
+
+    class AdminRouter <<Router>> {
+        + GET /admin/stats
+        + GET /admin/revenue
+        + GET /admin/products/performance
+        + GET /admin/kiosks/performance
+        + GET /admin/dashboard
+    }
+}
+
+package "Utilities" <<Rectangle>> {
+    class Helpers <<Util>> {
+        {static} + generate_unique_id(prefix): str
+        {static} + generate_receipt_number(): str
+        {static} + format_datetime(dt, format): str
+        {static} + parse_datetime(dt_string): datetime
+        {static} + get_date_range(days_back): tuple
+        {static} + calculate_total(items): float
+        {static} + hash_string(input): str
+        {static} + validate_payment_method(method): bool
+        {static} + format_currency(amount, currency): str
+        {static} + paginate_results(items, page, size): dict
+        {static} + sanitize_input(input): str
+    }
+}
+
+package "Main Application" <<Rectangle>> {
+    class FastAPIApp {
+        + app: FastAPI
+        + startup_event()
+        + shutdown_event()
+        + root(): Dict
+        + health_check(): Dict
+    }
+}
+
+' Relationships between models
+Product "1" *-- "0..*" ProductOption : contains
+Transaction "1" *-- "1..*" TransactionItem : contains
+TransactionItem "1" --> "0..*" ProductOption : has options
+Kiosk "1" --> "0..*" Product : stocks (by ID)
+Transaction "1" --> "1" Kiosk : at location
+
+' Services use models
+FirebaseService ..> Kiosk : manages
+FirebaseService ..> Product : manages
+FirebaseService ..> Transaction : manages
+PaymentService ..> Transaction : processes payment
+
+' Routers use services
+KioskRouter ..> FirebaseService : uses
+ProductRouter ..> FirebaseService : uses
+TransactionRouter ..> FirebaseService : uses
+TransactionRouter ..> PaymentService : uses
+AdminRouter ..> FirebaseService : uses
+
+' Routers use models
+KioskRouter ..> Kiosk : returns
+ProductRouter ..> Product : returns
+TransactionRouter ..> Transaction : returns
+AdminRouter ..> AdminStats : returns
+
+' Routers use utilities
+KioskRouter ..> Helpers : uses
+ProductRouter ..> Helpers : uses
+TransactionRouter ..> Helpers : uses
+AdminRouter ..> Helpers : uses
+
+' Main app includes routers
+FastAPIApp o-- KioskRouter : includes
+FastAPIApp o-- ProductRouter : includes
+FastAPIApp o-- TransactionRouter : includes
+FastAPIApp o-- AdminRouter : includes
+
+' Main app initializes services
+FastAPIApp ..> FirebaseService : initializes
+
+note right of FirebaseService
+  Manages all database operations
+  using Firebase Firestore
+end note
+
+note right of PaymentService
+  Handles payment processing
+  (KakaoPay placeholder)
+end note
+
+note bottom of FastAPIApp
+  Main entry point
+  - CORS middleware
+  - Router registration
+  - Service initialization
+end note
+
+@enduml
