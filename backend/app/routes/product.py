@@ -77,3 +77,44 @@ async def get_all_products():
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error fetching products: {str(e)}"
         )
+
+
+@router.get("/{product_id}", response_model=Product)
+async def get_product_by_id(product_id: str):
+    """
+    Get a product by ID
+
+    This endpoint retrieves detailed information about a specific product.
+
+    Args:
+        product_id: Product ID (e.g., "prod_001")
+
+    Returns:
+        Product object with full details
+    """
+    try:
+        product = await firebase_service.get_product_by_id(product_id)
+
+        if not product:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Product with ID {product_id} not found"
+            )
+
+        # Format product for response
+        return {
+            "pid": product.get("product_id", product_id),
+            "name": product.get("name", ""),
+            "price": product.get("price", 0),
+            "description": product.get("description", ""),
+            "image_url": product.get("image_url", ""),
+            "tags": product.get("tags", []),
+            "available": product.get("available", True)
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error fetching product: {str(e)}"
+        )
