@@ -43,6 +43,26 @@ class FirebaseService:
             print(f"Error initializing Firebase: {e}")
             raise
 
+    # Counter operations
+    async def get_next_counter(self, counter_name: str) -> int:
+        """Get next counter value and increment"""
+        try:
+            counter_ref = self.db.collection('counters').document(counter_name)
+            counter_doc = counter_ref.get()
+
+            if counter_doc.exists:
+                current_value = counter_doc.to_dict().get('value', 0)
+                next_value = current_value + 1
+                counter_ref.update({'value': next_value})
+                return next_value
+            else:
+                # Initialize counter if it doesn't exist
+                counter_ref.set({'value': 1})
+                return 1
+        except Exception as e:
+            print(f"Error getting counter {counter_name}: {e}")
+            raise
+
     # Kiosk operations
     async def get_all_kiosks(self) -> List[Dict[str, Any]]:
         """Get all kiosks from Firebase"""
@@ -77,15 +97,22 @@ class FirebaseService:
             return None
 
     async def create_kiosk(self, kiosk_data: Dict[str, Any]) -> str:
-        """Create a new kiosk"""
+        """Create a new kiosk with sequential ID (kiosk_001, kiosk_002, ...)"""
         try:
+            # Get next counter value
+            counter = await self.get_next_counter('kiosk_counter')
+
+            # Create kiosk ID with zero-padding (kiosk_001, kiosk_002, ...)
+            kiosk_id = f"kiosk_{counter:03d}"
+
             kiosk_data['created_at'] = datetime.now()
             kiosk_data['updated_at'] = datetime.now()
 
-            doc_ref = self.db.collection('kiosks').document()
+            # Use the custom kiosk_id as document ID
+            doc_ref = self.db.collection('kiosks').document(kiosk_id)
             doc_ref.set(kiosk_data)
 
-            return doc_ref.id
+            return kiosk_id
         except Exception as e:
             print(f"Error creating kiosk: {e}")
             raise
@@ -137,12 +164,23 @@ class FirebaseService:
             return None
 
     async def create_product(self, product_data: Dict[str, Any]) -> str:
-        """Create a new product"""
+        """Create a new product with sequential ID (prod_001, prod_002, ...)"""
         try:
-            doc_ref = self.db.collection('products').document()
+            # Get next counter value
+            counter = await self.get_next_counter('product_counter')
+
+            # Create product ID with zero-padding (prod_001, prod_002, ...)
+            product_id = f"prod_{counter:03d}"
+
+            # Add product_id to product data
+            product_data['product_id'] = product_id
+            product_data['available'] = product_data.get('available', True)
+
+            # Use the custom product_id as document ID
+            doc_ref = self.db.collection('products').document(product_id)
             doc_ref.set(product_data)
 
-            return doc_ref.id
+            return product_id
         except Exception as e:
             print(f"Error creating product: {e}")
             raise

@@ -7,6 +7,9 @@ class Product(BaseModel):
     pid: str  # product_id
     name: str
     price: float
+    description: str = ""
+    image_url: str = ""
+    tags: List[str] = []
     available: bool = True
 
 
@@ -36,3 +39,17 @@ class AddProductToKioskResponse(BaseModel):
 class ProductSoldOutRequest(BaseModel):
     """Request model for marking product as sold out"""
     sold_out: bool
+
+
+class CreateProductRequest(BaseModel):
+    """Request model for creating a new product"""
+    name: str
+    price: float
+    description: str = ""
+    image_url: str = ""
+    tags: List[str] = []
+
+
+class CreateProductResponse(BaseModel):
+    """Response model for product creation"""
+    pid: str  # product_id

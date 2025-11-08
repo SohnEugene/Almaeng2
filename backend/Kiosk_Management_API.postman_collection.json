@@ -1,0 +1,278 @@
+{
+	"info": {
+		"_postman_id": "kiosk-management-api-001",
+		"name": "Kiosk Management API",
+		"description": "API collection for Kiosk Management System with Firebase integration",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Health Check",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/health",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"health"
+					]
+				},
+				"description": "Check API and Firebase connection status"
+			},
+			"response": []
+		},
+		{
+			"name": "Product",
+			"item": [
+				{
+					"name": "Create Product",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"샴푸 2번\",\n  \"price\": 8000,\n  \"description\": \"테스트용 샴푸 제품\",\n  \"image_url\": \"\",\n  \"tags\": [\"비건\", \"친환경\"]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/product/create",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"product",
+								"create"
+							]
+						},
+						"description": "Create a new product with sequential ID"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints for product management"
+		},
+		{
+			"name": "Kiosk",
+			"item": [
+				{
+					"name": "Create Kiosk",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"강남점\",\n  \"location\": \"서울시 강남구 테헤란로 123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/kiosk/create",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"kiosk",
+								"create"
+							]
+						},
+						"description": "Register a new kiosk and get unique_id"
+					},
+					"response": []
+				},
+				{
+					"name": "Add Product to Kiosk",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"pid\": \"prod_001\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/kiosk/:kiosk_id/products",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"kiosk",
+								":kiosk_id",
+								"products"
+							],
+							"variable": [
+								{
+									"key": "kiosk_id",
+									"value": "YOUR_KIOSK_ID",
+									"description": "Replace with actual kiosk_id from Create Kiosk response"
+								}
+							]
+						},
+						"description": "Add a product to kiosk's product list"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Kiosk Products",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/kiosk/:kiosk_id/products",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"kiosk",
+								":kiosk_id",
+								"products"
+							],
+							"variable": [
+								{
+									"key": "kiosk_id",
+									"value": "YOUR_KIOSK_ID",
+									"description": "Replace with actual kiosk_id"
+								}
+							]
+						},
+						"description": "Get all products available at a specific kiosk"
+					},
+					"response": []
+				},
+				{
+					"name": "Mark Product Sold Out",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"sold_out\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/kiosk/:kiosk_id/products/:product_id/soldout",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"kiosk",
+								":kiosk_id",
+								"products",
+								":product_id",
+								"soldout"
+							],
+							"variable": [
+								{
+									"key": "kiosk_id",
+									"value": "YOUR_KIOSK_ID",
+									"description": "Replace with actual kiosk_id"
+								},
+								{
+									"key": "product_id",
+									"value": "prod_001",
+									"description": "Replace with actual product_id"
+								}
+							]
+						},
+						"description": "Mark a product as sold out (or back in stock)"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints for kiosk management"
+		},
+		{
+			"name": "Payment",
+			"item": [
+				{
+					"name": "Prepare Payment",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"kid\": \"YOUR_KIOSK_ID\",\n  \"pid\": \"prod_001\",\n  \"amount_grams\": 250,\n  \"extra_bottle\": false,\n  \"product_price\": 4500,\n  \"total_price\": 4500,\n  \"payment_method\": \"kakaopay\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/payment/prepare",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"payment",
+								"prepare"
+							]
+						},
+						"description": "Prepare a payment and get redirect URL (Kakao Pay)"
+					},
+					"response": []
+				},
+				{
+					"name": "Approve Payment",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"tid\": \"YOUR_TID_FROM_PREPARE\",\n  \"pg_token\": \"MOCK_PG_TOKEN_12345\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/payment/approve",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"payment",
+								"approve"
+							]
+						},
+						"description": "Approve a payment after user completes payment"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints for payment processing"
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000",
+			"type": "string"
+		}
+	]
+}

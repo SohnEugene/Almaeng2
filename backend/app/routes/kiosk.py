@@ -88,14 +88,23 @@ async def add_product_to_kiosk(kiosk_id: str, request: AddProductToKioskRequest)
         current_products = kiosk.get('products', [])
 
         # Check if product already exists
-        if request.pid in current_products:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Product {request.pid} already exists in kiosk {kiosk_id}"
-            )
+        for prod in current_products:
+            if isinstance(prod, dict) and prod.get('pid') == request.pid:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"Product {request.pid} already exists in kiosk {kiosk_id}"
+                )
+            elif isinstance(prod, str) and prod == request.pid:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"Product {request.pid} already exists in kiosk {kiosk_id}"
+                )
 
-        # Add product to kiosk
-        current_products.append(request.pid)
+        # Add product to kiosk with availability info
+        current_products.append({
+            "pid": request.pid,
+            "available": True
+        })
         success = await firebase_service.update_kiosk(kiosk_id, {"products": current_products})
 
         if success:
@@ -140,23 +149,36 @@ async def get_kiosk_products(kiosk_id: str):
                 detail=f"Kiosk with ID {kiosk_id} not found"
             )
 
-        # Get product IDs assigned to this kiosk
-        product_ids = kiosk.get('products', [])
+        # Get products assigned to this kiosk
+        kiosk_products = kiosk.get('products', [])
 
-        if not product_ids:
+        if not kiosk_products:
             return []
 
         # Fetch full product details for each product
         products = []
-        for product_id in product_ids:
+        for kiosk_prod in kiosk_products:
+            # Handle both old format (string) and new format (dict)
+            if isinstance(kiosk_prod, str):
+                product_id = kiosk_prod
+                kiosk_available = True  # Default for old format
+            else:
+                product_id = kiosk_prod.get('pid')
+                kiosk_available = kiosk_prod.get('available', True)
+
+            # Fetch product details from products collection
             product = await firebase_service.get_product_by_id(product_id)
             if product:
                 # Map Firebase field names to API response format
+                # Use kiosk-specific availability instead of global product availability
                 products.append({
                     "pid": product.get("product_id", product_id),
                     "name": product.get("name", ""),
                     "price": product.get("price", 0),
-                    "available": product.get("available", True)
+                    "description": product.get("description", ""),
+                    "image_url": product.get("image_url", ""),
+                    "tags": product.get("tags", []),
+                    "available": kiosk_available  # Kiosk-specific availability
                 })
 
         return products
@@ -202,17 +224,49 @@ async def mark_product_soldout(kiosk_id: str, product_id: str, request: ProductS
                 detail=f"Product with ID {product_id} not found"
             )
 
-        # Verify product is assigned to this kiosk
-        product_ids = kiosk.get('products', [])
-        if product_id not in product_ids:
+        # Verify product is assigned to this kiosk and update its availability
+        kiosk_products = kiosk.get('products', [])
+        product_found = False
+        updated_products = []
+
+        for kiosk_prod in kiosk_products:
+            # Handle both old format (string) and new format (dict)
+            if isinstance(kiosk_prod, str):
+                prod_id = kiosk_prod
+                if prod_id == product_id:
+                    product_found = True
+                    # Convert to new format and update availability
+                    updated_products.append({
+                        "pid": prod_id,
+                        "available": not request.sold_out
+                    })
+                else:
+                    # Keep as is but convert to new format
+                    updated_products.append({
+                        "pid": prod_id,
+                        "available": True
+                    })
+            else:
+                prod_id = kiosk_prod.get('pid')
+                if prod_id == product_id:
+                    product_found = True
+                    # Update availability for this product
+                    updated_products.append({
+                        "pid": prod_id,
+                        "available": not request.sold_out
+                    })
+                else:
+                    # Keep other products unchanged
+                    updated_products.append(kiosk_prod)
+
+        if not product_found:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail=f"Product {product_id} is not available at kiosk {kiosk_id}"
             )
 
-        # Update product availability (sold_out=True means available=False)
-        available = not request.sold_out
-        success = await firebase_service.update_product(product_id, {"available": available})
+        # Update kiosk's products list with new availability
+        success = await firebase_service.update_kiosk(kiosk_id, {"products": updated_products})
 
         if success:
             status_text = "sold out" if request.sold_out else "available"
