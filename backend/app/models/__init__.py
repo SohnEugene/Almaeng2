@@ -10,7 +10,7 @@ This package contains Pydantic models organized by domain:
 from app.models.kiosk import (
     Product,
     CreateKioskRequest,
-    KioskRegistrationResponse,
+    CreateKioskResponse,
     AddProductToKioskRequest,
     AddProductToKioskResponse,
     ProductSoldOutRequest
@@ -28,7 +28,7 @@ __all__ = [
     # Kiosk
     "Product",
     "CreateKioskRequest",
-    "KioskRegistrationResponse",
+    "CreateKioskResponse",
     "AddProductToKioskRequest",
     "AddProductToKioskResponse",
     "ProductSoldOutRequest",
