@@ -18,10 +18,9 @@ class FirebaseService:
             # Check if already initialized
             if not firebase_admin._apps:
                 # Get credentials from environment variable
-                cred_path = os.getenv("FIREBASE_CREDENTIALS_PATH")
-
-                if cred_path and os.path.exists(cred_path):
-                    cred = credentials.Certificate(cred_path)
+                firebase_json = os.environ.get("FIREBASE_CREDENTIALS_JSON")
+                if firebase_json:
+                    cred = credentials.Certificate(json.loads(firebase_json))
                     firebase_admin.initialize_app(cred)
                 else:
                     # For development, you can also use a credentials JSON string
