@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 import os
 
 # Import routers
-from app.routes import kiosk, product, transaction, admin
+from app.routes import kiosk, payment
 
 # Import services
 from app.services.firebase import firebase_service
@@ -86,9 +86,7 @@ async def health_check():
 
 # Register routers
 app.include_router(kiosk.router, prefix="/api")
-app.include_router(product.router, prefix="/api")
-app.include_router(transaction.router, prefix="/api")
-app.include_router(admin.router, prefix="/api")
+app.include_router(payment.router, prefix="/api")
 
 
 # Run the application
