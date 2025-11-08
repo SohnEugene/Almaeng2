@@ -2,7 +2,6 @@
 import { useState, useEffect } from 'react';
 import Button from '../components/Button';
 import ProductCard from '../components/ProductCard';
-import { getKioskProducts } from '../services/api';
 import { getKioskId } from '../services/kioskStorage';
 import { useSession } from '../contexts/SessionContext';
 import styles from '../styles/pages.module.css';
