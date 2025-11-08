@@ -1,0 +1,65 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap');
+
+:root {
+  --color-brand: #fa8674;
+  --color-accent: #ec6a56;
+  --color-ink: #2c1f19;
+  --color-subtle: #7d5c52;
+  --color-cream: #fff7f3;
+  --color-panel: #fff1eb;
+  --color-line: rgba(44, 31, 25, 0.08);
+  --radius-large: 36px;
+  --radius-medium: 24px;
+  --radius-small: 16px;
+  --shadow-soft: 0 40px 90px rgba(250, 134, 116, 0.25);
+
+  font-family: 'Noto Sans KR', 'Pretendard Variable', 'Pretendard', sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  color: var(--color-ink);
+  background-color: var(--color-cream);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  background: linear-gradient(180deg, #fff8f5 0%, #ffe0d6 55%, #ffd0c3 100%);
+}
+
+#root {
+  min-height: 100dvh;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  font-weight: 700;
+}
+
+p {
+  margin: 0;
+}
+
+button {
+  font: inherit;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
