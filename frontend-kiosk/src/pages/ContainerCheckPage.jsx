@@ -22,9 +22,10 @@ export default function ContainerCheckPage({ onHasContainer, onNoContainer }) {
     <div className={styles.containerCheckContainer}>
       <div className={styles.containerCheckHeader}>home</div>
       <div className={styles.containerCheckContent}>
-        <div className={styles.containerCheckQuestion}>
+        <div className={styles.containerCheckQuestionDetail}>
           리필을 위해서는 빈 용기가 필요해요
-          <br />
+        </div>
+        <div className={styles.containerCheckQuestion}>
           혹시 재사용할 용기를 가지고 계신가요?
         </div>
 

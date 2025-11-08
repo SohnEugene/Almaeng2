@@ -126,6 +126,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
+  gap: var(--spacing-lg);
 }
 
 .productSelectionTitle div {
@@ -135,6 +137,10 @@
   color: white;
   font-size: var(--font-size-4xl);
   margin-bottom: 40px;
+}
+
+.productSelectionLoadingSpinner {
+  height: 200px;
 }
 
 .productLoading p {
@@ -170,8 +176,17 @@
   align-items: center;
 }
 
+.containerCheckQuestionDetail {
+  font-size: 40px;
+  font-weight: var(--font-weight-semibold);
+  opacity: 60%;
+  text-align: center;
+  line-height: 1.5;
+  margin-bottom: 24px;
+}
+
 .containerCheckQuestion {
-  font-size: var(--font-size-4xl);
+  font-size: var(--font-size-5xl);
   font-weight: var(--font-weight-bold);
   color: var(--color-gray-900);
   text-align: center;
@@ -279,6 +294,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: var(--spacing-xl);
 }
 
 .containerPurchaseImageContainer {
@@ -295,12 +311,13 @@
 }
 
 .containerPurchaseText {
-  font-size: var(--font-size-2xl);
+  font-size: var(--font-size-5xl);
   font-weight: var(--font-weight-bold);
   color: var(--color-gray-900);
   text-align: center;
   line-height: 1.5;
-  margin-bottom: 64px;
+  margin-top: 40px;
+  margin-bottom: 104px;
 }
 
 .containerPurchaseButtons {
@@ -308,7 +325,14 @@
   max-width: 400px;
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: var(--spacing-md);
+}
+
+.purchaseTextDetail {
+  font-size: var(--font-size-4xl);
+  font-weight: var(--font-weight-semibold);
+  opacity: 60%;
 }
 
 /* ============================================================
@@ -450,7 +474,8 @@
 }
 
 .refillIcon {
-  font-size: 120px;
+  height: 25vh;
+  margin-top: var(--spacing-xl);
   margin-bottom: var(--spacing-2xl);
 }
 

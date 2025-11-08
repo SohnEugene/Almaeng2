@@ -53,6 +53,11 @@ export default function ProductSelectionPage({ onNext }) {
     return (
       <div className={styles.productSelectionContainer}>
         <div className={styles.productLoading}>
+          <img
+            src="/loading.gif"
+            alt="로딩 중"
+            className={styles.productSelectionLoadingSpinner}
+          />
           <div className={styles.productSelectionTitle}>
             <div>상품 로딩 중...</div>
             <p>상품을 저렴하게,</p>

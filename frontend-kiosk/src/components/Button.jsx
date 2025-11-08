@@ -14,6 +14,7 @@ export default function Button({
       outlined: styles.buttonOutlined,
       double: styles.buttonDouble,
       outlinedDouble: styles.buttonOutlinedDouble,
+      small: styles.buttonSmall,
     }[variant] || styles.buttonPrimary;
 
   const classNames = [styles.button, variantClass].join(" ");
