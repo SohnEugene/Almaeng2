@@ -11,7 +11,7 @@
    ============================================================ */
 
 .button {
-  font-size: 64px;
+  font-size: 56px;
   font-weight: var(--font-weight-bold);
   border: none;
   cursor: pointer;
@@ -53,28 +53,30 @@
 .productCard {
   display: flex;
   align-items: center;
-  padding: var(--spacing-lg);
-  border: 2px solid var(--ui-border-light);
+  padding: var(--spacing-md);
+  border: 3px solid var(--color-gray);
   border-radius: var(--radius-lg);
   background-color: var(--bg-content);
   cursor: pointer;
   transition: all 0.2s;
   margin-bottom: var(--spacing-md);
+  height: 15vh;
 }
 
 .productCard:hover {
-  border-color: var(--ui-border);
+  border-color: var(--color-primary);
   box-shadow: var(--shadow-sm);
 }
 
 .productCardSelected {
-  border: 3px solid var(--ui-border-accent);
-  box-shadow: var(--shadow-md);
+  border-color: var(--color-primary);
+  background-color: var(--color-primary-trans);
+  box-shadow: var(--shadow-sm);
 }
 
 .productCardImage {
-  width: 80px;
-  height: 80px;
+  width: 180px;
+  height: 180px;
   object-fit: cover;
   border-radius: var(--radius-md);
   margin-right: var(--spacing-md);
@@ -88,13 +90,13 @@
 }
 
 .productCardBrand {
-  font-size: var(--font-size-sm);
-  color: var(--text-secondary);
+  font-size: var(--font-size-2xl);
+  color: var(--color-gray-700);
   margin-bottom: 4px;
 }
 
 .productCardName {
-  font-size: var(--font-size-base);
+  font-size: var(--font-size-4xl);
   font-weight: var(--font-weight-semibold);
   color: var(--text-primary);
   margin-bottom: var(--spacing-sm);
@@ -106,14 +108,15 @@
 }
 
 .productCardOriginalPrice {
-  font-size: var(--font-size-sm);
+  display: none;
+  font-size: var(--font-size-2xl);
   color: var(--text-tertiary);
   text-decoration: line-through;
   margin-right: var(--spacing-sm);
 }
 
 .productCardPrice {
-  font-size: var(--font-size-lg);
+  font-size: var(--font-size-4xl);
   font-weight: var(--font-weight-bold);
   color: var(--accent-price);
 }
