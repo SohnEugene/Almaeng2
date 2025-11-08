@@ -46,6 +46,26 @@
   color: var(--btn-primary-text);
 }
 
+.buttonDouble {
+  background-color: var(--btn-primary);
+  color: var(--btn-primary-text);
+  border: none;
+  height: 8.5vh; /* 15% shorter than default 10vh */
+  font-size: 48px;
+}
+
+.buttonOutlinedDouble {
+  background-color: transparent;
+  color: var(--btn-outline);
+  border: 2px solid var(--btn-outline);
+  height: 8.5vh; /* 15% shorter than default 10vh */
+  font-size: 48px;
+}
+
+.buttonDouble:hover:not(:disabled) {
+  background-color: var(--btn-primary-hover);
+}
+
 /* ============================================================
    ProductCard Component Styles
    ============================================================ */
@@ -82,6 +102,7 @@
   margin-right: var(--spacing-md);
   background-color: var(--ui-hover);
   flex-shrink: 0;
+  border: 2px solid var(--color-gray);
 }
 
 .productCardInfo {
