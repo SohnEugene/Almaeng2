@@ -121,6 +121,26 @@
   margin-bottom: var(--spacing-lg);
 }
 
+.productLoading {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.productSelectionTitle div {
+  background-color: var(--color-primary-trans2);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-full);
+  color: white;
+  font-size: var(--font-size-4xl);
+  margin-bottom: 40px;
+}
+
+.productLoading p {
+  font-size: var(--font-size-5xl);
+}
+
 /* ============================================================
    ContainerCheckPage Styles
    ============================================================ */
@@ -151,7 +171,7 @@
 }
 
 .containerCheckQuestion {
-  font-size: var(--font-size-2xl);
+  font-size: var(--font-size-4xl);
   font-weight: var(--font-weight-bold);
   color: var(--color-gray-900);
   text-align: center;
@@ -161,14 +181,16 @@
 
 .containerCheckIcon {
   font-size: 120px;
-  margin-bottom: 80px;
+  margin-top: 100px;
+  margin-bottom: 320px;
 }
 
 .containerCheckButtons {
   width: 100%;
-  max-width: 400px;
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
   gap: var(--spacing-md);
 }
 

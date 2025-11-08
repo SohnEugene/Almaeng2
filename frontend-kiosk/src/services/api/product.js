@@ -4,7 +4,7 @@
  * 제품 관련 API 호출 함수를 제공합니다.
  */
 
-import { request } from './client.js';
+import { request } from "./client.js";
 
 /**
  * 전체 제품 목록 조회
@@ -16,7 +16,7 @@ import { request } from './client.js';
  * const products = await getProducts();
  */
 export async function getProducts() {
-  return request('/product/list');
+  return request("/product/list");
 }
 
 /**

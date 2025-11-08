@@ -1,12 +1,22 @@
 // src/components/Button.jsx
-import styles from '../styles/components.module.css';
+import styles from "../styles/components.module.css";
 
-export default function Button({ children, onClick, variant = 'primary', disabled = false, style = {} }) {
-  // CSS 모듈 클래스 조합
-  const classNames = [
-    styles.button,
-    variant === 'primary' ? styles.buttonPrimary : styles.buttonOutlined,
-  ].join(' ');
+export default function Button({
+  children,
+  onClick,
+  variant = "primary",
+  disabled = false,
+  style = {},
+}) {
+  const variantClass =
+    {
+      primary: styles.buttonPrimary,
+      outlined: styles.buttonOutlined,
+      double: styles.buttonDouble,
+      outlinedDouble: styles.buttonOutlinedDouble,
+    }[variant] || styles.buttonPrimary;
+
+  const classNames = [styles.button, variantClass].join(" ");
 
   return (
     <button

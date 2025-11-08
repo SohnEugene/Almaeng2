@@ -11,13 +11,13 @@
  * BLE 서비스 UUID - 장치의 기본 서비스 식별자
  * @constant {string}
  */
-export const SCALE_SERVICE_UUID = '0000fff0-0000-1000-8000-00805f9b34fb';
+export const SCALE_SERVICE_UUID = "0000fff0-0000-1000-8000-00805f9b34fb";
 
 /**
  * BLE 특성(Characteristic) UUID - 데이터 송수신 채널
  * @constant {string}
  */
-export const SCALE_CHAR_UUID = '0000fff1-0000-1000-8000-00805f9b34fb';
+export const SCALE_CHAR_UUID = "0000fff1-0000-1000-8000-00805f9b34fb";
 
 /**
  * BLE 연결 설정
