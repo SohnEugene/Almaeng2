@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { registerKiosk, getKioskProducts, addProductToKiosk, getProducts } from '../services/api';
 import { saveKioskInfo, getKioskInfo, clearKioskInfo } from '../services/kioskStorage';
 import { useBluetoothContext } from '../contexts/BluetoothContext';
+import { useBluetoothContext } from '../contexts/BluetoothContext';
 import '../styles/ManagementPage.css';
 
 /**
@@ -28,6 +29,9 @@ export default function ManagementPage() {
   const [productIdInput, setProductIdInput] = useState('');
   const [productLoading, setProductLoading] = useState(false);
   const [productError, setProductError] = useState(null);
+
+  // Bluetooth 저울 관련 (localStorage에 저장)
+  const { weight, isConnected, isConnecting, error: bleError, deviceName, connect, disconnect } = useBluetoothContext();
 
   // Bluetooth 저울 관련 (localStorage에 저장)
   const { weight, isConnected, isConnecting, error: bleError, deviceName, connect, disconnect } = useBluetoothContext();
@@ -232,6 +236,44 @@ export default function ManagementPage() {
               {isLoading ? '등록 중...' : '키오스크 등록'}
             </button>
           </form>
+        </div>
+
+        {/* Bluetooth 저울 연결 섹션 */}
+        <div className="bluetooth-section">
+          <h2>⚖️ Bluetooth 저울 연결</h2>
+          <div className="bluetooth-status">
+            {isConnected ? (
+              <div className="status-connected">
+                <div className="status-info">
+                  <span className="status-icon">✅</span>
+                  <div>
+                    <div className="device-name">연결됨: {deviceName || '저울'}</div>
+                    <div className="current-weight">현재 무게: {weight}g</div>
+                  </div>
+                </div>
+                <button className="btn-danger" onClick={disconnect}>
+                  연결 해제
+                </button>
+              </div>
+            ) : (
+              <div className="status-disconnected">
+                <div className="status-info">
+                  <span className="status-icon">⚠️</span>
+                  <span>저울이 연결되지 않았습니다</span>
+                </div>
+                <button
+                  className="btn-primary"
+                  onClick={connect}
+                  disabled={isConnecting}
+                >
+                  {isConnecting ? '연결 중...' : '저울 연결'}
+                </button>
+              </div>
+            )}
+            {bleError && (
+              <div className="error-message">❌ {bleError}</div>
+            )}
+          </div>
         </div>
 
         {/* Bluetooth 저울 연결 섹션 */}
