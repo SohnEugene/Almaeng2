@@ -13,7 +13,7 @@
  */
 
 import { useState, useRef, useCallback } from 'react';
-import { SCALE_SERVICE_UUID, SCALE_CHAR_UUID, BLE_CONFIG } from '../constants/bluetooth';
+import { SCALE_SERVICE_UUID, SCALE_CHAR_UUID } from '../constants/bluetooth';
 
 /**
  * useBluetooth - BLE 장치 연결 및 데이터 수신을 위한 React Hook
@@ -56,7 +56,6 @@ export function useBluetooth() {
 
   const deviceRef = useRef(null);
   const characteristicRef = useRef(null);
-  const pollIntervalRef = useRef(null);
 
   // ============================================================
   // 내부 함수: 연결 해제
@@ -74,11 +73,6 @@ export function useBluetooth() {
    * @returns {void}
    */
   const disconnect = useCallback(() => {
-    if (pollIntervalRef.current) {
-      clearInterval(pollIntervalRef.current);
-      pollIntervalRef.current = null;
-    }
-
     if (deviceRef.current?.gatt?.connected) {
       console.log('🔌 Disconnecting from device...');
       deviceRef.current.gatt.disconnect();
@@ -172,51 +166,33 @@ export function useBluetooth() {
       });
 
       // GATT 서버 연결
-      console.log('🔗 Connecting to GATT server...');
       const server = await device.gatt.connect();
-      console.log('✅ Connected to GATT server');
-
-      // 서비스 및 캐릭터리스틱 획득
       const service = await server.getPrimaryService(SCALE_SERVICE_UUID);
-      console.log('📦 Got service:', service.uuid);
-
       const characteristic = await service.getCharacteristic(SCALE_CHAR_UUID);
-      console.log('📨 Got characteristic:', characteristic.uuid);
 
       characteristicRef.current = characteristic;
 
       // 수신된 데이터 처리 핸들러
       const handleValue = (value) => {
         const newWeight = parseWeight(value);
-        setWeight(newWeight);
+        const realWeight = Math.round(newWeight / 10);
+        setWeight(realWeight);
       };
 
-      // notify 우선, 없을 경우 read로 폴백
-      if (characteristic.properties.notify) {
-        console.log('🔔 Starting notifications...');
-        await characteristic.startNotifications();
-        characteristic.addEventListener('characteristicvaluechanged', (e) => {
-          handleValue(e.target.value);
-        });
-      } else if (characteristic.properties.read) {
-        console.log('⏱ Polling characteristic value...');
-        pollIntervalRef.current = setInterval(async () => {
-          try {
-            const value = await characteristic.readValue();
-            handleValue(value);
-          } catch (err) {
-            console.error('Error reading value:', err);
-          }
-        }, BLE_CONFIG.POLLING_INTERVAL);
-      } else {
-        throw new Error('Characteristic does not support read or notify');
+      // Notify만 지원 (Polling 제거)
+      if (!characteristic.properties.notify) {
+        throw new Error('This device does not support notifications. Please use a compatible scale.');
       }
+
+      console.log('🔔 Starting notifications...');
+      await characteristic.startNotifications();
+      characteristic.addEventListener('characteristicvaluechanged', (e) => {
+        handleValue(e.target.value);
+      });
 
       setIsConnected(true);
       setIsConnecting(false);
-      console.log('🎉 BLE connected successfully');
     } catch (err) {
-      console.error('❌ Connection error:', err);
       setError(err.message || 'Failed to connect to scale');
       setIsConnecting(false);
       disconnect();
