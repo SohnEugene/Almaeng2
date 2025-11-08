@@ -354,6 +354,9 @@ class PaymentService:
             if not self.kakao_admin_key:
                 print("Kakao Pay Admin Key not set - using mock approval")
 
+                # Store payment_data before cleanup
+                payment_data = payment_info.get("payment_data", {})
+
                 # Clean up pending payment
                 del self.pending_payments[tid]
 
@@ -362,7 +365,8 @@ class PaymentService:
                     "status": "success",
                     "approved_at": datetime.now().isoformat(),
                     "partner_order_id": payment_info["partner_order_id"],
-                    "payment_method_type": "MONEY"
+                    "payment_method_type": "MONEY",
+                    "payment_data": payment_data  # Include original payment data
                 }
 
             # Prepare approval request
@@ -388,6 +392,10 @@ class PaymentService:
 
             if response.status_code == 200:
                 result = response.json()
+
+                # Store payment_data before cleanup
+                payment_data = payment_info.get("payment_data", {})
+
                 # Clean up pending payment
                 del self.pending_payments[tid]
 
@@ -396,7 +404,8 @@ class PaymentService:
                     "status": "success",
                     "approved_at": result.get("approved_at"),
                     "partner_order_id": result.get("partner_order_id"),
-                    "payment_method_type": result.get("payment_method_type")
+                    "payment_method_type": result.get("payment_method_type"),
+                    "payment_data": payment_data  # Include original payment data
                 }
             else:
                 raise Exception(f"Kakao Pay approval error: {response.text}")
