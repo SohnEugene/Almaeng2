@@ -1,4 +1,5 @@
 // src/App.jsx
+import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import HomePage from './pages/HomePage';
 import ProductSelectionPage from './pages/ProductSelectionPage';
@@ -8,24 +9,27 @@ import RefillPage from './pages/RefillPage';
 import PaymentMethodPage from './pages/PaymentMethodPage';
 import PaymentProcessingPage from './pages/PaymentProcessingPage';
 import PaymentCompletePage from './pages/PaymentCompletePage';
+import ManagementPage from './pages/ManagementPage';
 import { useBluetooth } from './hooks/useBluetooth';
 import { SessionProvider } from './contexts/SessionContext';
 
-// 페이지를 의미 있는 상수로 정의
-const PAGES = {
-  HOME: 'home',
-  PRODUCT: 'product',
-  CONTAINER: 'container',
-  CONTAINER_PURCHASE: 'container_purchase',
-  REFILL: 'refill',
-  PAYMENT_METHOD: 'payment_method',
-  PAYMENT_PROCESSING: 'payment_processing',
-  PAYMENT_COMPLETE: 'payment_complete',
-  BLE_MONITOR: 'ble_monitor',
-};
-
 export default function App() {
-  const [currentPage, setCurrentPage] = useState(PAGES.HOME);
+  return (
+    <BrowserRouter>
+      <SessionProvider>
+        <Routes>
+          <Route path="/" element={<KioskFlow />} />
+          <Route path="/manage" element={<ManagementPage />} />
+        </Routes>
+      </SessionProvider>
+    </BrowserRouter>
+  );
+}
+
+// 키오스크 메인 플로우 컴포넌트
+function KioskFlow() {
+  const navigate = useNavigate();
+  const [currentPage, setCurrentPage] = useState('home');
 
   // BLE 관련 상태와 함수 (커스텀 훅)
   const {
@@ -41,15 +45,15 @@ export default function App() {
   // 페이지 전환 핸들러
   const goToNextPage = () => {
     const order = [
-      PAGES.HOME,
-      PAGES.PRODUCT,
-      PAGES.CONTAINER,
-      PAGES.CONTAINER_PURCHASE,
-      PAGES.REFILL,
-      PAGES.PAYMENT_METHOD,
-      PAGES.PAYMENT_PROCESSING,
-      PAGES.PAYMENT_COMPLETE,
-      PAGES.BLE_MONITOR,
+      'home',
+      'product',
+      'container',
+      'container_purchase',
+      'refill',
+      'payment_method',
+      'payment_processing',
+      'payment_complete',
+      'ble_monitor',
     ];
     const nextIndex = order.indexOf(currentPage) + 1;
     if (nextIndex < order.length) setCurrentPage(order[nextIndex]);
@@ -60,43 +64,40 @@ export default function App() {
   };
 
   const resetToHome = () => {
-    console.log('🏠 App.jsx resetToHome 호출됨');
-    console.log('현재 페이지:', currentPage);
-    console.log('HOME으로 이동:', PAGES.HOME);
-    setCurrentPage(PAGES.HOME);
-    console.log('setCurrentPage 호출 완료');
+    console.log('🏠 resetToHome 호출됨');
+    setCurrentPage('home');
   };
 
   // 페이지 맵 정의
   const pages = {
-    [PAGES.HOME]: <HomePage onNext={goToNextPage} />,
-    [PAGES.PRODUCT]: <ProductSelectionPage onNext={goToNextPage} />,
-    [PAGES.CONTAINER]: (
+    home: <HomePage onNext={goToNextPage} />,
+    product: <ProductSelectionPage onNext={goToNextPage} />,
+    container: (
       <ContainerCheckPage
-        onHasContainer={() => goToPage(PAGES.REFILL)}
-        onNoContainer={() => goToPage(PAGES.CONTAINER_PURCHASE)}
+        onHasContainer={() => goToPage('refill')}
+        onNoContainer={() => goToPage('container_purchase')}
       />
     ),
-    [PAGES.CONTAINER_PURCHASE]: (
+    container_purchase: (
       <ContainerPurchasePage
-        onYes={() => goToPage(PAGES.REFILL)}
-        onNo={() => goToPage(PAGES.REFILL)}
+        onYes={() => goToPage('refill')}
+        onNo={() => goToPage('refill')}
       />
     ),
-    [PAGES.REFILL]: <RefillPage onNext={goToNextPage} onReset={resetToHome} />,
-    [PAGES.PAYMENT_METHOD]: (
+    refill: <RefillPage onNext={goToNextPage} onReset={resetToHome} />,
+    payment_method: (
       <PaymentMethodPage
         onNext={goToNextPage}
-        onBack={() => goToPage(PAGES.REFILL)}
+        onBack={() => goToPage('refill')}
       />
     ),
-    [PAGES.PAYMENT_PROCESSING]: (
+    payment_processing: (
       <PaymentProcessingPage onNext={goToNextPage} />
     ),
-    [PAGES.PAYMENT_COMPLETE]: (
+    payment_complete: (
       <PaymentCompletePage onReset={resetToHome} />
     ),
-    [PAGES.BLE_MONITOR]: (
+    ble_monitor: (
       <BleMonitorPage
         isConnected={isConnected}
         isConnecting={isConnecting}
@@ -110,11 +111,7 @@ export default function App() {
     ),
   };
 
-  return (
-    <SessionProvider>
-      <div>{pages[currentPage]}</div>
-    </SessionProvider>
-  );
+  return <div>{pages[currentPage]}</div>;
 }
 
 // BLE 모니터 화면을 별도 컴포넌트로 분리
