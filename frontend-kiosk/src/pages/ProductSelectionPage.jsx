@@ -1,12 +1,11 @@
 // src/pages/ProductSelectionPage.jsx
-import { useState } from 'react';
-import Button from '../components/Button';
-import ProductCard from '../components/ProductCard';
-import { getMockProducts } from '../services/api';
-import styles from '../styles/pages.module.css';
+import { useState } from "react";
+import Button from "../components/Button";
+import ProductCard from "../components/ProductCard";
+import { getMockProducts } from "../services/api";
+import styles from "../styles/pages.module.css";
 
 export default function ProductSelectionPage({ onNext }) {
-
   const [selectedProduct, setSelectedProduct] = useState(null);
   const products = getMockProducts(); // 백엔드 개발 전까지 Mock 데이터 사용
 
@@ -14,7 +13,6 @@ export default function ProductSelectionPage({ onNext }) {
     <div className={styles.productSelectionContainer}>
       <div className={styles.productSelectionHeader}>home</div>
       <div className={styles.productSelectionContent}>
-
         <div className={styles.productSelectionTitle}>
           어떤 제품을 리필하시겠어요?
         </div>
@@ -33,11 +31,11 @@ export default function ProductSelectionPage({ onNext }) {
             />
           ))}
         </div>
-
-        <Button onClick={onNext} disabled={!selectedProduct}>
-          상품 선택 완료
-        </Button>
-
+        <div className={styles.productSelectionFooter}>
+          <Button onClick={onNext} disabled={!selectedProduct}>
+            상품 선택 완료
+          </Button>
+        </div>
       </div>
     </div>
   );
