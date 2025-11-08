@@ -5,13 +5,14 @@
  * 제품 정보, 주문 처리 등의 API 호출 함수를 제공합니다.
  */
 
-import { PRODUCT_IMAGES } from '../constants/products';
+import { PRODUCT_IMAGES } from "../constants/products";
 
 /**
  * API 기본 URL
  * @constant {string}
  */
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api";
 
 /**
  * HTTP 요청 헬퍼 함수
@@ -26,7 +27,7 @@ async function request(endpoint, options = {}) {
 
   const config = {
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       ...options.headers,
     },
     ...options,
@@ -41,7 +42,7 @@ async function request(endpoint, options = {}) {
 
     return await response.json();
   } catch (error) {
-    console.error('API Request Error:', error);
+    console.error("API Request Error:", error);
     throw error;
   }
 }
@@ -60,7 +61,7 @@ async function request(endpoint, options = {}) {
  * const products = await getProducts();
  */
 export async function getProducts() {
-  return request('/products');
+  return request("/products");
 }
 
 /**
@@ -101,8 +102,8 @@ export async function getProductById(productId) {
  * });
  */
 export async function createOrder(orderData) {
-  return request('/orders', {
-    method: 'POST',
+  return request("/orders", {
+    method: "POST",
     body: JSON.stringify(orderData),
   });
 }
@@ -134,7 +135,7 @@ export async function getOrder(orderId) {
  */
 export async function updateOrderStatus(orderId, status) {
   return request(`/orders/${orderId}/status`, {
-    method: 'PATCH',
+    method: "PATCH",
     body: JSON.stringify({ status }),
   });
 }
@@ -153,26 +154,29 @@ export function getMockProducts() {
   return [
     {
       id: 1,
-      brand: 'MOMIRAE',
-      name: '핑크솔트 딥모 샴푸',
+      brand: "MOMIRAE",
+      name: "핑크솔트 딥모 샴푸",
+      detail: "히말라야에서 온 핑크솔트",
       price: 8,
-      originalPrice: null,
+      originalPrice: 17,
       image: PRODUCT_IMAGES[1],
     },
     {
       id: 2,
-      brand: 'Dr.FORHAIR',
-      name: '폴리젠 샴푸',
+      brand: "Dr.FORHAIR",
+      name: "폴리젠 샴푸",
+      detail: "두피 냄새 케어에 도움을 주는 폴리젠 샴푸",
       price: 9,
-      originalPrice: null,
+      originalPrice: 20,
       image: PRODUCT_IMAGES[2],
     },
     {
       id: 3,
-      brand: 'OSULLOC',
-      name: '제주 그린티 핸드워시',
+      brand: "OSULLOC",
+      name: "제주 그린티 핸드워시",
+      detail: "제주 녹차 성분이 함유된 상쾌한 그린티 핸드워시",
       price: 7,
-      originalPrice: null,
+      originalPrice: 12,
       image: PRODUCT_IMAGES[3],
     },
   ];

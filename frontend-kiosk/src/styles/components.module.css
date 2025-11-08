@@ -11,7 +11,7 @@
    ============================================================ */
 
 .button {
-  font-size: 64px;
+  font-size: 56px;
   font-weight: var(--font-weight-bold);
   border: none;
   cursor: pointer;
@@ -90,13 +90,13 @@
 }
 
 .productCardBrand {
-  font-size: var(--font-size-sm);
-  color: var(--text-secondary);
+  font-size: var(--font-size-2xl);
+  color: var(--color-gray-700);
   margin-bottom: 4px;
 }
 
 .productCardName {
-  font-size: var(--font-size-base);
+  font-size: var(--font-size-4xl);
   font-weight: var(--font-weight-semibold);
   color: var(--text-primary);
   margin-bottom: var(--spacing-sm);
@@ -108,14 +108,15 @@
 }
 
 .productCardOriginalPrice {
-  font-size: var(--font-size-sm);
+  display: none;
+  font-size: var(--font-size-2xl);
   color: var(--text-tertiary);
   text-decoration: line-through;
   margin-right: var(--spacing-sm);
 }
 
 .productCardPrice {
-  font-size: var(--font-size-lg);
+  font-size: var(--font-size-4xl);
   font-weight: var(--font-weight-bold);
   color: var(--accent-price);
 }
