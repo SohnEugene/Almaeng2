@@ -1,0 +1,317 @@
+/* 키오스크 관리 페이지 스타일 */
+
+.management-page {
+  width: 100%;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.management-container {
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  padding: 40px;
+  max-width: 600px;
+  width: 100%;
+}
+
+.management-container h1 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 30px;
+  font-size: 2rem;
+}
+
+.management-container h2 {
+  color: #555;
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+}
+
+/* 등록된 정보 표시 */
+.registered-info {
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 30px;
+}
+
+.info-box {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  margin: 15px 0;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.info-row .label {
+  font-weight: 600;
+  color: #666;
+}
+
+.info-row .value {
+  color: #333;
+  font-weight: 500;
+}
+
+.info-row .unique-id {
+  font-family: 'Courier New', monospace;
+  background: #e3f2fd;
+  padding: 5px 10px;
+  border-radius: 4px;
+  color: #1976d2;
+}
+
+/* 폼 스타일 */
+.registration-form {
+  margin-top: 20px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 8px;
+  font-size: 0.95rem;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-group input::placeholder {
+  color: #aaa;
+}
+
+/* 에러 메시지 */
+.error-message {
+  background: #ffebee;
+  color: #c62828;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-weight: 500;
+}
+
+/* 버튼 스타일 */
+.btn-primary,
+.btn-danger,
+.btn-back {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 10px;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-danger {
+  background: #f44336;
+  color: white;
+}
+
+.btn-danger:hover {
+  background: #d32f2f;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(244, 67, 54, 0.3);
+}
+
+.btn-back {
+  background: #f5f5f5;
+  color: #555;
+  margin-top: 30px;
+}
+
+.btn-back:hover {
+  background: #e0e0e0;
+}
+
+/* 제품 관리 섹션 */
+.product-management {
+  margin-top: 30px;
+  padding-top: 30px;
+  border-top: 2px solid #e0e0e0;
+}
+
+.product-management h2 {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.product-section {
+  margin-bottom: 30px;
+}
+
+.product-section h3 {
+  color: #666;
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.product-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.product-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.product-item:hover {
+  background: #e9ecef;
+  transform: translateX(5px);
+}
+
+.product-item.kiosk-product {
+  background: #e3f2fd;
+}
+
+.product-item.kiosk-product:hover {
+  background: #bbdefb;
+}
+
+.product-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.product-name {
+  font-weight: 600;
+  color: #333;
+  font-size: 1rem;
+}
+
+.product-id {
+  font-size: 0.85rem;
+  color: #666;
+  font-family: 'Courier New', monospace;
+}
+
+.product-price {
+  font-weight: 600;
+  color: #667eea;
+  font-size: 1rem;
+}
+
+.product-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.status-badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.status-badge.available {
+  background: #4caf50;
+  color: white;
+}
+
+.status-badge.unavailable {
+  background: #f44336;
+  color: white;
+}
+
+.product-add-form {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+}
+
+.product-add-form h3 {
+  color: #666;
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+}
+
+.empty-message {
+  text-align: center;
+  color: #999;
+  padding: 20px;
+  font-style: italic;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .management-container {
+    padding: 30px 20px;
+  }
+
+  .management-container h1 {
+    font-size: 1.5rem;
+  }
+
+  .management-container h2 {
+    font-size: 1.2rem;
+  }
+
+  .info-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+}

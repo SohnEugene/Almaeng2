@@ -11,14 +11,14 @@ export default function ProductCard({ product, isSelected, onSelect }) {
     .trim();
 
   return (
-    <div className={cardClassName} onClick={() => onSelect(product.id)}>
+    <div className={cardClassName} onClick={() => onSelect(product.pid)}>
       <img
-        src={product.image}
+        src={product.image_url || product.image || "/default-product.png"}
         alt={product.name}
         className={styles.productCardImage}
       />
       <div className={styles.productCardInfo}>
-        <div className={styles.productCardBrand}>{product.brand}</div>
+        <div className={styles.productCardBrand}>{product.brand || ""}</div>
         <div className={styles.productCardName}>{product.name}</div>
         <div className={styles.productCardBrand}>{product.detail}</div>
       </div>

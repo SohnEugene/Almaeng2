@@ -2,20 +2,27 @@
 Models package for the Kiosk Management API
 
 This package contains Pydantic models organized by domain:
+- product: Product-related models and API request/response models
 - kiosk: Kiosk-related models and API request/response models
 - payment: Payment-related API request/response models
 """
 
+# Product models
+from app.models.product import (
+    Product,
+    CreateProductRequest,
+    CreateProductResponse,
+    UpdateProductRequest,
+    ProductListResponse
+)
+
 # Kiosk models
 from app.models.kiosk import (
-    Product,
     CreateKioskRequest,
     CreateKioskResponse,
     AddProductToKioskRequest,
     AddProductToKioskResponse,
-    ProductSoldOutRequest,
-    CreateProductRequest,
-    CreateProductResponse
+    ProductSoldOutRequest
 )
 
 # Payment models
@@ -27,15 +34,18 @@ from app.models.payment import (
 )
 
 __all__ = [
-    # Kiosk
+    # Product
     "Product",
+    "CreateProductRequest",
+    "CreateProductResponse",
+    "UpdateProductRequest",
+    "ProductListResponse",
+    # Kiosk
     "CreateKioskRequest",
     "CreateKioskResponse",
     "AddProductToKioskRequest",
     "AddProductToKioskResponse",
     "ProductSoldOutRequest",
-    "CreateProductRequest",
-    "CreateProductResponse",
     # Payment
     "PaymentPrepareRequest",
     "PaymentPrepareResponse",

@@ -18,7 +18,9 @@ const initialSessionState = {
   selectedProduct: null,      // 선택한 제품 정보
   hasContainer: null,          // 용기 보유 여부 (true/false/null)
   purchaseContainer: false,    // 용기 구매 여부
-  weight: 0,                   // 무게 (gram)
+  bottleWeight: 0,             // 빈 병 무게 (gram)
+  combinedWeight: 0,           // 병 + 제품 총 무게 (gram)
+  weight: 0,                   // 제품 순수 무게 (gram) = combinedWeight - bottleWeight
   totalPrice: 0,               // 총 가격
 };
 
@@ -65,7 +67,31 @@ export function SessionProvider({ children }) {
   };
 
   /**
-   * 무게 설정
+   * 빈 병 무게 설정
+   */
+  const setBottleWeight = (bottleWeight) => {
+    setSession((prev) => ({
+      ...prev,
+      bottleWeight,
+    }));
+  };
+
+  /**
+   * 병 + 제품 총 무게 설정 및 순수 무게 자동 계산
+   */
+  const setCombinedWeight = (combinedWeight) => {
+    setSession((prev) => {
+      const netWeight = combinedWeight - prev.bottleWeight;
+      return {
+        ...prev,
+        combinedWeight,
+        weight: netWeight > 0 ? netWeight : 0,
+      };
+    });
+  };
+
+  /**
+   * 제품 순수 무게 직접 설정 (하위 호환성)
    */
   const setWeight = (weight) => {
     setSession((prev) => ({
@@ -120,6 +146,8 @@ export function SessionProvider({ children }) {
     selectProduct,
     setHasContainer,
     setPurchaseContainer,
+    setBottleWeight,
+    setCombinedWeight,
     setWeight,
     calculateTotalPrice,
     resetSession,
