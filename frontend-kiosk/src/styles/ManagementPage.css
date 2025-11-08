@@ -295,6 +295,68 @@
   font-style: italic;
 }
 
+/* Bluetooth 저울 연결 섹션 */
+.bluetooth-section {
+  margin-top: 30px;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 12px;
+}
+
+.bluetooth-section h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.bluetooth-status {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.status-connected,
+.status-disconnected {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.status-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.status-icon {
+  font-size: 2rem;
+}
+
+.device-name {
+  font-weight: 600;
+  color: #333;
+  font-size: 1.1rem;
+  margin-bottom: 5px;
+}
+
+.current-weight {
+  font-size: 1.5rem;
+  color: #667eea;
+  font-weight: 700;
+  font-family: 'Courier New', monospace;
+}
+
+.status-connected button,
+.status-disconnected button {
+  width: auto;
+  padding: 10px 20px;
+  margin-top: 0;
+  white-space: nowrap;
+}
+
 /* 반응형 디자인 */
 @media (max-width: 768px) {
   .management-container {

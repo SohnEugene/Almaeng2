@@ -13,14 +13,18 @@
  */
 
 import { useState, useRef, useCallback } from 'react';
-import { SCALE_SERVICE_UUID, SCALE_CHAR_UUID, BLE_CONFIG } from '../constants/bluetooth';
+import { SCALE_SERVICE_UUID, SCALE_CHAR_UUID } from '../constants/bluetooth';
+import { saveBluetoothDevice, clearBluetoothDevice, getBluetoothDevice } from '../services/bluetoothStorage';
 
 /**
  * useBluetooth - BLE 장치 연결 및 데이터 수신을 위한 React Hook
  *
  * @description
  * Web Bluetooth API를 사용하여 BLE 장치와 연결하고 실시간 데이터를 수신합니다.
- * 연결 상태 관리, 에러 핸들링, 자동 재연결 등의 기능을 제공합니다.
+ * 연결 상태 관리, 에러 핸들링, localStorage 저장 등의 기능을 제공합니다.
+ *
+ * @param {Object} options - Hook 옵션
+ * @param {boolean} options.saveToStorage - 장치 정보를 localStorage에 저장할지 여부 (기본값: false)
  *
  * @returns {Object} Bluetooth 연결 상태 및 제어 함수
  * @returns {number} weight - 현재 수신된 무게 값 (단위: gram)
@@ -34,7 +38,7 @@ import { SCALE_SERVICE_UUID, SCALE_CHAR_UUID, BLE_CONFIG } from '../constants/bl
  * @example
  * ```jsx
  * function MyComponent() {
- *   const { weight, isConnected, connect, disconnect } = useBluetooth();
+ *   const { weight, isConnected, connect, disconnect } = useBluetooth({ saveToStorage: true });
  *
  *   return (
  *     <div>
@@ -47,7 +51,7 @@ import { SCALE_SERVICE_UUID, SCALE_CHAR_UUID, BLE_CONFIG } from '../constants/bl
  * }
  * ```
  */
-export function useBluetooth() {
+export function useBluetooth({ saveToStorage = false } = {}) {
   const [weight, setWeight] = useState(0);
   const [isConnected, setIsConnected] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
@@ -56,7 +60,7 @@ export function useBluetooth() {
 
   const deviceRef = useRef(null);
   const characteristicRef = useRef(null);
-  const pollIntervalRef = useRef(null);
+  const disconnectHandlerRef = useRef(null);
 
   // ============================================================
   // 내부 함수: 연결 해제
@@ -66,31 +70,40 @@ export function useBluetooth() {
    *
    * @description
    * 현재 연결된 BLE 장치와의 연결을 종료하고, 모든 상태를 초기화합니다.
-   * - 폴링 인터벌 정리
+   * - 이벤트 리스너 정리
    * - GATT 서버 연결 해제
+   * - localStorage 정리 (saveToStorage가 true인 경우)
    * - 모든 ref 및 state 초기화
    *
    * @function
    * @returns {void}
    */
   const disconnect = useCallback(() => {
-    if (pollIntervalRef.current) {
-      clearInterval(pollIntervalRef.current);
-      pollIntervalRef.current = null;
+    // 이벤트 리스너 정리
+    if (deviceRef.current && disconnectHandlerRef.current) {
+      deviceRef.current.removeEventListener('gattserverdisconnected', disconnectHandlerRef.current);
+      disconnectHandlerRef.current = null;
     }
 
+    // GATT 연결 해제
     if (deviceRef.current?.gatt?.connected) {
       console.log('🔌 Disconnecting from device...');
       deviceRef.current.gatt.disconnect();
     }
 
+    // localStorage에서 장치 정보 삭제 (saveToStorage가 true였을 경우에만)
+    if (saveToStorage) {
+      clearBluetoothDevice();
+    }
+
+    // 상태 초기화
     deviceRef.current = null;
     characteristicRef.current = null;
     setIsConnected(false);
     setWeight(0);
     setError(null);
     setDeviceName(null);
-  }, []);
+  }, [saveToStorage]);
 
   // ============================================================
   // 내부 함수: 데이터 파싱
@@ -155,73 +168,82 @@ export function useBluetooth() {
     setError(null);
 
     try {
-      // Android 호환성을 위한 설정 (acceptAllDevices + optionalServices)
-      const device = await navigator.bluetooth.requestDevice({
-        acceptAllDevices: true,
-        optionalServices: [SCALE_SERVICE_UUID],
-      });
+      // localStorage에서 이전에 연결한 기기 정보 가져오기
+      const savedDevice = getBluetoothDevice();
+
+      let requestOptions;
+
+      if (savedDevice?.name) {
+        // 저장된 기기 이름으로 필터링
+        console.log('🔍 Filtering by saved device name:', savedDevice.name);
+        requestOptions = {
+          filters: [
+            { name: savedDevice.name }
+          ],
+          optionalServices: [SCALE_SERVICE_UUID],
+        };
+      } else {
+        // 저장된 기기 없으면 모든 기기 표시
+        console.log('🔍 No saved device, showing all devices');
+        requestOptions = {
+          acceptAllDevices: true,
+          optionalServices: [SCALE_SERVICE_UUID],
+        };
+      }
+
+      const device = await navigator.bluetooth.requestDevice(requestOptions);
 
       deviceRef.current = device;
-      console.log('📱 Selected device:', { name: device.name, id: device.id });
       setDeviceName(device.name || 'Unknown Device');
 
+      // localStorage에 장치 정보 저장 (saveToStorage가 true일 경우에만)
+      if (saveToStorage) {
+        saveBluetoothDevice({
+          id: device.id,
+          name: device.name || 'Unknown Device',
+        });
+      }
+
       // 예기치 않은 연결 해제 시 처리
-      device.addEventListener('gattserverdisconnected', (event) => {
-        console.warn('⚠️ Device disconnected unexpectedly:', event.target);
+      const handleDisconnect = () => {
         disconnect();
-      });
+      };
+      disconnectHandlerRef.current = handleDisconnect;
+      device.addEventListener('gattserverdisconnected', handleDisconnect);
 
       // GATT 서버 연결
-      console.log('🔗 Connecting to GATT server...');
       const server = await device.gatt.connect();
-      console.log('✅ Connected to GATT server');
-
-      // 서비스 및 캐릭터리스틱 획득
       const service = await server.getPrimaryService(SCALE_SERVICE_UUID);
-      console.log('📦 Got service:', service.uuid);
-
       const characteristic = await service.getCharacteristic(SCALE_CHAR_UUID);
-      console.log('📨 Got characteristic:', characteristic.uuid);
 
       characteristicRef.current = characteristic;
+
+      // Notify 지원 확인
+      if (!characteristic.properties.notify) {
+        throw new Error('This device does not support notifications. Please use a compatible scale.');
+      }
 
       // 수신된 데이터 처리 핸들러
       const handleValue = (value) => {
         const newWeight = parseWeight(value);
-        setWeight(newWeight);
+        const adjustedWeight = Math.round(newWeight/100); // 들어오는 무게는 .0g 단위
+        setWeight(adjustedWeight);
       };
 
-      // notify 우선, 없을 경우 read로 폴백
-      if (characteristic.properties.notify) {
-        console.log('🔔 Starting notifications...');
-        await characteristic.startNotifications();
-        characteristic.addEventListener('characteristicvaluechanged', (e) => {
-          handleValue(e.target.value);
-        });
-      } else if (characteristic.properties.read) {
-        console.log('⏱ Polling characteristic value...');
-        pollIntervalRef.current = setInterval(async () => {
-          try {
-            const value = await characteristic.readValue();
-            handleValue(value);
-          } catch (err) {
-            console.error('Error reading value:', err);
-          }
-        }, BLE_CONFIG.POLLING_INTERVAL);
-      } else {
-        throw new Error('Characteristic does not support read or notify');
-      }
-
+      // Notify로 데이터 수신 시작
+      await characteristic.startNotifications();
+      characteristic.addEventListener('characteristicvaluechanged', (e) => {
+        handleValue(e.target.value);
+      });
+      
       setIsConnected(true);
       setIsConnecting(false);
-      console.log('🎉 BLE connected successfully');
     } catch (err) {
-      console.error('❌ Connection error:', err);
       setError(err.message || 'Failed to connect to scale');
       setIsConnecting(false);
       disconnect();
     }
-  }, [disconnect, parseWeight]);
+  }, [disconnect, parseWeight, saveToStorage]);
 
   // ============================================================
   // Hook 반환값
