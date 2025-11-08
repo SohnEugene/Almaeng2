@@ -18,21 +18,28 @@
 }
 
 .homeHeader {
-  flex: 1;
+  flex: 1.5;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
 .homeContent {
-  flex: 9;
+  flex: 12;
+  background-size: contain;
   background-color: var(--color-gray);
+}
+
+.homeContent img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .homeFooter {
   flex: 2;
   padding: 32px;
-  display: flex; 
+  display: flex;
   justify-content: center;
   align-items: center;
 }
@@ -40,16 +47,25 @@
 .homeLogo {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: var(--spacing-sm);
+  justify-content: start;
+  gap: var(--spacing-lg);
   width: 100%;
   height: 100%;
   margin: 0;
-  font-size: 64px;
-  font-weight: bold;
+  font-size: 32px;
+  font-weight: var(font-weight-normal);
+  position: relative;
+  left: 30px;
 }
 
+#logo1 {
+  font-weight: var(--font-weight-bold);
+}
 
+#logo2 {
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+}
 
 /* ============================================================
    ProductSelectionPage Styles
@@ -584,7 +600,7 @@
 .paymentMethodLogo {
   font-size: 32px;
   font-weight: var(--font-weight-bold);
-  color: #FF6B6B;
+  color: #ff6b6b;
   font-style: italic;
 }
 
@@ -625,7 +641,7 @@
 
 .paymentCompleteContainer {
   min-height: 100vh;
-  background: linear-gradient(135deg, #FF9D8F 0%, #FFB5A7 100%);
+  background: linear-gradient(135deg, #ff9d8f 0%, #ffb5a7 100%);
   display: flex;
   flex-direction: column;
   justify-content: center;

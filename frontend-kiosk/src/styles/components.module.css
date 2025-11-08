@@ -12,11 +12,11 @@
 
 .button {
   font-size: 64px;
-  font-weight: 900;
+  font-weight: var(--font-weight-bold);
   border: none;
   cursor: pointer;
-  width: 600px;
-  height: 160px;
+  width: 80vw;
+  height: 10vh;
   border-radius: 80px;
 }
 
