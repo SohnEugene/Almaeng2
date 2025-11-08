@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { registerKiosk, getKioskProducts, addProductToKiosk, getProducts } from '../services/api';
 import { saveKioskInfo, getKioskInfo, clearKioskInfo } from '../services/kioskStorage';
 import { useBluetoothContext } from '../contexts/BluetoothContext';
-import { useBluetoothContext } from '../contexts/BluetoothContext';
 import '../styles/ManagementPage.css';
 
 /**
@@ -29,9 +28,6 @@ export default function ManagementPage() {
   const [productIdInput, setProductIdInput] = useState('');
   const [productLoading, setProductLoading] = useState(false);
   const [productError, setProductError] = useState(null);
-
-  // Bluetooth 저울 관련 (localStorage에 저장)
-  const { weight, isConnected, isConnecting, error: bleError, deviceName, connect, disconnect } = useBluetoothContext();
 
   // Bluetooth 저울 관련 (localStorage에 저장)
   const { weight, isConnected, isConnecting, error: bleError, deviceName, connect, disconnect } = useBluetoothContext();
