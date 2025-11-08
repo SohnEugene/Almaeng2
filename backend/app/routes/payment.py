@@ -54,11 +54,25 @@ async def prepare_payment(request: PaymentPrepareRequest):
                 detail=f"Product with ID {request.pid} not found"
             )
 
-        # Check if product is available
-        if not product.get("available", False):
+        # Check if product is available at this specific kiosk
+        kiosk_products = kiosk.get('products', [])
+        product_available = False
+
+        for kiosk_prod in kiosk_products:
+            # Handle both old format (string) and new format (dict)
+            if isinstance(kiosk_prod, str):
+                if kiosk_prod == request.pid:
+                    product_available = True
+                    break
+            else:
+                if kiosk_prod.get('pid') == request.pid:
+                    product_available = kiosk_prod.get('available', True)
+                    break
+
+        if not product_available:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Product {request.pid} is currently not available"
+                detail=f"Product {request.pid} is currently not available at this kiosk"
             )
 
         # Prepare payment data for Kakao Pay service
@@ -121,14 +135,24 @@ async def approve_payment(request: PaymentApproveRequest):
         # Generate unique transaction ID
         txid = f"txn_{secrets.token_hex(8)}"
 
-        # Create transaction record in Firebase
+        # Get original payment data from result (returned by kakao_pay_approve)
+        payment_data = result.get("payment_data", {})
+
+        # Create transaction record in Firebase with all payment details
         transaction_data = {
-            "transaction_id": txid,
+            "txid": txid,
+            "kid": payment_data.get("kiosk_id"),
+            "pid": payment_data.get("product_id"),
+            "product_name": payment_data.get("product_name"),
+            "amount_grams": payment_data.get("amount_grams"),
+            "extra_bottle": payment_data.get("extra_bottle"),
+            "product_price": payment_data.get("product_price"),
+            "total_price": payment_data.get("total_price"),
+            "payment_method": "kakaopay",
+            "payment_method_type": result.get("payment_method_type", "UNKNOWN"),
             "tid": result["tid"],
             "status": result["status"],
             "approved_at": result["approved_at"],
-            "payment_method": "kakaopay",
-            "payment_method_type": result.get("payment_method_type", "UNKNOWN"),
             "created_at": datetime.now()
         }
 

@@ -13,7 +13,9 @@ from app.models.kiosk import (
     CreateKioskResponse,
     AddProductToKioskRequest,
     AddProductToKioskResponse,
-    ProductSoldOutRequest
+    ProductSoldOutRequest,
+    CreateProductRequest,
+    CreateProductResponse
 )
 
 # Payment models
@@ -32,6 +34,8 @@ __all__ = [
     "AddProductToKioskRequest",
     "AddProductToKioskResponse",
     "ProductSoldOutRequest",
+    "CreateProductRequest",
+    "CreateProductResponse",
     # Payment
     "PaymentPrepareRequest",
     "PaymentPrepareResponse",
