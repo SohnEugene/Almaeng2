@@ -238,17 +238,21 @@ export default function ManagementPage() {
             {/* 전체 제품 목록 */}
             <div className="product-section">
               <h3>전체 제품 목록</h3>
-              <div className="product-list">
-                {allProducts.map((product) => (
-                  <div key={product.id} className="product-item">
-                    <div className="product-info">
-                      <span className="product-name">{product.name}</span>
-                      <span className="product-id">ID: {product.id}</span>
+              {allProducts.length === 0 ? (
+                <p className="empty-message">제품을 불러오는 중...</p>
+              ) : (
+                <div className="product-list">
+                  {allProducts.map((product) => (
+                    <div key={product.pid} className="product-item">
+                      <div className="product-info">
+                        <span className="product-name">{product.name}</span>
+                        <span className="product-id">ID: {product.pid}</span>
+                      </div>
+                      <span className="product-price">{product.price}원/g</span>
                     </div>
-                    <span className="product-price">{product.price}원/g</span>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* 제품 추가 폼 */}

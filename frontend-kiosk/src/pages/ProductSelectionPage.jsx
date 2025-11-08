@@ -1,14 +1,97 @@
 // src/pages/ProductSelectionPage.jsx
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Button from '../components/Button';
 import ProductCard from '../components/ProductCard';
-import { getMockProducts } from '../services/api';
+import { getKioskProducts } from '../services/api';
+import { getKioskId } from '../services/kioskStorage';
 import styles from '../styles/pages.module.css';
 
 export default function ProductSelectionPage({ onNext }) {
 
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const products = getMockProducts(); // 백엔드 개발 전까지 Mock 데이터 사용
+  const [products, setProducts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // 키오스크에 등록된 제품 불러오기
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+
+        // localStorage에서 키오스크 ID 가져오기
+        const kioskId = getKioskId();
+
+        if (!kioskId) {
+          throw new Error('키오스크가 등록되지 않았습니다. /manage 페이지에서 키오스크를 등록해주세요.');
+        }
+
+        // 백엔드에서 이 키오스크의 제품 목록 가져오기
+        const kioskProducts = await getKioskProducts(kioskId);
+
+        // 판매 가능한 제품만 필터링
+        const availableProducts = kioskProducts.filter(product => product.available);
+
+        setProducts(availableProducts);
+      } catch (err) {
+        console.error('제품 목록 로드 실패:', err);
+        setError(err.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadProducts();
+  }, []);
+
+  // 로딩 중
+  if (isLoading) {
+    return (
+      <div className={styles.productSelectionContainer}>
+        <div className={styles.productSelectionHeader}>home</div>
+        <div className={styles.productSelectionContent}>
+          <div className={styles.productSelectionTitle}>
+            제품을 불러오는 중...
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // 에러 발생
+  if (error) {
+    return (
+      <div className={styles.productSelectionContainer}>
+        <div className={styles.productSelectionHeader}>home</div>
+        <div className={styles.productSelectionContent}>
+          <div className={styles.productSelectionTitle}>
+            ⚠️ 제품을 불러올 수 없습니다
+          </div>
+          <div className={styles.productSelectionSubtitle}>
+            {error}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // 제품이 없는 경우
+  if (products.length === 0) {
+    return (
+      <div className={styles.productSelectionContainer}>
+        <div className={styles.productSelectionHeader}>home</div>
+        <div className={styles.productSelectionContent}>
+          <div className={styles.productSelectionTitle}>
+            등록된 제품이 없습니다
+          </div>
+          <div className={styles.productSelectionSubtitle}>
+            관리자에게 문의해주세요
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.productSelectionContainer}>
@@ -26,9 +109,9 @@ export default function ProductSelectionPage({ onNext }) {
         <div className={styles.productSelectionProducts}>
           {products.map((product) => (
             <ProductCard
-              key={product.id}
+              key={product.pid}
               product={product}
-              isSelected={selectedProduct === product.id}
+              isSelected={selectedProduct === product.pid}
               onSelect={setSelectedProduct}
             />
           ))}

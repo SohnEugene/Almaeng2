@@ -9,14 +9,14 @@ export default function ProductCard({ product, isSelected, onSelect }) {
   ].join(' ').trim();
 
   return (
-    <div className={cardClassName} onClick={() => onSelect(product.id)}>
+    <div className={cardClassName} onClick={() => onSelect(product.pid)}>
       <img
-        src={product.image}
+        src={product.image_url || product.image || '/default-product.png'}
         alt={product.name}
         className={styles.productCardImage}
       />
       <div className={styles.productCardInfo}>
-        <div className={styles.productCardBrand}>{product.brand}</div>
+        <div className={styles.productCardBrand}>{product.brand || ''}</div>
         <div className={styles.productCardName}>{product.name}</div>
       </div>
       <div className={styles.productCardPriceContainer}>
@@ -25,7 +25,7 @@ export default function ProductCard({ product, isSelected, onSelect }) {
             {product.originalPrice}원
           </span>
         )}
-        <span className={styles.productCardPrice}>{product.price}원</span>
+        <span className={styles.productCardPrice}>{product.price}원/g</span>
       </div>
     </div>
   );

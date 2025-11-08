@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 import Button from '../components/Button';
 import styles from '../styles/pages.module.css';
 import { useSession } from '../contexts/SessionContext';
-import { getMockProducts } from '../services/api';
 
 // 리필 단계
 const REFILL_STEPS = {
@@ -26,16 +25,7 @@ export default function RefillStartPage({ onNext, onReset }) {
   // Mock 무게 (개발용)
   const [mockWeight, setMockWeight] = useState(0);
 
-  const { session, selectProduct, setWeight, calculateTotalPrice, resetSession } = useSession();
-
-  // Mock: 개발 환경에서 기본 제품 설정
-  useEffect(() => {
-    if (USE_MOCK && !session.selectedProduct) {
-      const mockProducts = getMockProducts();
-      selectProduct(mockProducts[0]); // 첫 번째 제품 선택
-      console.log('🎯 개발용 기본 제품 설정:', mockProducts[0]);
-    }
-  }, []);
+  const { session, setWeight, calculateTotalPrice, resetSession } = useSession();
 
   /**
    * 블루투스로부터 무게 정보를 가져오는 함수
