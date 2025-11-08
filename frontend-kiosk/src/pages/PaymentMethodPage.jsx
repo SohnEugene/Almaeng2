@@ -3,7 +3,6 @@ import { useState } from 'react';
 import styles from '../styles/pages.module.css';
 
 const PAYMENT_METHODS = {
-  CARD: 'card',
   SIMPLE: 'simple',
 };
 
@@ -30,17 +29,6 @@ export default function PaymentMethodPage({ onNext, onBack }) {
         <h1 className={styles.paymentMethodTitle}>결제 수단</h1>
 
         <div className={styles.paymentMethodOptions}>
-          {/* 카드 결제 */}
-          <button
-            className={`${styles.paymentMethodOption} ${
-              selectedMethod === PAYMENT_METHODS.CARD ? styles.selected : ''
-            }`}
-            onClick={() => handleMethodSelect(PAYMENT_METHODS.CARD)}
-          >
-            <div className={styles.paymentMethodIcon}>💳</div>
-            <div className={styles.paymentMethodLabel}>카드 결제</div>
-          </button>
-
           {/* 간편 결제 */}
           <button
             className={`${styles.paymentMethodOption} ${
