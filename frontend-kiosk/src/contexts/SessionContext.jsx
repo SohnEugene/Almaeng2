@@ -16,12 +16,13 @@ import { createContext, useContext, useState } from 'react';
  */
 const initialSessionState = {
   selectedProduct: null,      // 선택한 제품 정보
-  hasContainer: null,          // 용기 보유 여부 (true/false/null)
-  purchaseContainer: false,    // 용기 구매 여부
-  bottleWeight: 0,             // 빈 병 무게 (gram)
-  combinedWeight: 0,           // 병 + 제품 총 무게 (gram)
-  weight: 0,                   // 제품 순수 무게 (gram) = combinedWeight - bottleWeight
-  totalPrice: 0,               // 총 가격
+  pricePerGram: 0,            // 제품 가격 (1g 단위)
+  hasContainer: null,
+  purchaseContainer: false,
+  bottleWeight: 0,
+  combinedWeight: 0,
+  weight: 0,
+  totalPrice: 0,
 };
 
 // Context 생성
@@ -36,95 +37,84 @@ const SessionContext = createContext(null);
 export function SessionProvider({ children }) {
   const [session, setSession] = useState(initialSessionState);
 
-  /**
-   * 제품 선택
-   */
   const selectProduct = (product) => {
-    setSession((prev) => ({
-      ...prev,
-      selectedProduct: product,
-    }));
+    setSession((prev) => {
+      const newSession = {
+        ...prev,
+        selectedProduct: product,
+        pricePerGram: product?.price || 0, // 선택 시 pricePerGram 저장
+      };
+      return newSession;
+    });
   };
 
-  /**
-   * 용기 보유 여부 설정
-   */
   const setHasContainer = (hasContainer) => {
-    setSession((prev) => ({
-      ...prev,
-      hasContainer,
-    }));
+    setSession((prev) => {
+      const newSession = {
+        ...prev,
+        hasContainer,
+      };
+      console.log('📦 [setHasContainer] SessionContext updated:', newSession);
+      return newSession;
+    });
   };
 
-  /**
-   * 용기 구매 여부 설정
-   */
   const setPurchaseContainer = (purchaseContainer) => {
-    setSession((prev) => ({
-      ...prev,
-      purchaseContainer,
-    }));
+    setSession((prev) => {
+      const newSession = {
+        ...prev,
+        purchaseContainer,
+      };
+      console.log('📦 [setPurchaseContainer] SessionContext updated:', newSession);
+      return newSession;
+    });
   };
 
-  /**
-   * 빈 병 무게 설정
-   */
   const setBottleWeight = (bottleWeight) => {
-    setSession((prev) => ({
-      ...prev,
-      bottleWeight,
-    }));
+    setSession((prev) => {
+      const newSession = {
+        ...prev,
+        bottleWeight,
+      };
+      console.log('📦 [setBottleWeight] SessionContext updated:', newSession);
+      return newSession;
+    });
   };
 
-  /**
-   * 병 + 제품 총 무게 설정 및 순수 무게 자동 계산
-   */
   const setCombinedWeight = (combinedWeight) => {
     setSession((prev) => {
       const netWeight = combinedWeight - prev.bottleWeight;
-      return {
+      const newSession = {
         ...prev,
         combinedWeight,
         weight: netWeight > 0 ? netWeight : 0,
       };
+      console.log('📦 [setCombinedWeight] SessionContext updated:', newSession);
+      return newSession;
     });
   };
 
-  /**
-   * 제품 순수 무게 직접 설정 (하위 호환성)
-   */
-  const setWeight = (weight) => {
-    setSession((prev) => ({
-      ...prev,
-      weight,
-    }));
-  };
-
-  /**
-   * 총 가격 계산 및 설정
-   * @param {number} customWeight - 사용할 무게 (옵션, 없으면 세션의 무게 사용)
-   */
   const calculateTotalPrice = (customWeight) => {
     const weightToUse = customWeight !== undefined ? customWeight : session.weight;
-    const { selectedProduct, purchaseContainer } = session;
+    const { pricePerGram, purchaseContainer } = session;
 
-    if (!selectedProduct || weightToUse === 0) {
+    if (weightToUse === 0 || pricePerGram === 0) {
+      setSession((prev) => ({
+        ...prev,
+        totalPrice: 0,
+      }));
       return 0;
     }
 
-    // 제품 가격 계산 (g당 가격 * 무게)
-    const productPrice = selectedProduct.price * weightToUse;
-
-    // 용기 가격 (구매하는 경우에만)
+    const productPrice = pricePerGram * weightToUse;
     const containerPrice = purchaseContainer ? 500 : 0;
-
     const total = productPrice + containerPrice;
 
     setSession((prev) => ({
       ...prev,
       totalPrice: total,
     }));
-
+    
     return total;
   };
 
@@ -132,10 +122,8 @@ export function SessionProvider({ children }) {
    * 세션 초기화 (처음으로 돌아가기)
    */
   const resetSession = () => {
-    console.log('🔄 SessionContext resetSession 호출됨');
-    console.log('이전 세션:', session);
+    console.log('📦 [resetSession] SessionContext reset to initial state');
     setSession(initialSessionState);
-    console.log('새 세션:', initialSessionState);
   };
 
   const value = {
@@ -148,7 +136,6 @@ export function SessionProvider({ children }) {
     setPurchaseContainer,
     setBottleWeight,
     setCombinedWeight,
-    setWeight,
     calculateTotalPrice,
     resetSession,
   };

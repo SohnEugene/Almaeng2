@@ -11,17 +11,20 @@ import PaymentProcessingPage from './pages/PaymentProcessingPage';
 import PaymentCompletePage from './pages/PaymentCompletePage';
 import ManagementPage from './pages/ManagementPage';
 import { useBluetooth } from './hooks/useBluetooth';
+import { BluetoothProvider } from './contexts/BluetoothContext';
 import { SessionProvider } from './contexts/SessionContext';
 
 export default function App() {
   return (
     <BrowserRouter>
-      <SessionProvider>
-        <Routes>
-          <Route path="/" element={<KioskFlow />} />
-          <Route path="/manage" element={<ManagementPage />} />
-        </Routes>
-      </SessionProvider>
+      <BluetoothProvider>
+        <SessionProvider>
+          <Routes>
+            <Route path="/" element={<KioskFlow />} />
+            <Route path="/manage" element={<ManagementPage />} />
+          </Routes>
+        </SessionProvider>
+      </BluetoothProvider>
     </BrowserRouter>
   );
 }

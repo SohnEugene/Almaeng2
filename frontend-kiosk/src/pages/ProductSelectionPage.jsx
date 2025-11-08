@@ -4,11 +4,11 @@ import Button from '../components/Button';
 import ProductCard from '../components/ProductCard';
 import { getKioskProducts } from '../services/api';
 import { getKioskId } from '../services/kioskStorage';
+import { useSession } from '../contexts/SessionContext';
 import styles from '../styles/pages.module.css';
 
 export default function ProductSelectionPage({ onNext }) {
-
-  const [selectedProduct, setSelectedProduct] = useState(null);
+  const { session, selectProduct } = useSession();
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -32,7 +32,6 @@ export default function ProductSelectionPage({ onNext }) {
 
         // 판매 가능한 제품만 필터링
         const availableProducts = kioskProducts.filter(product => product.available);
-
         setProducts(availableProducts);
       } catch (err) {
         console.error('제품 목록 로드 실패:', err);
@@ -111,13 +110,13 @@ export default function ProductSelectionPage({ onNext }) {
             <ProductCard
               key={product.pid}
               product={product}
-              isSelected={selectedProduct === product.pid}
-              onSelect={setSelectedProduct}
+              isSelected={session.selectedProduct?.pid === product.pid}
+              onSelect={() => selectProduct(product)}
             />
           ))}
         </div>
 
-        <Button onClick={onNext} disabled={!selectedProduct}>
+        <Button onClick={onNext} disabled={!session.selectedProduct}>
           상품 선택 완료
         </Button>
 
