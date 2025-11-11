@@ -11,7 +11,6 @@ class CreateKioskRequest(BaseModel):
 class CreateKioskResponse(BaseModel):
     """Response model for kiosk creation"""
     kid: str  # kiosk_id
-    unique_id: str
 
 
 class AddProductToKioskRequest(BaseModel):
@@ -27,4 +26,11 @@ class AddProductToKioskResponse(BaseModel):
 
 class ProductSoldOutRequest(BaseModel):
     """Request model for marking product as sold out"""
+    pid: str  # product_id
     sold_out: bool
+
+
+class ProductSoldoutResponse(BaseModel):
+    """Response model for marking product as sold out"""
+    message: str
+    pid: str

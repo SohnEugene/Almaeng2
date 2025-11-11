@@ -37,7 +37,10 @@ async def create_product(product_request: CreateProductRequest):
 
         product_id = await firebase_service.create_product(product_data)
 
-        return CreateProductResponse(pid=product_id)
+        return CreateProductResponse(
+            message=f"Product {product_id} created successfully.",
+            pid=product_id
+        )
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

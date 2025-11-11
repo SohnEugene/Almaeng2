@@ -24,20 +24,5 @@ class CreateProductRequest(BaseModel):
 
 class CreateProductResponse(BaseModel):
     """Response model for product creation"""
+    message: str
     pid: str  # product_id
-
-
-class UpdateProductRequest(BaseModel):
-    """Request model for updating a product"""
-    name: Optional[str] = None
-    price: Optional[float] = None
-    description: Optional[str] = None
-    image_url: Optional[str] = None
-    tags: Optional[List[str]] = None
-    available: Optional[bool] = None
-
-
-class ProductListResponse(BaseModel):
-    """Response model for product list"""
-    products: List[Product]
-    total: int
