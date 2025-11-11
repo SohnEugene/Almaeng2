@@ -11,9 +11,7 @@ This package contains Pydantic models organized by domain:
 from app.models.product import (
     Product,
     CreateProductRequest,
-    CreateProductResponse,
-    UpdateProductRequest,
-    ProductListResponse
+    CreateProductResponse
 )
 
 # Kiosk models
@@ -22,7 +20,8 @@ from app.models.kiosk import (
     CreateKioskResponse,
     AddProductToKioskRequest,
     AddProductToKioskResponse,
-    ProductSoldOutRequest
+    ProductSoldOutRequest,
+    ProductSoldoutResponse
 )
 
 # Payment models
@@ -38,14 +37,13 @@ __all__ = [
     "Product",
     "CreateProductRequest",
     "CreateProductResponse",
-    "UpdateProductRequest",
-    "ProductListResponse",
     # Kiosk
     "CreateKioskRequest",
     "CreateKioskResponse",
     "AddProductToKioskRequest",
     "AddProductToKioskResponse",
     "ProductSoldOutRequest",
+    "ProductSoldoutResponse",
     # Payment
     "PaymentPrepareRequest",
     "PaymentPrepareResponse",

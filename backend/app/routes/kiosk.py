@@ -6,7 +6,8 @@ from app.models import (
     CreateKioskResponse,
     AddProductToKioskRequest,
     AddProductToKioskResponse,
-    ProductSoldOutRequest
+    ProductSoldOutRequest,
+    ProductSoldoutResponse
 )
 from app.services.firebase import firebase_service
 import secrets
@@ -43,8 +44,7 @@ async def create_kiosk(kiosk_request: CreateKioskRequest):
         kiosk_id = await firebase_service.create_kiosk(kiosk_data)
 
         return CreateKioskResponse(
-            kid=kiosk_id,
-            unique_id=unique_id
+            kid=kiosk_id
         )
     except Exception as e:
         raise HTTPException(
@@ -191,8 +191,8 @@ async def get_kiosk_products(kiosk_id: str):
         )
 
 
-@router.patch("/{kiosk_id}/products/{product_id}/soldout", response_model=dict)
-async def mark_product_soldout(kiosk_id: str, product_id: str, request: ProductSoldOutRequest):
+@router.patch("/{kiosk_id}/products/soldout", response_model=ProductSoldoutResponse)
+async def mark_product_soldout(kiosk_id: str, request: ProductSoldOutRequest):
     """
     Mark a specific product as sold out at a kiosk
 
@@ -201,11 +201,10 @@ async def mark_product_soldout(kiosk_id: str, product_id: str, request: ProductS
 
     Args:
         kiosk_id: Kiosk ID
-        product_id: Product ID to mark as sold out
-        request: ProductSoldOutRequest with sold_out boolean
+        request: ProductSoldOutRequest with pid and sold_out boolean
 
     Returns:
-        Success message
+        ProductSoldoutResponse with message, pid, and availability status
     """
     try:
         # Verify kiosk exists
@@ -217,11 +216,11 @@ async def mark_product_soldout(kiosk_id: str, product_id: str, request: ProductS
             )
 
         # Verify product exists
-        product = await firebase_service.get_product_by_id(product_id)
+        product = await firebase_service.get_product_by_id(request.pid)
         if not product:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"Product with ID {product_id} not found"
+                detail=f"Product with ID {request.pid} not found"
             )
 
         # Verify product is assigned to this kiosk and update its availability
@@ -233,7 +232,7 @@ async def mark_product_soldout(kiosk_id: str, product_id: str, request: ProductS
             # Handle both old format (string) and new format (dict)
             if isinstance(kiosk_prod, str):
                 prod_id = kiosk_prod
-                if prod_id == product_id:
+                if prod_id == request.pid:
                     product_found = True
                     # Convert to new format and update availability
                     updated_products.append({
@@ -248,7 +247,7 @@ async def mark_product_soldout(kiosk_id: str, product_id: str, request: ProductS
                     })
             else:
                 prod_id = kiosk_prod.get('pid')
-                if prod_id == product_id:
+                if prod_id == request.pid:
                     product_found = True
                     # Update availability for this product
                     updated_products.append({
@@ -262,7 +261,7 @@ async def mark_product_soldout(kiosk_id: str, product_id: str, request: ProductS
         if not product_found:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Product {product_id} is not available at kiosk {kiosk_id}"
+                detail=f"Product {request.pid} is not available at kiosk {kiosk_id}"
             )
 
         # Update kiosk's products list with new availability
@@ -270,9 +269,11 @@ async def mark_product_soldout(kiosk_id: str, product_id: str, request: ProductS
 
         if success:
             status_text = "sold out" if request.sold_out else "available"
-            return {
-                "message": f"Product {product_id} marked as {status_text}."
-            }
+            return ProductSoldoutResponse(
+                message=f"Product {request.pid} marked as {status_text}.",
+                pid=request.pid,
+                available=not request.sold_out
+            )
         else:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
