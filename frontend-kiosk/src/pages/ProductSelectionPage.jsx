@@ -28,12 +28,13 @@ export default function ProductSelectionPage({ onNext }) {
         }
 
         // 백엔드에서 이 키오스크의 제품 목록 가져오기
-        const kioskProducts = await getKioskProducts(kioskId);
+        const response = await getKioskProducts(kioskId);
 
         // 판매 가능한 제품만 필터링
-        const availableProducts = kioskProducts.filter(
-          (product) => product.available
-        );
+        const availableProducts = response.products.filter(
+          (item) => item.available
+        ).map(item => item.product);
+
         setProducts(availableProducts);
       } catch (err) {
         console.error('제품 목록 로드 실패:', err);

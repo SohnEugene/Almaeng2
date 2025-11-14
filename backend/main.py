@@ -3,12 +3,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 import os
 
-# Import routers
-from app.routes import payment
 
 # Import services
 from app.services.firebase import firebase_service
-from backend.app.routes import kiosks, products
+# Import routers
+from app.routes import kiosks, products, payment
 
 # Load environment variables
 load_dotenv()

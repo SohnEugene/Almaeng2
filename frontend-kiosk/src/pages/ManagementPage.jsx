@@ -133,8 +133,13 @@ export default function ManagementPage() {
 
     try {
       setProductLoading(true);
-      const products = await getKioskProducts(registeredInfo.kid);
-      setKioskProducts(products);
+      const response = await getKioskProducts(registeredInfo.kid);
+      // response.products에서 product와 available 정보 추출
+      const productsWithStatus = response.products.map(item => ({
+        ...item.product,
+        available: item.available
+      }));
+      setKioskProducts(productsWithStatus);
     } catch (err) {
       console.error("제품 목록 로드 실패:", err);
       setKioskProducts([]);
@@ -188,12 +193,6 @@ export default function ManagementPage() {
               <div className="info-row">
                 <span className="label">키오스크 ID:</span>
                 <span className="value">{registeredInfo.kid}</span>
-              </div>
-              <div className="info-row">
-                <span className="label">고유 식별자:</span>
-                <span className="value unique-id">
-                  {registeredInfo.unique_id}
-                </span>
               </div>
               <div className="info-row">
                 <span className="label">이름:</span>

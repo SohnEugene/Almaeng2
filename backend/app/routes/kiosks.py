@@ -21,7 +21,7 @@ from app.exceptions import (
 
 
 router = APIRouter(
-    prefix="/kiosk",
+    prefix="/kiosks",
     tags=["kiosk"]
 )
 
@@ -57,7 +57,7 @@ async def register_kiosk(request: RegisterKioskRequest):
 
     # Convert Kiosk model to dict for Firebase
     kiosk_data = kiosk.model_dump(exclude_none=True, exclude={"kid"})
-    kiosk_id = await firebase_service.register_kiosk(kiosk_data)
+    kiosk_id = firebase_service.register_kiosk(kiosk_data)
     return RegisterKioskResponse(kid=kiosk_id)
 
 @router.get("/{kid}", response_model=Kiosk, status_code=status.HTTP_200_OK)
@@ -75,7 +75,7 @@ async def get_kiosk(kid: str):
         KioskNotFoundException: 404 if kiosk not found
         KioskException: 500 for other errors
     """
-    kiosk = await firebase_service.get_kiosk_by_id(kid)
+    kiosk = firebase_service.get_kiosk_by_id(kid)
     return kiosk
 
 @router.post("/{kid}/products", response_model=AddProductToKioskResponse, status_code=status.HTTP_200_OK)
@@ -97,8 +97,8 @@ async def add_product_to_kiosk(kid: str, request: AddProductToKioskRequest):
         KioskException: 500 for other errors
     """
     # 1. Verify kiosk and product exist
-    kiosk = await firebase_service.get_kiosk_by_id(kid)
-    product = await firebase_service.get_product_by_id(request.pid)
+    kiosk = firebase_service.get_kiosk_by_id(kid)
+    product = firebase_service.get_product_by_id(request.pid)
 
     # 2. Check for duplicates
     if any(p.get("pid") == product.pid for p in kiosk.products):
@@ -111,7 +111,7 @@ async def add_product_to_kiosk(kid: str, request: AddProductToKioskRequest):
     })
 
     # 4. Update kiosk in database
-    await firebase_service.update_kiosk(kid, {"products": kiosk.products})
+    firebase_service.update_kiosk(kid, {"products": kiosk.products})
 
     return AddProductToKioskResponse(
         message=f"Product {product.pid} added to kiosk {kid}"
@@ -133,7 +133,7 @@ async def get_kiosk_products(kid: str):
         ProductNotFoundException: 404 if any product not found
     """
     # 1. Get kiosk information
-    kiosk = await firebase_service.get_kiosk_by_id(kid)
+    kiosk = firebase_service.get_kiosk_by_id(kid)
 
     if not kiosk.products:
         return {"products": []}
@@ -145,7 +145,7 @@ async def get_kiosk_products(kid: str):
         kiosk_available = kiosk_prod.get('available', False)
 
         # Fetch product
-        product = await firebase_service.get_product_by_id(product_id)
+        product = firebase_service.get_product_by_id(product_id)
 
         # Add product with kiosk-specific availability
         products.append({
@@ -175,8 +175,8 @@ async def update_product_status(kid: str, pid: str, request: UpdateProductStatus
         ProductStatusUnchangedException: 400 if status is already set to the requested value
     """
     # 1. Verify kiosk and product exist
-    kiosk = await firebase_service.get_kiosk_by_id(kid)
-    await firebase_service.get_product_by_id(pid)
+    kiosk = firebase_service.get_kiosk_by_id(kid)
+    firebase_service.get_product_by_id(pid)
 
     # 2. Find and update product availability in kiosk's product list
     product_found = False
@@ -206,7 +206,7 @@ async def update_product_status(kid: str, pid: str, request: UpdateProductStatus
         raise ProductNotAssignedException(pid=pid, kid=kid)
 
     # 4. Update kiosk's products list with new availability
-    await firebase_service.update_kiosk(kid, {"products": updated_products})
+    firebase_service.update_kiosk(kid, {"products": updated_products})
 
     status_text = "available" if request.available else "sold out"
     return UpdateProductStatusResponse(

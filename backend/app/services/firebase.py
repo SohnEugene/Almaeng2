@@ -61,7 +61,7 @@ class FirebaseService:
             raise
 
     # Counter operations
-    async def get_next_counter(self, counter_name: str) -> int:
+    def get_next_counter(self, counter_name: str) -> int:
         """Get next counter value and increment"""
         try:
             counter_ref = self.db.collection('counters').document(counter_name)
@@ -83,11 +83,11 @@ class FirebaseService:
 
 
     # Kiosk operation ---------------------------------------------------------
-    async def register_kiosk(self, kiosk_data: Dict[str, Any]) -> str:
+    def register_kiosk(self, kiosk_data: Dict[str, Any]) -> str:
         """Register a new kiosk with sequential ID (kiosk_001, kiosk_002, ...)"""
         # 1. Get next sequential ID
         try:
-            counter = await self.get_next_counter('kiosk_counter')
+            counter = self.get_next_counter('kiosk_counter')
         except Exception as e:
             raise KioskException(f"Failed to get kiosk counter: {str(e)}") from e
 
@@ -102,7 +102,7 @@ class FirebaseService:
 
         # 4. Check if kiosk already exists
         try:
-            doc_snapshot = await doc_ref.get()
+            doc_snapshot = doc_ref.get()
         except Exception as e:
             raise KioskException(f"Failed to check existing kiosk {kiosk_id}: {str(e)}") from e
 
@@ -111,19 +111,19 @@ class FirebaseService:
 
         # 5. Save kiosk
         try:
-            await doc_ref.set(kiosk_data)
+            doc_ref.set(kiosk_data)
         except Exception as e:
             raise KioskException(f"Failed to register kiosk {kiosk_id}: {str(e)}") from e
 
         return kiosk_id
 
-    async def get_kiosk_by_id(self, kid: str) -> Kiosk:
+    def get_kiosk_by_id(self, kid: str) -> Kiosk:
         """Get a specific kiosk by kid"""
         # 1. Get document reference and fetch
         doc_ref = self.db.collection('kiosks').document(kid)
 
         try:
-            doc = await doc_ref.get()
+            doc = doc_ref.get()
         except Exception as e:
             raise KioskException(f"Failed to get kiosk {kid}: {str(e)}") from e
 
@@ -135,14 +135,14 @@ class FirebaseService:
         data = doc.to_dict()
         return Kiosk(kid=doc.id, **data)
     
-    async def update_kiosk(self, kid: str, kiosk_data: Dict[str, Any]) -> None:
+    def update_kiosk(self, kid: str, kiosk_data: Dict[str, Any]) -> None:
         """Update an existing kiosk"""
         # 1. Get document reference
         doc_ref = self.db.collection('kiosks').document(kid)
 
         # 2. Check if kiosk exists
         try:
-            doc = await doc_ref.get()
+            doc = doc_ref.get()
         except Exception as e:
             raise KioskException(f"Failed to check kiosk {kid}: {str(e)}") from e
 
@@ -158,7 +158,7 @@ class FirebaseService:
         except Exception as e:
             raise KioskException(f"Failed to update kiosk {kid}: {str(e)}") from e
 
-    async def get_all_kiosks(self) -> List[Dict[str, Any]]:
+    def get_all_kiosks(self) -> List[Dict[str, Any]]:
         """Get all kiosks from Firebase"""
         try:
             kiosks_ref = self.db.collection('kiosks')
@@ -178,11 +178,11 @@ class FirebaseService:
 
 
     # Product operations -------------------------------------------------
-    async def register_product(self, product_data: Dict[str, Any]) -> str:
+    def register_product(self, product_data: Dict[str, Any]) -> str:
         """Create a new product with sequential ID (prod_001, prod_002, ...)"""
         # 1. Get next sequential ID
         try:
-            counter = await self.get_next_counter('product_counter')
+            counter = self.get_next_counter('product_counter')
         except Exception as e:
             raise ProductException(f"Failed to get product counter: {str(e)}") from e
 
@@ -203,7 +203,7 @@ class FirebaseService:
 
         return product_id
     
-    async def get_all_products(self) -> List[Product]:
+    def get_all_products(self) -> List[Product]:
         """Get all products from Firebase"""
         try:
             products_ref = self.db.collection('products')
@@ -224,13 +224,13 @@ class FirebaseService:
         except Exception as e:
             raise ProductException(f"Failed to get all products: {str(e)}") from e
 
-    async def get_product_by_id(self, pid: str) -> Product:
+    def get_product_by_id(self, pid: str) -> Product:
         """Get a specific product by ID"""
         # 1. Get document reference and fetch
         doc_ref = self.db.collection('products').document(pid)
 
         try:
-            doc = await doc_ref.get()
+            doc = doc_ref.get()
         except Exception as e:
             raise ProductException(f"Failed to get product {pid}: {str(e)}") from e
 
@@ -245,14 +245,14 @@ class FirebaseService:
         except Exception as e:
             raise ProductDataCorruptedException(pid=pid, reason=str(e)) from e
     
-    async def update_product(self, product_id: str, product_data: Dict[str, Any]) -> None:
+    def update_product(self, product_id: str, product_data: Dict[str, Any]) -> None:
         """Update an existing product"""
         # 1. Get document reference
         doc_ref = self.db.collection('products').document(product_id)
 
         # 2. Check if product exists
         try:
-            doc = await doc_ref.get()
+            doc = doc_ref.get()
         except Exception as e:
             raise ProductException(f"Failed to check product {product_id}: {str(e)}") from e
 
@@ -268,7 +268,7 @@ class FirebaseService:
 
 
     # Transaction operations -------------------------------------------------
-    async def get_all_transactions(self, limit: Optional[int] = None) -> List[Dict[str, Any]]:
+    def get_all_transactions(self, limit: Optional[int] = None) -> List[Dict[str, Any]]:
         """Get all transactions from Firebase"""
         try:
             transactions_ref = self.db.collection('transactions').order_by('timestamp', direction=firestore.Query.DESCENDING)
@@ -289,7 +289,7 @@ class FirebaseService:
             print(f"Error getting transactions: {e}")
             return []
 
-    async def get_transaction_by_id(self, transaction_id: str) -> Optional[Dict[str, Any]]:
+    def get_transaction_by_id(self, transaction_id: str) -> Optional[Dict[str, Any]]:
         """Get a specific transaction by ID"""
         try:
             doc_ref = self.db.collection('transactions').document(transaction_id)
@@ -304,7 +304,7 @@ class FirebaseService:
             print(f"Error getting transaction {transaction_id}: {e}")
             return None
 
-    async def create_transaction(self, transaction_data: Dict[str, Any]) -> str:
+    def create_transaction(self, transaction_data: Dict[str, Any]) -> str:
         """Create a new transaction"""
         try:
             doc_ref = self.db.collection('transactions').document()
@@ -315,7 +315,7 @@ class FirebaseService:
             print(f"Error creating transaction: {e}")
             raise
 
-    async def get_transactions_by_kiosk(self, kiosk_id: str) -> List[Dict[str, Any]]:
+    def get_transactions_by_kiosk(self, kiosk_id: str) -> List[Dict[str, Any]]:
         """Get all transactions for a specific kiosk"""
         try:
             transactions_ref = self.db.collection('transactions').where('kiosk_id', '==', kiosk_id).order_by('timestamp', direction=firestore.Query.DESCENDING)

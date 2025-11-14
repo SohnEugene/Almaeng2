@@ -1,5 +1,6 @@
 # /kiosks로 들어오는 요청을 처리하는 데 필요한 객체
 
+from __future__ import annotations
 from pydantic import BaseModel, Field
 from typing import List, Optional, Dict, Any
 
@@ -29,7 +30,7 @@ class AddProductToKioskResponse(BaseModel):
 
 class KioskProductItem(BaseModel):
     """Single product with kiosk-specific availability"""
-    product: dict  # Product dict to avoid circular import issues
+    product: "Product"
     available: bool
 
 class GetKioskProductsResponse(BaseModel):
@@ -42,3 +43,10 @@ class UpdateProductStatusRequest(BaseModel):
 
 class UpdateProductStatusResponse(BaseModel):
     message: str
+
+
+# Import Product at the end to avoid circular import
+from app.models.products_model import Product
+
+# Update forward references
+KioskProductItem.model_rebuild()

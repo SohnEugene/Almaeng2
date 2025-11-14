@@ -39,7 +39,7 @@ async def prepare_payment(request: PaymentPrepareRequest):
     """
     try:
         # Verify kiosk exists
-        kiosk = await firebase_service.get_kiosk_by_id(request.kid)
+        kiosk = firebase_service.get_kiosk_by_id(request.kid)
         if not kiosk:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -47,7 +47,7 @@ async def prepare_payment(request: PaymentPrepareRequest):
             )
 
         # Verify product exists and get product name
-        product = await firebase_service.get_product_by_id(request.pid)
+        product = firebase_service.get_product_by_id(request.pid)
         if not product:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -158,7 +158,7 @@ async def approve_payment(request: PaymentApproveRequest):
 
         # Store transaction in Firebase
         try:
-            await firebase_service.create_transaction(transaction_data)
+            firebase_service.create_transaction(transaction_data)
         except Exception as e:
             print(f"Warning: Failed to store transaction in Firebase: {e}")
             # Don't fail the approval if transaction storage fails

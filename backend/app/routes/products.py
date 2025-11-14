@@ -8,9 +8,27 @@ from app.models import (
 from app.services.firebase import firebase_service
 
 router = APIRouter(
-    prefix="/product",
-    tags=["product"]
+    prefix="/products",
+    tags=["products"]
 )
+
+
+@router.get("/", response_model=List[Product])
+async def get_all_products():
+    """
+    Get all products
+
+    This endpoint retrieves all products from the products collection.
+
+    Returns:
+        List of Product objects with full details
+
+    Raises:
+        ProductDataCorruptedException: 500 if product data is corrupted
+        ProductException: 500 for other errors
+    """
+    products = firebase_service.get_all_products()
+    return products
 
 
 @router.post("/", response_model=RegisterProductResponse, status_code=status.HTTP_201_CREATED)
@@ -36,28 +54,12 @@ async def register_product(product_request: RegisterProductRequest):
         ProductException: 500 for product creation errors
     """
     product_data = product_request.model_dump()
-    product_id = await firebase_service.register_product(product_data)
+    product_id = firebase_service.register_product(product_data)
 
     return RegisterProductResponse(
         pid=product_id
     )
 
-@router.get("/list", response_model=List[Product])
-async def get_all_products():
-    """
-    Get all products
-
-    This endpoint retrieves all products from the products collection.
-
-    Returns:
-        List of Product objects with full details
-
-    Raises:
-        ProductDataCorruptedException: 500 if product data is corrupted
-        ProductException: 500 for other errors
-    """
-    products = await firebase_service.get_all_products()
-    return products
 
 @router.get("/{pid}", response_model=Product)
 async def get_product_by_id(pid: str):
@@ -76,5 +78,5 @@ async def get_product_by_id(pid: str):
         ProductNotFoundException: 404 if product not found
         ProductException: 500 for other errors
     """
-    product = await firebase_service.get_product_by_id(pid)
+    product = firebase_service.get_product_by_id(pid)
     return product
