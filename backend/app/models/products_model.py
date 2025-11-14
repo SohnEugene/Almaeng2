@@ -3,17 +3,15 @@ from typing import List, Optional
 
 
 class Product(BaseModel):
-    """Product model for kiosk items"""
     pid: str  # product_id
     name: str
     price: float
     description: str = ""
     image_url: str = ""
     tags: List[str] = []
-    available: bool = True
 
 
-class CreateProductRequest(BaseModel):
+class RegisterProductRequest(BaseModel):
     """Request model for creating a new product"""
     name: str
     price: float
@@ -22,7 +20,6 @@ class CreateProductRequest(BaseModel):
     tags: List[str] = []
 
 
-class CreateProductResponse(BaseModel):
+class RegisterProductResponse(BaseModel):
     """Response model for product creation"""
-    message: str
     pid: str  # product_id

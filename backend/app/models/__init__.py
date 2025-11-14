@@ -7,21 +7,23 @@ This package contains Pydantic models organized by domain:
 - payment: Payment-related API request/response models
 """
 
-# Product models
-from app.models.product import (
-    Product,
-    CreateProductRequest,
-    CreateProductResponse
-)
-
 # Kiosk models
-from app.models.kiosk import (
-    CreateKioskRequest,
-    CreateKioskResponse,
+from app.models.kiosks_model import (
+    Kiosk,
+    RegisterKioskRequest,
+    RegisterKioskResponse,
     AddProductToKioskRequest,
     AddProductToKioskResponse,
-    ProductSoldOutRequest,
-    ProductSoldoutResponse
+    GetKioskProductsResponse,
+    UpdateProductStatusRequest,
+    UpdateProductStatusResponse
+)
+
+# Product models
+from app.models.products_model import (
+    Product,
+    RegisterProductRequest,
+    RegisterProductResponse
 )
 
 # Payment models
@@ -33,17 +35,19 @@ from app.models.payment import (
 )
 
 __all__ = [
-    # Product
-    "Product",
-    "CreateProductRequest",
-    "CreateProductResponse",
     # Kiosk
-    "CreateKioskRequest",
-    "CreateKioskResponse",
+    "Kiosk",
+    "RegisterKioskRequest",
+    "RegisterKioskResponse",
     "AddProductToKioskRequest",
     "AddProductToKioskResponse",
-    "ProductSoldOutRequest",
-    "ProductSoldoutResponse",
+    "GetKioskProductsResponse",
+    "UpdateProductStatusRequest",
+    "UpdateProductStatusResponse",
+        # Product
+    "Product",
+    "RegisterProductRequest",
+    "RegisterProductResponse",
     # Payment
     "PaymentPrepareRequest",
     "PaymentPrepareResponse",
