@@ -1,7 +1,7 @@
 // src/pages/ContainerCheckPage.jsx
-import Button from '../components/Button';
-import styles from '../styles/pages.module.css';
-import { useSession } from '../contexts/SessionContext';
+import Button from "../components/Button";
+import styles from "../styles/pages.module.css";
+import { useSession } from "../contexts/SessionContext";
 
 export default function ContainerCheckPage({ onHasContainer, onNoContainer }) {
   const { setHasContainer } = useSession();
@@ -22,22 +22,21 @@ export default function ContainerCheckPage({ onHasContainer, onNoContainer }) {
     <div className={styles.containerCheckContainer}>
       <div className={styles.containerCheckHeader}>home</div>
       <div className={styles.containerCheckContent}>
-        <div className={styles.containerCheckQuestion}>
+        <div className={styles.containerCheckQuestionDetail}>
           리필을 위해서는 빈 용기가 필요해요
-          <br />
+        </div>
+        <div className={styles.containerCheckQuestion}>
           혹시 재사용할 용기를 가지고 계신가요?
         </div>
 
         <div className={styles.containerCheckIcon}>🤔</div>
 
         <div className={styles.containerCheckButtons}>
-          <Button onClick={handleNo}>
+          <Button variant="double" onClick={handleNo}>
             아니요, 용기가 없어요
           </Button>
 
-          <Button
-            onClick={handleYes}
-            variant="outlined">
+          <Button onClick={handleYes} variant="outlinedDouble">
             네, 용기를 가져왔어요
           </Button>
         </div>

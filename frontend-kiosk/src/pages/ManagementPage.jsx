@@ -1,9 +1,18 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { registerKiosk, getKioskProducts, addProductToKiosk, getProducts } from '../services/api';
-import { saveKioskInfo, getKioskInfo, clearKioskInfo } from '../services/kioskStorage';
-import { useBluetoothContext } from '../contexts/BluetoothContext';
-import '../styles/ManagementPage.css';
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  registerKiosk,
+  getKioskProducts,
+  addProductToKiosk,
+  getProducts,
+} from "../services/api";
+import {
+  saveKioskInfo,
+  getKioskInfo,
+  clearKioskInfo,
+} from "../services/kioskStorage";
+import { useBluetoothContext } from "../contexts/BluetoothContext";
+import "../styles/ManagementPage.css";
 
 /**
  * 키오스크 관리 페이지
@@ -15,8 +24,8 @@ import '../styles/ManagementPage.css';
 export default function ManagementPage() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    name: '',
-    location: '',
+    name: "",
+    location: "",
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -25,12 +34,20 @@ export default function ManagementPage() {
   // 제품 관련 상태
   const [allProducts, setAllProducts] = useState([]);
   const [kioskProducts, setKioskProducts] = useState([]);
-  const [productIdInput, setProductIdInput] = useState('');
+  const [productIdInput, setProductIdInput] = useState("");
   const [productLoading, setProductLoading] = useState(false);
   const [productError, setProductError] = useState(null);
 
   // Bluetooth 저울 관련 (localStorage에 저장)
-  const { weight, isConnected, isConnecting, error: bleError, deviceName, connect, disconnect } = useBluetoothContext();
+  const {
+    weight,
+    isConnected,
+    isConnecting,
+    error: bleError,
+    deviceName,
+    connect,
+    disconnect,
+  } = useBluetoothContext();
 
   // 입력 변경 핸들러
   const handleChange = (e) => {
@@ -54,7 +71,7 @@ export default function ManagementPage() {
         location: formData.location,
       });
 
-      console.log('✅ 키오스크 등록 성공:', response);
+      console.log("✅ 키오스크 등록 성공:", response);
 
       // localStorage에 정보 저장
       const kioskInfo = {
@@ -68,12 +85,12 @@ export default function ManagementPage() {
       setRegisteredInfo(kioskInfo);
 
       // 폼 초기화
-      setFormData({ name: '', location: '' });
+      setFormData({ name: "", location: "" });
 
-      alert('키오스크가 성공적으로 등록되었습니다!');
+      alert("키오스크가 성공적으로 등록되었습니다!");
     } catch (err) {
-      console.error('❌ 키오스크 등록 실패:', err);
-      setError(err.message || '키오스크 등록에 실패했습니다.');
+      console.error("❌ 키오스크 등록 실패:", err);
+      setError(err.message || "키오스크 등록에 실패했습니다.");
     } finally {
       setIsLoading(false);
     }
@@ -81,11 +98,11 @@ export default function ManagementPage() {
 
   // 등록 정보 삭제 핸들러
   const handleClearInfo = () => {
-    if (window.confirm('저장된 키오스크 정보를 삭제하시겠습니까?')) {
+    if (window.confirm("저장된 키오스크 정보를 삭제하시겠습니까?")) {
       clearKioskInfo();
       setRegisteredInfo(null);
       setKioskProducts([]);
-      alert('키오스크 정보가 삭제되었습니다.');
+      alert("키오스크 정보가 삭제되었습니다.");
     }
   };
 
@@ -106,7 +123,7 @@ export default function ManagementPage() {
       const products = await getProducts();
       setAllProducts(products);
     } catch (err) {
-      console.error('전체 제품 목록 로드 실패:', err);
+      console.error("전체 제품 목록 로드 실패:", err);
       setAllProducts([]);
     }
   };
@@ -120,7 +137,7 @@ export default function ManagementPage() {
       const products = await getKioskProducts(registeredInfo.kid);
       setKioskProducts(products);
     } catch (err) {
-      console.error('제품 목록 로드 실패:', err);
+      console.error("제품 목록 로드 실패:", err);
       setKioskProducts([]);
     } finally {
       setProductLoading(false);
@@ -131,12 +148,12 @@ export default function ManagementPage() {
   const handleAddProduct = async (e) => {
     e.preventDefault();
     if (!registeredInfo?.kid) {
-      alert('먼저 키오스크를 등록해주세요.');
+      alert("먼저 키오스크를 등록해주세요.");
       return;
     }
 
     if (!productIdInput.trim()) {
-      alert('제품 ID를 입력해주세요.');
+      alert("제품 ID를 입력해주세요.");
       return;
     }
 
@@ -147,13 +164,13 @@ export default function ManagementPage() {
       await addProductToKiosk(registeredInfo.kid, productIdInput.trim());
 
       alert(`제품 ${productIdInput}이(가) 키오스크에 추가되었습니다!`);
-      setProductIdInput('');
+      setProductIdInput("");
 
       // 제품 목록 새로고침
       await loadKioskProducts();
     } catch (err) {
-      console.error('제품 추가 실패:', err);
-      setProductError(err.message || '제품 추가에 실패했습니다.');
+      console.error("제품 추가 실패:", err);
+      setProductError(err.message || "제품 추가에 실패했습니다.");
     } finally {
       setProductLoading(false);
     }
@@ -175,7 +192,9 @@ export default function ManagementPage() {
               </div>
               <div className="info-row">
                 <span className="label">고유 식별자:</span>
-                <span className="value unique-id">{registeredInfo.unique_id}</span>
+                <span className="value unique-id">
+                  {registeredInfo.unique_id}
+                </span>
               </div>
               <div className="info-row">
                 <span className="label">이름:</span>
@@ -194,7 +213,7 @@ export default function ManagementPage() {
 
         {/* 등록 폼 */}
         <div className="registration-form">
-          <h2>{registeredInfo ? '새 키오스크 등록' : '키오스크 등록'}</h2>
+          <h2>{registeredInfo ? "새 키오스크 등록" : "키오스크 등록"}</h2>
           <form onSubmit={handleSubmit}>
             <div className="form-group">
               <label htmlFor="name">키오스크 이름 *</label>
@@ -229,7 +248,7 @@ export default function ManagementPage() {
               className="btn-primary"
               disabled={isLoading || !formData.name || !formData.location}
             >
-              {isLoading ? '등록 중...' : '키오스크 등록'}
+              {isLoading ? "등록 중..." : "키오스크 등록"}
             </button>
           </form>
         </div>
@@ -243,7 +262,9 @@ export default function ManagementPage() {
                 <div className="status-info">
                   <span className="status-icon">✅</span>
                   <div>
-                    <div className="device-name">연결됨: {deviceName || '저울'}</div>
+                    <div className="device-name">
+                      연결됨: {deviceName || "저울"}
+                    </div>
                     <div className="current-weight">현재 무게: {weight}g</div>
                   </div>
                 </div>
@@ -262,13 +283,11 @@ export default function ManagementPage() {
                   onClick={connect}
                   disabled={isConnecting}
                 >
-                  {isConnecting ? '연결 중...' : '저울 연결'}
+                  {isConnecting ? "연결 중..." : "저울 연결"}
                 </button>
               </div>
             )}
-            {bleError && (
-              <div className="error-message">❌ {bleError}</div>
-            )}
+            {bleError && <div className="error-message">❌ {bleError}</div>}
           </div>
         </div>
 
@@ -281,7 +300,9 @@ export default function ManagementPage() {
                 <div className="status-info">
                   <span className="status-icon">✅</span>
                   <div>
-                    <div className="device-name">연결됨: {deviceName || '저울'}</div>
+                    <div className="device-name">
+                      연결됨: {deviceName || "저울"}
+                    </div>
                     <div className="current-weight">현재 무게: {weight}g</div>
                   </div>
                 </div>
@@ -300,13 +321,11 @@ export default function ManagementPage() {
                   onClick={connect}
                   disabled={isConnecting}
                 >
-                  {isConnecting ? '연결 중...' : '저울 연결'}
+                  {isConnecting ? "연결 중..." : "저울 연결"}
                 </button>
               </div>
             )}
-            {bleError && (
-              <div className="error-message">❌ {bleError}</div>
-            )}
+            {bleError && <div className="error-message">❌ {bleError}</div>}
           </div>
         </div>
 
@@ -351,14 +370,16 @@ export default function ManagementPage() {
                   />
                 </div>
 
-                {productError && <div className="error-message">❌ {productError}</div>}
+                {productError && (
+                  <div className="error-message">❌ {productError}</div>
+                )}
 
                 <button
                   type="submit"
                   className="btn-primary"
                   disabled={productLoading || !productIdInput.trim()}
                 >
-                  {productLoading ? '추가 중...' : '제품 추가'}
+                  {productLoading ? "추가 중..." : "제품 추가"}
                 </button>
               </form>
             </div>
@@ -371,15 +392,24 @@ export default function ManagementPage() {
               ) : kioskProducts.length > 0 ? (
                 <div className="product-list">
                   {kioskProducts.map((product) => (
-                    <div key={product.pid} className="product-item kiosk-product">
+                    <div
+                      key={product.pid}
+                      className="product-item kiosk-product"
+                    >
                       <div className="product-info">
                         <span className="product-name">{product.name}</span>
                         <span className="product-id">ID: {product.pid}</span>
                       </div>
                       <div className="product-status">
-                        <span className="product-price">{product.price}원/g</span>
-                        <span className={`status-badge ${product.available ? 'available' : 'unavailable'}`}>
-                          {product.available ? '판매중' : '품절'}
+                        <span className="product-price">
+                          {product.price}원/g
+                        </span>
+                        <span
+                          className={`status-badge ${
+                            product.available ? "available" : "unavailable"
+                          }`}
+                        >
+                          {product.available ? "판매중" : "품절"}
                         </span>
                       </div>
                     </div>
@@ -393,7 +423,7 @@ export default function ManagementPage() {
         )}
 
         {/* 뒤로가기 버튼 */}
-        <button className="btn-back" onClick={() => navigate('/')}>
+        <button className="btn-back" onClick={() => navigate("/")}>
           ← 메인으로 돌아가기
         </button>
       </div>

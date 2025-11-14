@@ -31,7 +31,9 @@ export default function ProductSelectionPage({ onNext }) {
         const kioskProducts = await getKioskProducts(kioskId);
 
         // 판매 가능한 제품만 필터링
-        const availableProducts = kioskProducts.filter(product => product.available);
+        const availableProducts = kioskProducts.filter(
+          (product) => product.available
+        );
         setProducts(availableProducts);
       } catch (err) {
         console.error('제품 목록 로드 실패:', err);
@@ -48,10 +50,16 @@ export default function ProductSelectionPage({ onNext }) {
   if (isLoading) {
     return (
       <div className={styles.productSelectionContainer}>
-        <div className={styles.productSelectionHeader}>home</div>
-        <div className={styles.productSelectionContent}>
+        <div className={styles.productLoading}>
+          <img
+            src="/loading.gif"
+            alt="로딩 중"
+            className={styles.productSelectionLoadingSpinner}
+          />
           <div className={styles.productSelectionTitle}>
-            제품을 불러오는 중...
+            <div>상품 로딩 중...</div>
+            <p>상품을 저렴하게,</p>
+            <p>지구를 건강하게!</p>
           </div>
         </div>
       </div>
@@ -116,10 +124,11 @@ export default function ProductSelectionPage({ onNext }) {
           ))}
         </div>
 
-        <Button onClick={onNext} disabled={!session.selectedProduct}>
-          상품 선택 완료
-        </Button>
-
+        <div className={styles.productSelectionFooter}>
+          <Button onClick={onNext} disabled={!session.selectedProduct}>
+            상품 선택 완료
+          </Button>
+        </div>
       </div>
     </div>
   );

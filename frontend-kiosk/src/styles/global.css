@@ -34,8 +34,9 @@ body {
 :root {
   /* Colors */
   --color-primary-light: #ff7b61;
-  --color-primary: #e56a51;
+  --color-primary: #ed6c52;
   --color-primary-trans: #e56a5134;
+  --color-primary-trans2: #e56a51b9;
 
   --color-white: #ffffff;
   --color-black: #000000;

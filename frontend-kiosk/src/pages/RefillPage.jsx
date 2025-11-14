@@ -1,19 +1,19 @@
 // src/pages/RefillStartPage.jsx
-import { useState, useEffect, useRef } from 'react';
-import Button from '../components/Button';
-import styles from '../styles/pages.module.css';
-import { useSession } from '../contexts/SessionContext';
-import { useBluetoothContext } from '../contexts/BluetoothContext';
+import { useState, useEffect, useRef } from "react";
+import Button from "../components/Button";
+import styles from "../styles/pages.module.css";
+import { useSession } from "../contexts/SessionContext";
+import { useBluetoothContext } from "../contexts/BluetoothContext";
 
 // 리필 단계
 const REFILL_STEPS = {
-  WELCOME: 'welcome',           // 온보딩 시작
-  CONNECT_SCALE: 'connect',     // 저울 연결
-  EMPTY_CONTAINER: 'empty',     // 빈 병을 올리세요
-  TARE_WEIGHT: 'tare',          // 병 무게 측정 완료
-  FILL_PRODUCT: 'fill',         // 샴푸를 담은 병을 올리세요
-  MEASURING: 'measuring',       // 무게 인식 중
-  COMPLETE: 'complete',         // 최종 가격 및 결제
+  WELCOME: "welcome", // 온보딩 시작
+  CONNECT_SCALE: "connect", // 저울 연결
+  EMPTY_CONTAINER: "empty", // 빈 병을 올리세요
+  TARE_WEIGHT: "tare", // 병 무게 측정 완료
+  FILL_PRODUCT: "fill", // 샴푸를 담은 병을 올리세요
+  MEASURING: "measuring", // 무게 인식 중
+  COMPLETE: "complete", // 최종 가격 및 결제
 };
 
 export default function RefillStartPage({ onNext, onReset }) {
@@ -21,13 +21,27 @@ export default function RefillStartPage({ onNext, onReset }) {
   const [stableWeight, setStableWeight] = useState(false);
   const weightRef = useRef(0);
 
-  const { session, setBottleWeight, setCombinedWeight, calculateTotalPrice, resetSession } = useSession();
-  const { weight, isConnected, isConnecting, error, deviceName, connect, disconnect } = useBluetoothContext();
+  const {
+    session,
+    setBottleWeight,
+    setCombinedWeight,
+    calculateTotalPrice,
+    resetSession,
+  } = useSession();
+  const {
+    weight,
+    isConnected,
+    isConnecting,
+    error,
+    deviceName,
+    connect,
+    disconnect,
+  } = useBluetoothContext();
 
   // step 변경 시 SessionContext 상태 출력
   useEffect(() => {
-    console.log('📍 Step changed to:', step);
-    console.log('📦 SessionContext:', session);
+    console.log("📍 Step changed to:", step);
+    console.log("📦 SessionContext:", session);
   }, [step, session]);
 
   // 시작 화면에서 다음 단계로 (저울 연결 상태 확인)
@@ -115,15 +129,34 @@ export default function RefillStartPage({ onNext, onReset }) {
     return (
       <div className={styles.refillContainer}>
         <div className={styles.refillHeader}>
-          <button className={styles.refillBackButton} onClick={handleBackToHome}>← 초기 화면</button>
+          <button
+            className={styles.refillBackButton}
+            onClick={handleBackToHome}
+          >
+            ← 초기 화면
+          </button>
         </div>
         <div className={styles.refillContent}>
           <div className={styles.refillMainText}>저울과 연결해주세요</div>
-          {error && <div className={styles.refillSubText} style={{ color: 'red' }}>⚠️ {error}</div>}
-          {deviceName && <div className={styles.refillSubText}>연결됨: {deviceName}</div>}
-          <div className={styles.refillIcon}>⚖️</div>
-          <Button onClick={connect} disabled={isConnecting || isConnected}>
-            {isConnecting ? '연결 중...' : isConnected ? '연결됨' : '저울 연결하기'}
+          {error && (
+            <div className={styles.refillSubText} style={{ color: "red" }}>
+              ⚠️ {error}
+            </div>
+          )}
+          {deviceName && (
+            <div className={styles.refillSubText}>연결됨: {deviceName}</div>
+          )}
+          <img className={styles.refillIcon} src="scale.png" alt="저울" />
+          <Button
+            variant="small"
+            onClick={connect}
+            disabled={isConnecting || isConnected}
+          >
+            {isConnecting
+              ? "연결 중..."
+              : isConnected
+              ? "연결됨"
+              : "저울 연결하기"}
           </Button>
         </div>
       </div>
@@ -133,27 +166,41 @@ export default function RefillStartPage({ onNext, onReset }) {
   return (
     <div className={styles.refillContainer}>
       <div className={styles.refillHeader}>
-        <button className={styles.refillBackButton} onClick={handleBackToHome}>← 초기 화면</button>
+        <button className={styles.refillBackButton} onClick={handleBackToHome}>
+          ← 초기 화면
+        </button>
       </div>
 
       <div className={styles.refillContent}>
         {step === REFILL_STEPS.EMPTY_CONTAINER && (
           <>
             <div className={styles.refillMainText}>
-              빈 병을<br />저울에 올려주세요
+              빈 병을
+              <br />
+              저울에 올려주세요
             </div>
-            <div className={styles.refillSubText}>빈 병의 무게를 먼저 잴게요</div>
-            <div className={styles.refillSubText}>저울의 영점이 맞춰져 있는지 꼭 확인!</div>
+            <div className={styles.refillSubText}>
+              빈 병의 무게를 먼저 잴게요
+            </div>
+            <div className={styles.refillSubText}>
+              저울의 영점이 맞춰져 있는지 꼭 확인!
+            </div>
             <div className={styles.refillIcon}>⚖️</div>
-            <div className={styles.refillWeightDisplay}>현재 무게: {weight}g</div>
-            <Button onClick={handleTareComplete} disabled={!stableWeight}>무게 측정 완료</Button>
+            <div className={styles.refillWeightDisplay}>
+              현재 무게: {weight}g
+            </div>
+            <Button onClick={handleTareComplete} disabled={!stableWeight}>
+              무게 측정 완료
+            </Button>
           </>
         )}
 
         {step === REFILL_STEPS.TARE_WEIGHT && (
           <>
             <div className={styles.refillMainText}>
-              병의 무게는<br />{session.bottleWeight}g이네요!
+              병의 무게는
+              <br />
+              {session.bottleWeight}g이네요!
             </div>
             <div className={styles.refillSubText}>이 값은 빼고 계산할게요</div>
             <div className={styles.refillIconWithBottle}>
@@ -166,7 +213,9 @@ export default function RefillStartPage({ onNext, onReset }) {
         {step === REFILL_STEPS.FILL_PRODUCT && (
           <>
             <div className={styles.refillMainText}>
-              이제 제품을 리필하시고<br />병을 다시 올려주세요
+              이제 제품을 리필하시고
+              <br />
+              병을 다시 올려주세요
             </div>
             <div className={styles.refillIconWithBottle}>
               <div className={styles.refillBottle}>🧴</div>
@@ -175,7 +224,9 @@ export default function RefillStartPage({ onNext, onReset }) {
             <div className={styles.refillWeightDisplay}>
               현재 무게: {weight}g (빈 병: {session.bottleWeight}g)
             </div>
-            <Button onClick={handleFillComplete} disabled={!stableWeight}>리필 완료</Button>
+            <Button onClick={handleFillComplete} disabled={!stableWeight}>
+              리필 완료
+            </Button>
           </>
         )}
 
@@ -197,11 +248,16 @@ export default function RefillStartPage({ onNext, onReset }) {
                 {session.totalPrice.toLocaleString()}원
               </div>
               <div className={styles.refillPriceDetail}>
-                {session.selectedProduct?.brand} {session.selectedProduct?.name}<br />
-                ₩{session.selectedProduct?.price}/g × {session.weight}g = ₩{(session.selectedProduct?.price * session.weight).toLocaleString()}
+                {session.selectedProduct?.brand} {session.selectedProduct?.name}
+                <br />₩{session.selectedProduct?.price}/g × {session.weight}g =
+                ₩
+                {(
+                  session.selectedProduct?.price * session.weight
+                ).toLocaleString()}
                 {session.purchaseContainer && (
                   <>
-                    <br />공병 구매: ₩500
+                    <br />
+                    공병 구매: ₩500
                   </>
                 )}
               </div>
