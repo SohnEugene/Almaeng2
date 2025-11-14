@@ -72,6 +72,7 @@ export function clearKioskInfo() {
  */
 export function getKioskId() {
   const info = getKioskInfo();
+  console.log(info);
   return info ? info.kid : null;
 }
 

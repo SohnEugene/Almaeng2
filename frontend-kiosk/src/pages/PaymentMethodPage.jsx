@@ -1,6 +1,8 @@
 // src/pages/PaymentMethodPage.jsx
 import { useState } from 'react';
 import styles from '../styles/pages.module.css';
+import kakaoPayButton from '../assets/images/btn_send_regular.png';
+import { preparePayment } from '../services/api';
 
 const PAYMENT_METHODS = {
   SIMPLE: 'simple',
@@ -11,10 +13,7 @@ export default function PaymentMethodPage({ onNext, onBack }) {
 
   const handleMethodSelect = (method) => {
     setSelectedMethod(method);
-    // 결제 수단 선택 후 바로 다음 단계로
-    setTimeout(() => {
-      onNext();
-    }, 300);
+    onNext();
   };
 
   return (
@@ -29,25 +28,16 @@ export default function PaymentMethodPage({ onNext, onBack }) {
         <h1 className={styles.paymentMethodTitle}>결제 수단</h1>
 
         <div className={styles.paymentMethodOptions}>
-          {/* 간편 결제 */}
+          {/* 카카오페이 결제 */}
           <button
-            className={`${styles.paymentMethodOption} ${
-              selectedMethod === PAYMENT_METHODS.SIMPLE ? styles.selected : ''
-            }`}
+            className={styles.paymentMethodKakaoButton}
             onClick={() => handleMethodSelect(PAYMENT_METHODS.SIMPLE)}
           >
-            <div className={styles.paymentMethodSimpleIcons}>
-              <div className={styles.paymentMethodSimpleIcon} style={{ backgroundColor: '#03C75A' }}>
-                N Pay
-              </div>
-              <div className={styles.paymentMethodSimpleIcon} style={{ backgroundColor: '#FEE500', color: '#000' }}>
-                K Pay
-              </div>
-              <div className={styles.paymentMethodSimpleIcon} style={{ backgroundColor: '#1428A0' }}>
-                S Pay
-              </div>
-            </div>
-            <div className={styles.paymentMethodLabel}>간편 결제</div>
+            <img
+              src={kakaoPayButton}
+              alt="카카오페이로 결제하기"
+              className={styles.paymentMethodKakaoImage}
+            />
           </button>
         </div>
 

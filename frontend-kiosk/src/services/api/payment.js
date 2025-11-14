@@ -32,10 +32,13 @@ import { request } from './client.js';
  * });
  */
 export async function preparePayment(paymentData) {
-  return request('/payment/prepare', {
+  // responseType='blob'로 전달
+  const blob = await request('/payment/prepare', {
     method: 'POST',
     body: JSON.stringify(paymentData),
-  });
+  }, 'blob');
+
+  return URL.createObjectURL(blob);
 }
 
 /**

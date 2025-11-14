@@ -1,14 +1,26 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, status
+from fastapi.responses import StreamingResponse
 from app.models import (
     PaymentPrepareRequest,
-    PaymentPrepareResponse,
     PaymentApproveRequest,
     PaymentApproveResponse
 )
+from app.exceptions import (
+    KioskNotFoundForPaymentException,
+    ProductNotFoundForPaymentException,
+    ProductNotAvailableException,
+    UnsupportedPaymentMethodException,
+    PaymentPreparationException,
+    PaymentApprovalException
+)
 from app.services.payment import payment_service
 from app.services.firebase import firebase_service
+from app.services.generate_qrcode import qrcode_service
 from datetime import datetime
 import secrets
+import logging
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(
     prefix="/payment",
@@ -16,13 +28,13 @@ router = APIRouter(
 )
 
 
-@router.post("/prepare", response_model=PaymentPrepareResponse, status_code=status.HTTP_200_OK)
+@router.post("/prepare", status_code=status.HTTP_200_OK)
 async def prepare_payment(request: PaymentPrepareRequest):
     """
-    Prepare a payment and get redirect URL
+    Prepare a payment and generate QR code for Kakao Pay.
 
-    This endpoint initiates a payment process with Kakao Pay.
-    The server generates a tid and redirect URL for payment completion.
+    This endpoint validates the kiosk and product, checks product availability,
+    and returns a QR code image for payment processing.
 
     Args:
         request: PaymentPrepareRequest containing payment details
@@ -32,87 +44,88 @@ async def prepare_payment(request: PaymentPrepareRequest):
             - extra_bottle: Extra bottle included
             - product_price: Product price
             - total_price: Total price
-            - payment_method: Payment method (e.g., "kakaopay")
+            - payment_method: Payment method (currently only "kakaopay" is supported)
 
     Returns:
-        PaymentPrepareResponse with tid and next_redirect_pc_url
+        StreamingResponse with QR code image (PNG)
+
+    Raises:
+        KioskNotFoundForPaymentException: If kiosk is not found
+        ProductNotFoundForPaymentException: If product is not found
+        ProductNotAvailableException: If product is not available at the kiosk
+        UnsupportedPaymentMethodException: If payment method is not supported
+        PaymentPreparationException: If payment preparation fails
     """
     try:
-        # Verify kiosk exists
+        # Validate kiosk and product exist
         kiosk = firebase_service.get_kiosk_by_id(request.kid)
         if not kiosk:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"Kiosk with ID {request.kid} not found"
-            )
+            raise KioskNotFoundForPaymentException(request.kid)
 
-        # Verify product exists and get product name
         product = firebase_service.get_product_by_id(request.pid)
         if not product:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"Product with ID {request.pid} not found"
-            )
+            raise ProductNotFoundForPaymentException(request.pid)
 
-        # Check if product is available at this specific kiosk
-        kiosk_products = kiosk.get('products', [])
-        product_available = False
+        # Check product availability at this kiosk
+        _validate_product_availability(kiosk, request.pid)
 
-        for kiosk_prod in kiosk_products:
-            # Handle both old format (string) and new format (dict)
-            if isinstance(kiosk_prod, str):
-                if kiosk_prod == request.pid:
-                    product_available = True
-                    break
-            else:
-                if kiosk_prod.get('pid') == request.pid:
-                    product_available = kiosk_prod.get('available', True)
-                    break
-
-        if not product_available:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Product {request.pid} is currently not available at this kiosk"
-            )
-
-        # Prepare payment data for Kakao Pay service
-        payment_data = {
-            "kiosk_id": request.kid,
-            "product_id": request.pid,
-            "product_name": product.get("name", "Product"),
-            "amount_grams": request.amount_grams,
-            "extra_bottle": request.extra_bottle,
-            "product_price": request.product_price,
-            "total_price": request.total_price
-        }
-
-        # Handle different payment methods
+        # Generate payment based on method
         if request.payment_method.lower() == "kakaopay":
-            result = await payment_service.kakao_pay_prepare(payment_data)
-
-            return PaymentPrepareResponse(
-                tid=result["tid"],
-                next_redirect_pc_url=result["next_redirect_pc_url"]
-            )
+            return _generate_kakaopay_qr(request.total_price)
         else:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Payment method '{request.payment_method}' is not currently supported. Use 'kakaopay'."
-            )
+            raise UnsupportedPaymentMethodException(request.payment_method)
 
-    except HTTPException:
+    except (
+        KioskNotFoundForPaymentException,
+        ProductNotFoundForPaymentException,
+        ProductNotAvailableException,
+        UnsupportedPaymentMethodException
+    ):
         raise
     except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Error preparing payment: {str(e)}"
-        )
+        logger.error(f"Unexpected error in prepare_payment: {e}", exc_info=True)
+        raise PaymentPreparationException(str(e))
+
+
+def _validate_product_availability(kiosk, product_id: str) -> None:
+    """
+    Validate that a product is available at the given kiosk.
+
+    Args:
+        kiosk: Kiosk object containing products list
+        product_id: Product ID to check
+
+    Raises:
+        ProductNotAvailableException: If product is not available at the kiosk
+    """
+    kiosk_products = kiosk.products or []
+    available = any(
+        kp.get('pid') == product_id and kp.get('available', False)
+        for kp in kiosk_products
+    )
+
+    if not available:
+        raise ProductNotAvailableException(product_id, kiosk.kid)
+
+
+def _generate_kakaopay_qr(amount: float) -> StreamingResponse:
+    """
+    Generate Kakao Pay QR code for the given amount.
+
+    Args:
+        amount: Payment amount
+
+    Returns:
+        StreamingResponse with QR code image (PNG)
+    """
+    img_io = qrcode_service.generate_qr_code(amount)
+    return StreamingResponse(img_io, media_type="image/png")
 
 
 @router.post("/approve", response_model=PaymentApproveResponse, status_code=status.HTTP_200_OK)
 async def approve_payment(request: PaymentApproveRequest):
     """
-    Approve a payment after user completes payment
+    Approve a payment after user completes payment.
 
     This endpoint is called after the user completes the payment
     and is redirected back from Kakao Pay.
@@ -124,6 +137,9 @@ async def approve_payment(request: PaymentApproveRequest):
 
     Returns:
         PaymentApproveResponse with txid, status, and approved_at
+
+    Raises:
+        PaymentApprovalException: If payment approval fails
     """
     try:
         # Approve payment with Kakao Pay
@@ -133,35 +149,14 @@ async def approve_payment(request: PaymentApproveRequest):
         )
 
         # Generate unique transaction ID
-        txid = f"txn_{secrets.token_hex(8)}"
+        txid = _generate_transaction_id()
 
         # Get original payment data from result (returned by kakao_pay_approve)
         payment_data = result.get("payment_data", {})
 
-        # Create transaction record in Firebase with all payment details
-        transaction_data = {
-            "txid": txid,
-            "kid": payment_data.get("kiosk_id"),
-            "pid": payment_data.get("product_id"),
-            "product_name": payment_data.get("product_name"),
-            "amount_grams": payment_data.get("amount_grams"),
-            "extra_bottle": payment_data.get("extra_bottle"),
-            "product_price": payment_data.get("product_price"),
-            "total_price": payment_data.get("total_price"),
-            "payment_method": "kakaopay",
-            "payment_method_type": result.get("payment_method_type", "UNKNOWN"),
-            "tid": result["tid"],
-            "status": result["status"],
-            "approved_at": result["approved_at"],
-            "created_at": datetime.now()
-        }
-
-        # Store transaction in Firebase
-        try:
-            firebase_service.create_transaction(transaction_data)
-        except Exception as e:
-            print(f"Warning: Failed to store transaction in Firebase: {e}")
-            # Don't fail the approval if transaction storage fails
+        # Create and store transaction record
+        transaction_data = _build_transaction_data(txid, payment_data, result)
+        _store_transaction_safely(transaction_data)
 
         return PaymentApproveResponse(
             txid=txid,
@@ -169,8 +164,69 @@ async def approve_payment(request: PaymentApproveRequest):
             approved_at=result["approved_at"]
         )
 
+    except PaymentApprovalException:
+        raise
     except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Error approving payment: {str(e)}"
+        logger.error(f"Unexpected error in approve_payment: {e}", exc_info=True)
+        raise PaymentApprovalException(str(e))
+
+
+def _generate_transaction_id() -> str:
+    """
+    Generate a unique transaction ID.
+
+    Returns:
+        Transaction ID in format 'txn_{random_hex}'
+    """
+    return f"txn_{secrets.token_hex(8)}"
+
+
+def _build_transaction_data(txid: str, payment_data: dict, result: dict) -> dict:
+    """
+    Build transaction data dictionary for storage.
+
+    Args:
+        txid: Generated transaction ID
+        payment_data: Payment data from Kakao Pay result
+        result: Full result from Kakao Pay approval
+
+    Returns:
+        Dictionary containing all transaction data
+    """
+    return {
+        "txid": txid,
+        "kid": payment_data.get("kiosk_id"),
+        "pid": payment_data.get("product_id"),
+        "product_name": payment_data.get("product_name"),
+        "amount_grams": payment_data.get("amount_grams"),
+        "extra_bottle": payment_data.get("extra_bottle"),
+        "product_price": payment_data.get("product_price"),
+        "total_price": payment_data.get("total_price"),
+        "payment_method": "kakaopay",
+        "payment_method_type": result.get("payment_method_type", "UNKNOWN"),
+        "tid": result["tid"],
+        "status": result["status"],
+        "approved_at": result["approved_at"],
+        "created_at": datetime.now()
+    }
+
+
+def _store_transaction_safely(transaction_data: dict) -> None:
+    """
+    Safely store transaction in Firebase.
+
+    This function logs errors but does not raise exceptions,
+    as transaction storage failure should not prevent payment approval.
+
+    Args:
+        transaction_data: Transaction data to store
+    """
+    try:
+        firebase_service.create_transaction(transaction_data)
+    except Exception as e:
+        logger.warning(
+            f"Failed to store transaction in Firebase: {e}",
+            extra={"transaction_id": transaction_data.get("txid")},
+            exc_info=True
         )
+        # Don't fail the approval if transaction storage fails

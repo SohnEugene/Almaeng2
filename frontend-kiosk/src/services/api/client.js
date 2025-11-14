@@ -15,9 +15,10 @@ export const BASE_URL = import.meta.env.VITE_BASE_URL || 'http://localhost:8000/
  *
  * @param {string} endpoint - API 엔드포인트
  * @param {Object} options - fetch 옵션
- * @returns {Promise<Object>} 응답 데이터
+ * @param {'json' | 'blob'} responseType - 응답 타입 (기본값: 'json')
+ * @returns {Promise<Object | Blob>} 응답 데이터
  */
-export async function request(endpoint, options = {}) {
+export async function request(endpoint, options = {}, responseType = 'json') {
   console.log('API Request to:', `${BASE_URL}${endpoint}`);
   const url = `${BASE_URL}${endpoint}`;
 
@@ -36,17 +37,25 @@ export async function request(endpoint, options = {}) {
       // Try to get error details from response body
       let errorDetail = '';
       try {
-        const errorData = await response.json();
-        errorDetail = errorData.detail || JSON.stringify(errorData);
+        if (responseType === 'json') {
+          const errorData = await response.json();
+          errorDetail = errorData.detail || JSON.stringify(errorData);
+        } else {
+          errorDetail = await response.text();
+        }
       } catch (e) {
-        errorDetail = await response.text();
+        errorDetail = `Failed to parse error response: ${e.message}`;
       }
 
       console.error('API Error Details:', errorDetail);
       throw new Error(`HTTP Error: ${response.status} ${response.statusText} - ${errorDetail}`);
     }
 
-    return await response.json();
+    if (responseType === 'blob') {
+      return await response.blob();
+    } else {
+      return await response.json();
+    }
   } catch (error) {
     console.error('API Request Error:', error);
     throw error;
