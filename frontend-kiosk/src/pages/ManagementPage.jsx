@@ -76,7 +76,6 @@ export default function ManagementPage() {
       // localStorage에 정보 저장
       const kioskInfo = {
         kid: response.kid,
-        unique_id: response.unique_id,
         name: formData.name,
         location: formData.location,
       };

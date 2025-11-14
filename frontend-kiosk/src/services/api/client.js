@@ -18,6 +18,7 @@ export const BASE_URL = import.meta.env.VITE_BASE_URL || 'http://localhost:8000/
  * @returns {Promise<Object>} 응답 데이터
  */
 export async function request(endpoint, options = {}) {
+  console.log('API Request to:', `${BASE_URL}${endpoint}`);
   const url = `${BASE_URL}${endpoint}`;
 
   const config = {
@@ -32,7 +33,17 @@ export async function request(endpoint, options = {}) {
     const response = await fetch(url, config);
 
     if (!response.ok) {
-      throw new Error(`HTTP Error: ${response.status} ${response.statusText}`);
+      // Try to get error details from response body
+      let errorDetail = '';
+      try {
+        const errorData = await response.json();
+        errorDetail = errorData.detail || JSON.stringify(errorData);
+      } catch (e) {
+        errorDetail = await response.text();
+      }
+
+      console.error('API Error Details:', errorDetail);
+      throw new Error(`HTTP Error: ${response.status} ${response.statusText} - ${errorDetail}`);
     }
 
     return await response.json();

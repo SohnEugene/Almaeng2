@@ -9,6 +9,9 @@ import RefillPage from './pages/RefillPage';
 import PaymentMethodPage from './pages/PaymentMethodPage';
 import PaymentProcessingPage from './pages/PaymentProcessingPage';
 import PaymentCompletePage from './pages/PaymentCompletePage';
+import PaymentSuccessPage from './pages/PaymentSuccessPage';
+import PaymentCancelPage from './pages/PaymentCancelPage';
+import PaymentFailPage from './pages/PaymentFailPage';
 import ManagementPage from './pages/ManagementPage';
 import { useBluetooth } from './hooks/useBluetooth';
 import { BluetoothProvider } from './contexts/BluetoothContext';
@@ -22,6 +25,9 @@ export default function App() {
           <Routes>
             <Route path="/" element={<KioskFlow />} />
             <Route path="/manage" element={<ManagementPage />} />
+            <Route path="/payment/success" element={<PaymentSuccessPage />} />
+            <Route path="/payment/cancel" element={<PaymentCancelPage />} />
+            <Route path="/payment/fail" element={<PaymentFailPage />} />
           </Routes>
         </SessionProvider>
       </BluetoothProvider>

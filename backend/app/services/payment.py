@@ -274,6 +274,7 @@ class PaymentService:
             partner_user_id = payment_data.get("kiosk_id", "KIOSK_USER")
 
             # Prepare request payload for Kakao Pay
+            # Note: approval_url, cancel_url, fail_url will receive pg_token as query parameter
             payload = {
                 "cid": self.kakao_cid,
                 "partner_order_id": partner_order_id,
@@ -288,7 +289,7 @@ class PaymentService:
             }
 
             headers = {
-                "Authorization": f"KakaoAK {self.kakao_admin_key}",
+                "Authorization": self.kakao_admin_key,
                 "Content-Type": "application/x-www-form-urlencoded;charset=utf-8"
             }
 
@@ -379,7 +380,7 @@ class PaymentService:
             }
 
             headers = {
-                "Authorization": f"KakaoAK {self.kakao_admin_key}",
+                "Authorization": self.kakao_admin_key,
                 "Content-Type": "application/x-www-form-urlencoded;charset=utf-8"
             }
 

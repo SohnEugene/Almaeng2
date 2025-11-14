@@ -17,20 +17,25 @@ class FirebaseService:
         try:
             # Check if already initialized
             if not firebase_admin._apps:
-                # Get credentials from environment variable
-                firebase_json = os.environ.get("FIREBASE_CREDENTIALS_JSON")
-                if firebase_json:
-                    cred = credentials.Certificate(json.loads(firebase_json))
+                # Try to get credentials from file path first
+                cred_path = os.getenv("FIREBASE_CREDENTIALS_PATH")
+                if cred_path:
+                    cred = credentials.Certificate(cred_path)
                     firebase_admin.initialize_app(cred)
                 else:
-                    # For development, you can also use a credentials JSON string
-                    cred_json = os.getenv("FIREBASE_CREDENTIALS_JSON")
-                    if cred_json:
-                        cred_dict = json.loads(cred_json)
-                        cred = credentials.Certificate(cred_dict)
+                    # Fall back to credentials JSON string
+                    firebase_json = os.environ.get("FIREBASE_CREDENTIALS_JSON")
+                    if firebase_json:
+                        cred = credentials.Certificate(json.loads(firebase_json))
                         firebase_admin.initialize_app(cred)
                     else:
-                        raise ValueError("Firebase credentials not found. Set FIREBASE_CREDENTIALS_PATH or FIREBASE_CREDENTIALS_JSON")
+                        cred_json = os.getenv("FIREBASE_CREDENTIALS_JSON")
+                        if cred_json:
+                            cred_dict = json.loads(cred_json)
+                            cred = credentials.Certificate(cred_dict)
+                            firebase_admin.initialize_app(cred)
+                        else:
+                            raise ValueError("Firebase credentials not found. Set FIREBASE_CREDENTIALS_PATH or FIREBASE_CREDENTIALS_JSON")
 
                 self.db = firestore.client()
                 print("Firebase initialized successfully")
