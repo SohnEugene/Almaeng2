@@ -7,7 +7,7 @@ import os
 # Import services
 from app.services.firebase import firebase_service
 # Import routers
-from app.routes import kiosks, products, payment
+from app.routes import kiosks, products, payments
 
 # Load environment variables
 load_dotenv()
@@ -90,7 +90,7 @@ async def health_check():
 
 # Register routers
 app.include_router(kiosks.router, prefix="/api")
-app.include_router(payment.router, prefix="/api")
+app.include_router(payments.router, prefix="/api")
 app.include_router(products.router, prefix="/api")
 
 

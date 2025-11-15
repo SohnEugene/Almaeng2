@@ -27,9 +27,10 @@ from app.models.products_model import (
 )
 
 # Payment models
-from app.models.payment import (
-    PaymentPrepareRequest,
-    PaymentPrepareResponse,
+from app.models.payments_model import (
+    Payment,
+    PaymentRequest,
+    PaymentResponse,
     PaymentApproveRequest,
     PaymentApproveResponse
 )
@@ -49,8 +50,9 @@ __all__ = [
     "RegisterProductRequest",
     "RegisterProductResponse",
     # Payment
-    "PaymentPrepareRequest",
-    "PaymentPrepareResponse",
+    "Payment",
+    "PaymentRequest",
+    "PaymentResponse",
     "PaymentApproveRequest",
     "PaymentApproveResponse",
 ]

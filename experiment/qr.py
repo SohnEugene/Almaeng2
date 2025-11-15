@@ -25,6 +25,6 @@ qr = qrcode.QRCode(
     box_size=8,
     border=2,
 )
-qr.add_data(kakaopay_qr(uid, 32000))
+qr.add_data("supertoss://send?amount=1000&bank=%ED%86%A0%EC%8A%A4%EB%B1%85%ED%81%AC&accountNo=100175594154&origin=qr")
 qr.make(fit=True)
 qr.make_image(fill_color="black", back_color="white").save("kakaopay_qr.png")

@@ -9,14 +9,14 @@ from app.exceptions import (
     KioskException,
     KioskAlreadyExistsException,
     KioskNotFoundException,
-    KioskInvalidDataException
-)
-from app.exceptions.products_exceptions import (
     ProductException,
     ProductNotFoundException,
-    ProductDataCorruptedException
+    ProductDataCorruptedException,
+    PaymentException,
+    TransactionStorageException,
+    PaymentNotFoundException
 )
-from app.models import Kiosk, Product
+from app.models import Kiosk, Product, Payment
 
 
 class FirebaseService:
@@ -268,6 +268,55 @@ class FirebaseService:
 
 
     # Transaction operations -------------------------------------------------
+    def create_transaction(self, payment_data: Dict[str, Any]) -> str:
+        """Create a new transaction/payment in Firebase with initial status ONGOING"""
+        # 1. Add timestamps and initial status
+        try:
+            payment_data['status'] = "ONGOING"        # 승인 전 상태
+            payment_data['completed'] = False         # 완료 여부
+            payment_data['created_at'] = datetime.now()
+            payment_data['approved_at'] = None
+        except Exception as e:
+            raise TransactionStorageException(txid="N/A", reason=f"Failed to prepare transaction data: {str(e)}") from e
+
+        # 2. Reference Firestore document
+        try:
+            doc_ref = self.db.collection('transactions').document()
+        except Exception as e:
+            raise TransactionStorageException(txid="N/A", reason=f"Failed to get Firestore document reference: {str(e)}") from e
+
+        # 3. Save transaction to Firebase
+        try:
+            doc_ref.set(payment_data)
+            return doc_ref.id  # txid
+        except Exception as e:
+            raise TransactionStorageException(txid="N/A", reason=f"Failed to create transaction in Firebase: {str(e)}") from e
+
+    def update_transaction(self, txid: str, updates: Dict[str, Any]) -> None:
+        """Update an existing transaction after approval or other events."""
+        # 1. Reference Firestore document
+        try:
+            doc_ref = self.db.collection('transactions').document(txid)
+            doc = doc_ref.get()
+        except Exception as e:
+            raise TransactionStorageException(txid=txid, reason=f"Failed to reference transaction: {str(e)}") from e
+
+        # 2. Check if transaction exists
+        if not doc.exists:
+            raise PaymentNotFoundException(txid=txid)
+
+        # 3. Add updated timestamp
+        try:
+            updates['updated_at'] = datetime.now()
+        except Exception as e:
+            raise TransactionStorageException(txid=txid, reason=f"Failed to add update timestamp: {str(e)}") from e
+
+        # 4. Update transaction in Firebase
+        try:
+            doc_ref.update(updates)
+        except Exception as e:
+            raise TransactionStorageException(txid=txid, reason=f"Failed to update transaction in Firebase: {str(e)}") from e
+
     def get_all_transactions(self, limit: Optional[int] = None) -> List[Dict[str, Any]]:
         """Get all transactions from Firebase"""
         try:
@@ -289,31 +338,31 @@ class FirebaseService:
             print(f"Error getting transactions: {e}")
             return []
 
-    def get_transaction_by_id(self, transaction_id: str) -> Optional[Dict[str, Any]]:
-        """Get a specific transaction by ID"""
+    def get_transaction_by_id(self, txid: str) -> Optional[Payment]:
+        """Get a specific transaction/payment by txid and return as Payment model"""
         try:
-            doc_ref = self.db.collection('transactions').document(transaction_id)
+            doc_ref = self.db.collection('transactions').document(txid)
             doc = doc_ref.get()
-
-            if doc.exists:
-                transaction_data = doc.to_dict()
-                transaction_data['transaction_id'] = doc.id
-                return transaction_data
-            return None
         except Exception as e:
-            print(f"Error getting transaction {transaction_id}: {e}")
-            return None
+            raise PaymentException(f"Failed to access transaction {txid}: {str(e)}") from e
 
-    def create_transaction(self, transaction_data: Dict[str, Any]) -> str:
-        """Create a new transaction"""
+        if not doc.exists:
+            raise PaymentNotFoundException(txid)
+
         try:
-            doc_ref = self.db.collection('transactions').document()
-            doc_ref.set(transaction_data)
+            data = doc.to_dict()
 
-            return doc_ref.id
+            # Firestore timestamp → datetime 처리 (optional)
+            if 'created_at' in data and hasattr(data['created_at'], 'to_pydatetime'):
+                data['created_at'] = data['created_at'].to_pydatetime()
+            if 'approved_at' in data and data['approved_at'] and hasattr(data['approved_at'], 'to_pydatetime'):
+                data['approved_at'] = data['approved_at'].to_pydatetime()
+
+            # txid는 doc.id로 덮어쓰기
+            return Payment(**data, txid=doc.id)
+
         except Exception as e:
-            print(f"Error creating transaction: {e}")
-            raise
+            raise PaymentException(f"Failed to parse transaction {txid} data: {str(e)}") from e
 
     def get_transactions_by_kiosk(self, kiosk_id: str) -> List[Dict[str, Any]]:
         """Get all transactions for a specific kiosk"""

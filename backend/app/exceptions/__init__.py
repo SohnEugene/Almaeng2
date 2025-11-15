@@ -13,13 +13,13 @@ from .products_exceptions import (
     ProductStatusUnchangedException,
     ProductDataCorruptedException
 )
-from .payment_exceptions import (
+from .payments_exceptions import (
     PaymentException,
-    KioskNotFoundForPaymentException,
-    ProductNotFoundForPaymentException,
-    ProductNotAvailableException,
-    UnsupportedPaymentMethodException,
     PaymentPreparationException,
+    PaymentAlreadyCompletedException,
     PaymentApprovalException,
-    TransactionStorageException
+    PaymentNotFoundException,
+    TransactionStorageException,
+    ProductNotAvailableException,
+    UnsupportedPaymentMethodException
 )
