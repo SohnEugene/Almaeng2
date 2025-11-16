@@ -6,9 +6,9 @@ export default function HomePage({ onNext }) {
     <div className={styles.homeContainer}>
       <div className={styles.homeHeader}>
         <div className={styles.homeLogo}>
-          <span id={styles.logo1}>MINIREFILL</span>
+          <img src="logo_black.png" className={styles.logo1} alt="logo1" />
           <span>×</span>
-          <span id={styles.logo2}>알맹상점</span>
+          <img src="almang_logo.png" className={styles.logo2} alt="" />
         </div>
       </div>
       <div className={styles.homeContent}>

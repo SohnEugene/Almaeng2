@@ -1,152 +1,342 @@
-/* 키오스크 관리 페이지 스타일 */
+/* 관리자 페이지 - 태블릿 최적화 레이아웃 */
 
 .management-page {
   width: 100%;
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #fdf3ee;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  padding: clamp(20px, 4vh, 48px);
+  gap: clamp(24px, 3vh, 32px);
+  padding: 5rem 3rem;
+}
+
+.management-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 0 clamp(8px, 1vw, 16px);
+}
+
+.management-logo {
+  width: clamp(120px, 15vw, 180px);
+  height: auto;
+  opacity: 0.5;
+}
+
+.header-text-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.title-row {
+  display: flex;
   align-items: center;
-  padding: 20px;
+  gap: 12px;
 }
 
-.management-container {
-  background: white;
-  border-radius: 20px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  padding: 40px;
-  max-width: 600px;
-  width: 100%;
+.console-title {
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  color: #2c1f19;
+  cursor: pointer;
 }
 
-.management-container h1 {
-  text-align: center;
-  color: #333;
-  margin-bottom: 30px;
-  font-size: 2rem;
+.header-back-icon {
+  border: none;
+  background: transparent;
+  color: #2c1f19;
+  padding: 0;
+  margin: -0.4rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  width: 2rem;
 }
 
-.management-container h2 {
-  color: #555;
-  margin-bottom: 20px;
-  font-size: 1.5rem;
+.back-icon-svg {
+  width: clamp(48px, 6vw, 72px);
+  height: clamp(48px, 6vw, 72px);
 }
 
-/* 등록된 정보 표시 */
-.registered-info {
-  background: #f8f9fa;
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 30px;
+.page-eyebrow {
+  font-size: 0.95rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(44, 31, 25, 0.5);
+  margin-bottom: 0.35rem;
 }
 
-.info-box {
-  background: white;
-  border-radius: 8px;
-  padding: 20px;
-  margin: 15px 0;
+.header-description {
+  margin-top: 0.35rem;
+  color: rgba(44, 31, 25, 0.7);
+  font-size: 1.2rem;
 }
 
-.info-row {
+.management-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(16px, 2vh, 24px);
+  padding: 0 clamp(8px, 1vw, 16px);
+}
+
+.home-grid {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(16px, 2vh, 24px);
+}
+
+.management-panel {
+  background: #fff;
+  border-radius: 24px;
+  padding: clamp(20px, 3vw, 32px);
+  border: 2px solid rgba(44, 31, 25, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.panel-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 0;
-  border-bottom: 1px solid #eee;
+  gap: 12px;
 }
 
-.info-row:last-child {
-  border-bottom: none;
+.panel-eyebrow {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  color: rgba(44, 31, 25, 0.45);
 }
 
-.info-row .label {
+.panel-description {
+  margin-top: 0.4rem;
+  color: rgba(44, 31, 25, 0.65);
+  font-size: 0.95rem;
+}
+
+.info-panel {
+  background: #fff;
+  border: 2px #2c1f19;
+}
+
+.kiosk-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.summary-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #2c1f19;
+}
+
+.summary-meta {
+  color: rgba(44, 31, 25, 0.65);
+  font-size: 1rem;
+}
+
+.summary-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.summary-details .label {
+  display: block;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  color: rgba(44, 31, 25, 0.5);
+}
+
+.summary-details .value {
+  font-size: 1rem;
   font-weight: 600;
-  color: #666;
+  color: #ec6a56;
 }
 
-.info-row .value {
-  color: #333;
-  font-weight: 500;
+.summary-details .value.code {
+  font-family: "Pretendard", "SFMono-Regular", "Consolas", monospace;
+  background: rgba(236, 106, 86, 0.08);
+  padding: 6px 10px;
+  border-radius: 10px;
+  display: inline-block;
 }
 
-.info-row .unique-id {
-  font-family: 'Courier New', monospace;
-  background: #e3f2fd;
-  padding: 5px 10px;
-  border-radius: 4px;
-  color: #1976d2;
+.home-actions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: clamp(16px, 2vw, 24px);
 }
 
-/* 폼 스타일 */
+.home-action-card {
+  border: 2px solid rgba(44, 31, 25, 0.1);
+  border-radius: 24px;
+  padding: clamp(20px, 3vw, 28px);
+  background: #fff;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 200ms ease, background 200ms ease;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.home-action-card:hover {
+  transform: translateY(-4px);
+  background: #fff3ef;
+}
+
+.card-eyebrow {
+  font-size: 1rem;
+  color: rgba(44, 31, 25, 0.5);
+  text-transform: uppercase;
+}
+
+.home-action-card h3 {
+  font-size: 1.5rem;
+  margin: 0;
+  color: #2c1f19;
+}
+
+.home-action-card p {
+  color: rgba(44, 31, 25, 0.65);
+  margin: 0;
+  font-size: 1rem;
+}
+
+.card-link {
+  margin-top: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  color: #ec6a56;
+}
+
+.card-disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.bluetooth-panel {
+  background: #fff;
+  color: #2c1f19;
+  border: 2px solid rgba(44, 31, 25, 0.1);
+}
+
+.bluetooth-header h3 {
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+.error-inline {
+  color: #ffb4a2;
+  font-size: 0.95rem;
+}
+
+.bluetooth-status {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.status-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.status-icon {
+  font-size: 2.5rem;
+}
+
+.device-name {
+  font-size: 1rem;
+  margin: 0;
+}
+
+.current-weight {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.subpage-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
 .registration-form {
-  margin-top: 20px;
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
 }
 
 .form-group {
-  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .form-group label {
-  display: block;
   font-weight: 600;
-  color: #555;
-  margin-bottom: 8px;
-  font-size: 0.95rem;
+  color: #2c1f19;
 }
 
 .form-group input {
   width: 100%;
-  padding: 12px 16px;
-  border: 2px solid #e0e0e0;
-  border-radius: 8px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: 2px solid rgba(44, 31, 25, 0.08);
   font-size: 1rem;
-  transition: all 0.3s ease;
-  box-sizing: border-box;
+  transition: border-color 200ms ease, box-shadow 200ms ease;
 }
 
 .form-group input:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: #ec6a56;
+  box-shadow: 0 0 0 3px rgba(236, 106, 86, 0.15);
 }
 
-.form-group input::placeholder {
-  color: #aaa;
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
 }
 
-/* 에러 메시지 */
-.error-message {
-  background: #ffebee;
-  color: #c62828;
-  padding: 12px 16px;
-  border-radius: 8px;
-  margin-bottom: 20px;
-  font-weight: 500;
-}
-
-/* 버튼 스타일 */
 .btn-primary,
 .btn-danger,
-.btn-back {
-  width: 100%;
-  padding: 14px;
+.btn-ghost {
+  padding: 14px 22px;
+  border-radius: 999px;
   border: none;
-  border-radius: 8px;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
-  margin-top: 10px;
+  transition: transform 200ms ease, background 200ms ease;
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #ec6a56;
   color: white;
-}
-
-.btn-primary:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
 }
 
 .btn-primary:disabled {
@@ -155,101 +345,83 @@
 }
 
 .btn-danger {
-  background: #f44336;
+  background: #ef4444;
   color: white;
 }
 
-.btn-danger:hover {
-  background: #d32f2f;
-  transform: translateY(-2px);
-  box-shadow: 0 10px 20px rgba(244, 67, 54, 0.3);
+.btn-ghost {
+  background: rgba(44, 31, 25, 0.05);
+  color: #2c1f19;
+  border: 1px solid rgba(44, 31, 25, 0.12);
 }
 
-.btn-back {
-  background: #f5f5f5;
-  color: #555;
-  margin-top: 30px;
+.btn-inline {
+  align-self: flex-start;
+  margin-top: 8px;
 }
 
-.btn-back:hover {
-  background: #e0e0e0;
+.compact-danger {
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  align-self: center;
 }
 
-/* 제품 관리 섹션 */
-.product-management {
-  margin-top: 30px;
-  padding-top: 30px;
-  border-top: 2px solid #e0e0e0;
+.management-subpanel {
+  background: rgba(44, 31, 25, 0.02);
+  border-radius: 18px;
+  padding: 20px;
+  border: 1px solid rgba(44, 31, 25, 0.08);
 }
 
-.product-management h2 {
-  text-align: center;
-  margin-bottom: 30px;
-}
-
-.product-section {
-  margin-bottom: 30px;
-}
-
-.product-section h3 {
-  color: #666;
-  font-size: 1.2rem;
-  margin-bottom: 15px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid #e0e0e0;
+.product-panel-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
 }
 
 .product-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
+  max-height: 360px;
+  overflow-y: auto;
+  padding-right: 6px;
 }
 
 .product-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px;
-  background: #f8f9fa;
-  border-radius: 8px;
-  transition: all 0.2s ease;
-}
-
-.product-item:hover {
-  background: #e9ecef;
-  transform: translateX(5px);
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: white;
+  border: 1px solid rgba(44, 31, 25, 0.08);
 }
 
 .product-item.kiosk-product {
-  background: #e3f2fd;
-}
-
-.product-item.kiosk-product:hover {
-  background: #bbdefb;
+  background: rgba(236, 106, 86, 0.08);
 }
 
 .product-info {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 4px;
 }
 
 .product-name {
   font-weight: 600;
-  color: #333;
-  font-size: 1rem;
+  color: #2c1f19;
 }
 
 .product-id {
-  font-size: 0.85rem;
-  color: #666;
-  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: rgba(44, 31, 25, 0.6);
 }
 
 .product-price {
   font-weight: 600;
-  color: #667eea;
-  font-size: 1rem;
+  color: #ec6a56;
 }
 
 .product-status {
@@ -260,120 +432,51 @@
 
 .status-badge {
   padding: 4px 12px;
-  border-radius: 12px;
+  border-radius: 999px;
   font-size: 0.85rem;
   font-weight: 600;
+  color: white;
 }
 
 .status-badge.available {
-  background: #4caf50;
-  color: white;
+  background: #22c55e;
 }
 
 .status-badge.unavailable {
-  background: #f44336;
-  color: white;
+  background: #ef4444;
 }
 
-.product-add-form {
-  background: #f8f9fa;
-  padding: 20px;
-  border-radius: 12px;
-  margin-bottom: 30px;
-}
-
-.product-add-form h3 {
-  color: #666;
-  font-size: 1.2rem;
-  margin-bottom: 15px;
+.empty-state {
+  text-align: left;
+  gap: 8px;
 }
 
 .empty-message {
   text-align: center;
-  color: #999;
-  padding: 20px;
+  color: rgba(44, 31, 25, 0.6);
+  padding: 12px 0;
   font-style: italic;
 }
 
-/* Bluetooth 저울 연결 섹션 */
-.bluetooth-section {
-  margin-top: 30px;
-  padding: 20px;
-  background: #f8f9fa;
-  border-radius: 12px;
+.product-add-submit {
+  width: 100%;
+  margin-top: 12px;
 }
 
-.bluetooth-section h2 {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.bluetooth-status {
+footer {
   display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.status-connected,
-.status-disconnected {
-  display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  padding: 20px;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding-top: 12px;
 }
 
-.status-info {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.status-icon {
-  font-size: 2rem;
-}
-
-.device-name {
-  font-weight: 600;
-  color: #333;
-  font-size: 1.1rem;
-  margin-bottom: 5px;
-}
-
-.current-weight {
-  font-size: 1.5rem;
-  color: #667eea;
-  font-weight: 700;
-  font-family: 'Courier New', monospace;
-}
-
-.status-connected button,
-.status-disconnected button {
-  width: auto;
-  padding: 10px 20px;
-  margin-top: 0;
-  white-space: nowrap;
-}
-
-/* 반응형 디자인 */
 @media (max-width: 768px) {
-  .management-container {
-    padding: 30px 20px;
-  }
-
-  .management-container h1 {
-    font-size: 1.5rem;
-  }
-
-  .management-container h2 {
-    font-size: 1.2rem;
-  }
-
-  .info-row {
+  .bluetooth-status {
     flex-direction: column;
     align-items: flex-start;
-    gap: 5px;
+  }
+
+  .product-panel-grid {
+    grid-template-columns: 1fr;
   }
 }
