@@ -63,8 +63,19 @@
 }
 
 .logo2 {
-  font-weight: var(--font-weight-bold);
-  color: var(--color-primary);
+  height: 60px;
+  opacity: 0.85;
+}
+
+.headerHomeButton {
+  background: none;
+  border: none;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  padding: 0;
+  text-transform: uppercase;
+  opacity: 0.15;
 }
 
 /* ============================================================
@@ -139,20 +150,25 @@
   text-align: center;
 }
 
+.productSelectionStateCardLoading {
+  background-color: #fff;
+  box-shadow: none;
+}
+
 .productSelectionStateIcon {
-  font-size: 56px;
+  font-size: 72px;
   margin-bottom: var(--spacing-lg);
 }
 
 .productSelectionStateTitle {
-  font-size: var(--font-size-4xl);
+  font-size: calc(var(--font-size-4xl) * 1.2);
   font-weight: var(--font-weight-bold);
   color: var(--color-gray-900);
   margin-bottom: var(--spacing-md);
 }
 
 .productSelectionStateDescription {
-  font-size: var(--font-size-2xl);
+  font-size: calc(var(--font-size-2xl) * 1.2);
   color: var(--color-gray-500);
   line-height: 1.5;
 }

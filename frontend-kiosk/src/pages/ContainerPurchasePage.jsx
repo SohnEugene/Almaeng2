@@ -3,7 +3,7 @@ import Button from "../components/Button";
 import styles from "../styles/pages.module.css";
 import { useSession } from "../contexts/SessionContext";
 
-export default function ContainerPurchasePage({ onYes, onNo }) {
+export default function ContainerPurchasePage({ onYes, onNo, onHome }) {
   const { setPurchaseContainer } = useSession();
 
   const handlePurchase = () => {
@@ -18,9 +18,21 @@ export default function ContainerPurchasePage({ onYes, onNo }) {
     onNo();
   };
 
+  const handleHomeClick = () => {
+    if (onHome) onHome();
+  };
+
   return (
     <div className={styles.containerPurchaseContainer}>
-      <div className={styles.containerPurchaseHeader}>home</div>
+      <div className={styles.containerPurchaseHeader}>
+        <button
+          type="button"
+          className={styles.headerHomeButton}
+          onClick={handleHomeClick}
+        >
+          home
+        </button>
+      </div>
       <div className={styles.containerPurchaseContent}>
         <img src="bottles.png" alt="" />
 

@@ -74,17 +74,24 @@ function KioskFlow() {
   // 페이지 맵 정의
   const pages = {
     home: <HomePage onNext={goToNextPage} />,
-    product: <ProductSelectionPage onNext={goToNextPage} />,
+    product: (
+      <ProductSelectionPage
+        onNext={goToNextPage}
+        onHome={resetToHome}
+      />
+    ),
     container: (
       <ContainerCheckPage
         onHasContainer={() => goToPage('refill')}
         onNoContainer={() => goToPage('container_purchase')}
+        onHome={resetToHome}
       />
     ),
     container_purchase: (
       <ContainerPurchasePage
         onYes={() => goToPage('refill')}
         onNo={() => goToPage('refill')}
+        onHome={resetToHome}
       />
     ),
     refill: <RefillPage onNext={goToNextPage} onReset={resetToHome} />,
@@ -114,7 +121,7 @@ function KioskFlow() {
     ),
   };
 
-  return <div>{pages[currentPage]}</div>;
+  return <main className="kiosk-shell">{pages[currentPage]}</main>;
 }
 
 // BLE 모니터 화면을 별도 컴포넌트로 분리

@@ -22,11 +22,42 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  width: 100%;
+  height: 100dvh;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-white);
+  overflow: hidden;
+}
+
+html {
+  width: 100%;
+  height: 100dvh;
+  min-height: 100vh;
 }
 
 #root {
   width: 100%;
-  min-height: 100vh;
+  height: 100%;
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+.kiosk-shell {
+  flex: 1;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.kiosk-shell > * {
+  flex: 1;
+  height: 100%;
+  max-width: 100vw;
+  overflow: hidden;
 }
 
 /* ============================================================
