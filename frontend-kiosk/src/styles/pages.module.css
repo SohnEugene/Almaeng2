@@ -616,6 +616,82 @@
   flex-direction: column;
   gap: var(--spacing-xl);
   margin-bottom: var(--spacing-2xl);
+  align-items: center;
+  justify-content: center;
+}
+
+.paymentMethodButton {
+  width: 100%;
+  max-width: 500px;
+  background-color: var(--color-white);
+  border: 3px solid var(--color-gray-300);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-xl);
+  min-height: 160px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.paymentMethodButton:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  border-color: var(--color-gray-400);
+}
+
+.paymentMethodButton:active {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+.paymentMethodButtonSelected {
+  border-color: var(--color-primary);
+  background-color: rgba(255, 107, 107, 0.05);
+  box-shadow: 0 4px 16px rgba(255, 107, 107, 0.2);
+}
+
+.paymentMethodButtonSelected:hover {
+  border-color: var(--color-primary);
+  box-shadow: 0 8px 24px rgba(255, 107, 107, 0.25);
+}
+
+.paymentMethodButtonContent {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xl);
+}
+
+.paymentMethodImage {
+  height: 80px;
+  width: auto;
+  object-fit: contain;
+}
+
+.paymentMethodButtonText {
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-gray-900);
+}
+
+.paymentMethodCheckmark {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  font-size: 36px;
+  color: var(--color-primary);
+  font-weight: bold;
+}
+
+.paymentMethodActions {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: var(--spacing-xl) 0;
 }
 
 .paymentMethodOption {

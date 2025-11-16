@@ -20,7 +20,7 @@ TOSS_BANK = {
 }
 
 TOSS_ACCOUNT = {
-    "KIM" : "토스뱅크",
+    "KIM" : "100020873228",
     "SOHN": "100175594154",
     "AHN" : "토스뱅크",
     "LEE" : "토스뱅크",
@@ -37,12 +37,16 @@ class QRCodeService:
         self.amount = None
 
     def set_payment_info(self, pay_type: str, manager: str, amount: float | int):
-        if pay_type not in ("kakaopay", "toss"):
-            raise ValueError(f"Unknown pay_type: {pay_type}")
-        if manager not in KAKAO_UID:
-            raise ValueError(f"Unknown manager: {manager}")
+        if pay_type not in ("kakaopay", "tosspay"):
+            raise ValueError(f"Unknown pay_type: {pay_type}. Must be 'kakaopay' or 'tosspay'")
+
+        # Convert manager to uppercase for case-insensitive matching
+        manager_upper = manager.upper()
+        if manager_upper not in KAKAO_UID:
+            raise ValueError(f"Unknown manager: {manager}. Must be one of: {', '.join(KAKAO_UID.keys())}")
+
         self.pay_type = pay_type
-        self.manager = manager
+        self.manager = manager_upper
         self.amount = amount
 
     def generate_kakaopay_url(self) -> str:
@@ -58,7 +62,9 @@ class QRCodeService:
             raise ValueError("Payment info not set")
         amount_int = int(round(self.amount))
         bank_str = quote(TOSS_BANK[self.manager])
-        return f"supertoss://send?amount={amount_int}&bank={bank_str}&accountNo={TOSS_ACCOUNT[self.manager]}&origin=qr"
+        return_str = f"supertoss://send?amount={amount_int}&bank={bank_str}&accountNo={TOSS_ACCOUNT[self.manager]}&origin=qr"
+        print(return_str)
+        return return_str
 
     def generate_qr_img(
         self,

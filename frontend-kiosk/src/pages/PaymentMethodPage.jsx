@@ -1,19 +1,29 @@
 // src/pages/PaymentMethodPage.jsx
 import { useState } from 'react';
 import styles from '../styles/pages.module.css';
-import kakaoPayButton from '../assets/images/btn_send_regular.png';
-import { preparePayment } from '../services/api';
+import kakaoPayImage from '../assets/images/kakaopay.png';
+import tossPayImage from '../assets/images/tosspay.png';
+import { useSession } from '../contexts/SessionContext';
+import Button from '../components/Button';
 
 const PAYMENT_METHODS = {
-  SIMPLE: 'simple',
+  KAKAO: 'kakaopay',
+  TOSS: 'tosspay',
 };
 
 export default function PaymentMethodPage({ onNext, onBack }) {
+  const { setPaymentMethod } = useSession();
   const [selectedMethod, setSelectedMethod] = useState(null);
 
   const handleMethodSelect = (method) => {
     setSelectedMethod(method);
-    onNext();
+    setPaymentMethod(method);
+  };
+
+  const handleNext = () => {
+    if (selectedMethod) {
+      onNext();
+    }
   };
 
   return (
@@ -30,15 +40,54 @@ export default function PaymentMethodPage({ onNext, onBack }) {
         <div className={styles.paymentMethodOptions}>
           {/* 카카오페이 결제 */}
           <button
-            className={styles.paymentMethodKakaoButton}
-            onClick={() => handleMethodSelect(PAYMENT_METHODS.SIMPLE)}
+            className={`${styles.paymentMethodButton} ${
+              selectedMethod === PAYMENT_METHODS.KAKAO ? styles.paymentMethodButtonSelected : ''
+            }`}
+            onClick={() => handleMethodSelect(PAYMENT_METHODS.KAKAO)}
           >
-            <img
-              src={kakaoPayButton}
-              alt="카카오페이로 결제하기"
-              className={styles.paymentMethodKakaoImage}
-            />
+            <div className={styles.paymentMethodButtonContent}>
+              <img
+                src={kakaoPayImage}
+                alt="카카오페이"
+                className={styles.paymentMethodImage}
+              />
+              <span className={styles.paymentMethodButtonText}>카카오페이</span>
+            </div>
+            {selectedMethod === PAYMENT_METHODS.KAKAO && (
+              <span className={styles.paymentMethodCheckmark}>✓</span>
+            )}
           </button>
+
+          {/* 토스페이 결제 */}
+          <button
+            className={`${styles.paymentMethodButton} ${
+              selectedMethod === PAYMENT_METHODS.TOSS ? styles.paymentMethodButtonSelected : ''
+            }`}
+            onClick={() => handleMethodSelect(PAYMENT_METHODS.TOSS)}
+          >
+            <div className={styles.paymentMethodButtonContent}>
+              <img
+                src={tossPayImage}
+                alt="토스페이"
+                className={styles.paymentMethodImage}
+              />
+              <span className={styles.paymentMethodButtonText}>토스페이</span>
+            </div>
+            {selectedMethod === PAYMENT_METHODS.TOSS && (
+              <span className={styles.paymentMethodCheckmark}>✓</span>
+            )}
+          </button>
+        </div>
+
+        <div className={styles.paymentMethodActions}>
+          <Button
+            variant="primary"
+            size="large"
+            onClick={handleNext}
+            disabled={!selectedMethod}
+          >
+            다음
+          </Button>
         </div>
 
         <div className={styles.paymentMethodFooter}>

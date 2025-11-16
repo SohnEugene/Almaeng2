@@ -9,13 +9,10 @@ import RefillPage from './pages/RefillPage';
 import PaymentMethodPage from './pages/PaymentMethodPage';
 import PaymentProcessingPage from './pages/PaymentProcessingPage';
 import PaymentCompletePage from './pages/PaymentCompletePage';
-import PaymentSuccessPage from './pages/PaymentSuccessPage';
-import PaymentCancelPage from './pages/PaymentCancelPage';
-import PaymentFailPage from './pages/PaymentFailPage';
 import ManagementPage from './pages/ManagementPage';
 import { useBluetooth } from './hooks/useBluetooth';
 import { BluetoothProvider } from './contexts/BluetoothContext';
-import { SessionProvider } from './contexts/SessionContext';
+import { SessionProvider, useSession } from './contexts/SessionContext';
 
 export default function App() {
   return (
@@ -25,9 +22,6 @@ export default function App() {
           <Routes>
             <Route path="/" element={<KioskFlow />} />
             <Route path="/manage" element={<ManagementPage />} />
-            <Route path="/payment/success" element={<PaymentSuccessPage />} />
-            <Route path="/payment/cancel" element={<PaymentCancelPage />} />
-            <Route path="/payment/fail" element={<PaymentFailPage />} />
           </Routes>
         </SessionProvider>
       </BluetoothProvider>
@@ -39,6 +33,7 @@ export default function App() {
 function KioskFlow() {
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState('home');
+  const { resetSession } = useSession();
 
   // BLE 관련 상태와 함수 (커스텀 훅)
   const {
@@ -73,7 +68,8 @@ function KioskFlow() {
   };
 
   const resetToHome = () => {
-    console.log('🏠 resetToHome 호출됨');
+    console.log('🏠 resetToHome 호출됨 - 세션 초기화');
+    resetSession();
     setCurrentPage('home');
   };
 

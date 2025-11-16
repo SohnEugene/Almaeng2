@@ -27,7 +27,7 @@ router = APIRouter(
 )
 
 
-@router.post("/", response_class=PaymentResponse, status_code=status.HTTP_200_OK)
+@router.post("/", response_model=PaymentResponse, status_code=status.HTTP_200_OK)
 async def request_payment(request: PaymentRequest):
     """
     Prepare a payment and generate QR code for Kakao Pay.
@@ -51,25 +51,35 @@ async def request_payment(request: PaymentRequest):
         PaymentPreparationException: If QR code generation or transaction creation fails
     """
     try:
-        # Validate kiosk and product exist
+        # Validate kiosk exists
         kiosk = firebase_service.get_kiosk_by_id(request.kid)
+
+        # Validate product exists (just for validation, not used further)
+        _ = firebase_service.get_product_by_id(request.pid)
+
         # Check product availability at this kiosk
-        if not hasattr(kiosk, "products") or request.pid not in kiosk.products:
+        # kiosk.products is a list of dicts: [{"pid": "prod_001", "available": True}]
+        product_pids = [p.get("pid") for p in kiosk.products if isinstance(p, dict)]
+        if not kiosk.products or request.pid not in product_pids:
             raise ProductNotAvailableException(request.pid, request.kid)
 
-        # Generate payment based on method
-        if request.payment_method not in ["kakaopay", "tosspay"] :
+        # Validate payment method
+        if request.payment_method not in ["kakaopay", "tosspay"]:
             raise UnsupportedPaymentMethodException(request.payment_method)
-        
-        qrcode_service.set_payment_info(
-            request.payment_method, 
-            request.manager, 
-            request.total_price
-        )
 
-        qr_img_io = qrcode_service.generate_qr_img()
-        qr_base64 = base64.b64encode(qr_img_io.getvalue()).decode("utf-8")
+        # Generate QR code
+        try:
+            qrcode_service.set_payment_info(
+                request.payment_method,
+                request.manager,
+                request.total_price
+            )
+            qr_img_io = qrcode_service.generate_qr_img()
+            qr_base64 = base64.b64encode(qr_img_io.getvalue()).decode("utf-8")
+        except ValueError as ve:
+            raise PaymentPreparationException(f"QR code generation failed: {str(ve)}")
 
+        # Create transaction data
         payment_data = {
             "kid": request.kid,
             "pid": request.pid,
@@ -78,9 +88,10 @@ async def request_payment(request: PaymentRequest):
             "product_price": request.product_price,
             "total_price": request.total_price,
             "payment_method": request.payment_method,
-            "manager": getattr(kiosk, "manager", None)
+            "manager": request.manager
         }
 
+        # Save transaction to Firebase
         txid = firebase_service.create_transaction(payment_data)
 
         return PaymentResponse(
@@ -88,11 +99,11 @@ async def request_payment(request: PaymentRequest):
             qr_code_base64=qr_base64
         )
 
-    except (ProductNotAvailableException, UnsupportedPaymentMethodException):
+    except (ProductNotAvailableException, UnsupportedPaymentMethodException, PaymentPreparationException):
         raise
 
     except Exception as e:
-        raise PaymentPreparationException(str(e))
+        raise PaymentPreparationException(f"Unexpected error: {str(e)}")
 
 
 @router.post("/approve", response_model=PaymentApproveResponse, status_code=200)

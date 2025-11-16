@@ -11,6 +11,12 @@ import {
   getKioskInfo,
   clearKioskInfo,
 } from "../services/kioskStorage";
+import {
+  MANAGERS,
+  saveManagerInfo,
+  getManagerInfo,
+  clearManagerInfo,
+} from "../services/managerStorage";
 import { useBluetoothContext } from "../contexts/BluetoothContext";
 import "../styles/ManagementPage.css";
 
@@ -18,6 +24,7 @@ const VIEWS = {
   HOME: "home",
   REGISTER: "register",
   PRODUCTS: "products",
+  MANAGER: "manager",
 };
 
 export default function ManagementPage() {
@@ -30,6 +37,7 @@ export default function ManagementPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [registeredInfo, setRegisteredInfo] = useState(getKioskInfo());
+  const [managerInfo, setManagerInfo] = useState(getManagerInfo());
 
   const [allProducts, setAllProducts] = useState([]);
   const [kioskProducts, setKioskProducts] = useState([]);
@@ -99,6 +107,21 @@ export default function ManagementPage() {
       setFormData({ name: "", location: "" });
       setCurrentView(VIEWS.HOME);
       alert("키오스크 정보가 삭제되었습니다.");
+    }
+  };
+
+  const handleSelectManager = (managerCode) => {
+    saveManagerInfo(managerCode);
+    setManagerInfo(MANAGERS[managerCode]);
+    setCurrentView(VIEWS.HOME);
+    alert(`${MANAGERS[managerCode].name} 님이 관리자로 설정되었습니다.`);
+  };
+
+  const handleClearManager = () => {
+    if (window.confirm("설정된 관리자 정보를 삭제하시겠습니까?")) {
+      clearManagerInfo();
+      setManagerInfo(null);
+      alert("관리자 정보가 삭제되었습니다.");
     }
   };
 
@@ -204,6 +227,43 @@ export default function ManagementPage() {
     );
   };
 
+  const renderManagerPanel = () => (
+    <section className="management-panel info-panel">
+      <div className="panel-header">
+        <p className="panel-eyebrow">관리자 정보</p>
+        {managerInfo && (
+          <button
+            className="btn-danger btn-inline compact-danger"
+            onClick={handleClearManager}
+          >
+            관리자 정보 삭제
+          </button>
+        )}
+      </div>
+      {managerInfo ? (
+        <div className="kiosk-summary">
+          <div>
+            <p className="summary-title">{managerInfo.name}</p>
+            <p className="summary-meta">현재 관리자</p>
+          </div>
+          <div className="summary-details">
+            <div>
+              <span className="label">관리자 코드</span>
+              <span className="value">{managerInfo.code}</span>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div style={{ padding: '20px', textAlign: 'center', color: '#666' }}>
+          <p>관리자가 설정되지 않았습니다.</p>
+          <p style={{ fontSize: '14px', marginTop: '8px' }}>
+            결제를 처리하려면 관리자를 설정해주세요.
+          </p>
+        </div>
+      )}
+    </section>
+  );
+
   const renderBluetoothPanel = () => (
     <section className="management-panel bluetooth-panel">
       <div className="bluetooth-header">
@@ -243,6 +303,7 @@ export default function ManagementPage() {
   const renderHomeView = () => (
     <div className="home-grid">
       {renderRegisteredSummary({ showActions: !!registeredInfo })}
+      {renderManagerPanel()}
       <div className="home-actions-grid">
         <button
           type="button"
@@ -267,6 +328,16 @@ export default function ManagementPage() {
           <span className="card-link">
             {!registeredInfo ? "키오스크 등록 필요" : "제품 관리로 이동 →"}
           </span>
+        </button>
+        <button
+          type="button"
+          className="home-action-card"
+          onClick={() => setCurrentView(VIEWS.MANAGER)}
+        >
+          <span className="card-eyebrow">STEP 03</span>
+          <h3>관리자 설정</h3>
+          <p>결제를 처리할 관리자를 선택합니다.</p>
+          <span className="card-link">관리자 선택 →</span>
         </button>
       </div>
       {renderBluetoothPanel()}
@@ -328,6 +399,75 @@ export default function ManagementPage() {
           </button>
         </div>
       </form>
+    </section>
+  );
+
+  const renderManagerView = () => (
+    <section className="management-panel">
+      <div className="subpage-header">
+        <div>
+          <p className="panel-eyebrow">STEP 03</p>
+          <h2>관리자 설정</h2>
+          <p className="panel-description">
+            결제를 처리할 관리자를 선택하세요. 선택한 관리자의 계좌로 결제 QR 코드가 생성됩니다.
+          </p>
+        </div>
+      </div>
+
+      {managerInfo && (
+        <section className="management-panel info-panel">
+          <div className="panel-header">
+            <p className="panel-eyebrow">현재 설정된 관리자</p>
+            <button
+              className="btn-danger btn-inline compact-danger"
+              onClick={handleClearManager}
+            >
+              관리자 정보 삭제
+            </button>
+          </div>
+          <div className="kiosk-summary">
+            <div>
+              <p className="summary-title">{managerInfo.name}</p>
+              <p className="summary-meta">현재 관리자</p>
+            </div>
+            <div className="summary-details">
+              <div>
+                <span className="label">관리자 코드</span>
+                <span className="value">{managerInfo.code}</span>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      <div className="management-subpanel">
+        <h3>관리자 선택</h3>
+        <div className="product-list" style={{ gap: '12px' }}>
+          {Object.values(MANAGERS).map((manager) => (
+            <button
+              key={manager.code}
+              className="product-item"
+              style={{
+                cursor: 'pointer',
+                border: managerInfo?.code === manager.code ? '2px solid #ff6b6b' : '1px solid #e0e0e0',
+                backgroundColor: managerInfo?.code === manager.code ? '#fff5f5' : 'white',
+                transition: 'all 0.2s',
+              }}
+              onClick={() => handleSelectManager(manager.code)}
+            >
+              <div className="product-info">
+                <span className="product-name" style={{ fontSize: '18px' }}>
+                  {manager.name}
+                </span>
+                <span className="product-id">관리자 코드: {manager.code}</span>
+              </div>
+              {managerInfo?.code === manager.code && (
+                <span style={{ fontSize: '20px' }}>✓</span>
+              )}
+            </button>
+          ))}
+        </div>
+      </div>
     </section>
   );
 
@@ -491,6 +631,7 @@ export default function ManagementPage() {
         {currentView === VIEWS.HOME && renderHomeView()}
         {currentView === VIEWS.REGISTER && renderRegisterView()}
         {currentView === VIEWS.PRODUCTS && renderProductView()}
+        {currentView === VIEWS.MANAGER && renderManagerView()}
       </main>
       <footer>
         <img src="logo_black.png" className="management-logo" alt="" />

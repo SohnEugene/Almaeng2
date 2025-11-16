@@ -23,6 +23,7 @@ const initialSessionState = {
   combinedWeight: 0,
   weight: 0,
   totalPrice: 0,
+  paymentMethod: null,        // 선택한 결제 수단 ('kakaopay' | 'tosspay')
 };
 
 // Context 생성
@@ -118,6 +119,17 @@ export function SessionProvider({ children }) {
     return total;
   };
 
+  const setPaymentMethod = (paymentMethod) => {
+    setSession((prev) => {
+      const newSession = {
+        ...prev,
+        paymentMethod,
+      };
+      console.log('💳 [setPaymentMethod] SessionContext updated:', newSession);
+      return newSession;
+    });
+  };
+
   /**
    * 세션 초기화 (처음으로 돌아가기)
    */
@@ -137,6 +149,7 @@ export function SessionProvider({ children }) {
     setBottleWeight,
     setCombinedWeight,
     calculateTotalPrice,
+    setPaymentMethod,
     resetSession,
   };
 

@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from datetime import datetime
 
 
-class Payment(BaseModel): 
+class Payment(BaseModel):
     txid: str                     # 내부 시스템에서 생성된 거래 ID
     kid: str                      # Kiosk ID
     pid: str                      # Product ID
@@ -14,6 +14,7 @@ class Payment(BaseModel):
     payment_method: str            # kakao/toss 등
     manager: str
     status: str = "ONGOING"        # 초기 상태: ONGOING
+    completed: bool = False        # 완료 여부
     created_at: datetime = datetime.now()
     approved_at: Optional[datetime] = None
 
