@@ -1,13 +1,14 @@
 // src/pages/ProductSelectionPage.jsx
-import { useState, useEffect } from 'react';
-import Button from '../components/Button';
-import ProductCard from '../components/ProductCard';
-import { getKioskProducts } from '../services/api';
-import { getKioskId } from '../services/kioskStorage';
-import { useSession } from '../contexts/SessionContext';
-import styles from '../styles/pages.module.css';
+import { useState, useEffect } from "react";
+import Button from "../components/Button";
+import ProductCard from "../components/ProductCard";
+import { getKioskProducts } from "../services/api";
+import { getKioskId } from "../services/kioskStorage";
+import { useSession } from "../contexts/SessionContext";
+import styles from "../styles/pages.module.css";
+import { PRODUCT_IMAGES } from "../constants/products";
 
-export default function ProductSelectionPage({ onNext }) {
+export default function ProductSelectionPage({ onNext, onHome }) {
   const { session, selectProduct } = useSession();
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -25,7 +26,7 @@ export default function ProductSelectionPage({ onNext }) {
 
         if (!kioskId) {
           throw new Error(
-            '키오스크가 등록되지 않았습니다. /manage 페이지에서 기기를 등록해주세요.'
+            "키오스크가 등록되지 않았습니다. /manage 페이지에서 기기를 등록해주세요."
           );
         }
 
@@ -38,7 +39,7 @@ export default function ProductSelectionPage({ onNext }) {
         );
         setProducts(availableProducts);
       } catch (err) {
-        console.error('제품 목록 로드 실패:', err);
+        console.error("제품 목록 로드 실패:", err);
         setError(err.message);
       } finally {
         setIsLoading(false);
@@ -49,15 +50,39 @@ export default function ProductSelectionPage({ onNext }) {
   }, []);
 
   const formatDescription = (text) => {
-    if (typeof text !== 'string') return [];
+    if (typeof text !== "string") return [];
     return text
       .split(/(?<=\.)\s*/)
       .map((line) => line.trim())
       .filter(Boolean);
   };
 
-  const renderStateMessage = (icon, title, description) => {
-    const isStringDescription = typeof description === 'string';
+  const resolveProductImage = (product) => {
+    if (product.image_url) return product.image_url;
+    if (product.image) return product.image;
+
+    const lookupKey = product.pid ?? product.id;
+    return lookupKey ? PRODUCT_IMAGES[lookupKey] : undefined;
+  };
+
+  const handleHomeClick = () => {
+    if (onHome) onHome();
+  };
+
+  const renderHeader = () => (
+    <div className={styles.productSelectionHeader}>
+      <button
+        type="button"
+        className={styles.headerHomeButton}
+        onClick={handleHomeClick}
+      >
+        home
+      </button>
+    </div>
+  );
+
+  const renderStateMessage = (icon, title, description, variant = "default") => {
+    const isStringDescription = typeof description === "string";
     const descriptionLines = isStringDescription
       ? formatDescription(description)
       : [];
@@ -65,10 +90,16 @@ export default function ProductSelectionPage({ onNext }) {
 
     return (
       <div className={styles.productSelectionContainer}>
-        <div className={styles.productSelectionHeader}>home</div>
+        {renderHeader()}
         <div className={styles.productSelectionContent}>
           <div className={styles.productSelectionState}>
-            <div className={styles.productSelectionStateCard}>
+            <div
+              className={`${styles.productSelectionStateCard} ${
+                variant === "loading"
+                  ? styles.productSelectionStateCardLoading
+                  : ""
+              }`}
+            >
               {icon && (
                 <div className={styles.productSelectionStateIcon}>{icon}</div>
               )}
@@ -100,29 +131,30 @@ export default function ProductSelectionPage({ onNext }) {
   // 로딩 중
   if (isLoading) {
     return renderStateMessage(
-      '⏳',
-      '제품을 불러오는 중입니다',
-      '잠시만 기다려주세요'
+      "⏳",
+      "제품을 불러오는 중입니다",
+      "지갑은 가볍게, 환경은 푸르게!",
+      "loading"
     );
   }
 
   // 에러 발생
   if (error) {
-    return renderStateMessage('⚠️', '제품을 불러올 수 없습니다', error);
+    return renderStateMessage("⚠️", "제품을 불러올 수 없습니다", error);
   }
 
   // 제품이 없는 경우
   if (products.length === 0) {
     return renderStateMessage(
-      '📦',
-      '등록된 제품이 없습니다',
-      '관리자에게 문의해주세요'
+      "📦",
+      "등록된 제품이 없습니다",
+      "관리자에게 문의해주세요"
     );
   }
 
   return (
     <div className={styles.productSelectionContainer}>
-      <div className={styles.productSelectionHeader}>home</div>
+      {renderHeader()}
       <div className={styles.productSelectionContent}>
         <div className={styles.productSelectionTitle}>
           어떤 제품을 리필하시겠어요?
@@ -133,19 +165,32 @@ export default function ProductSelectionPage({ onNext }) {
         </div>
 
         <div className={styles.productSelectionProducts}>
-          {products.map((product) => (
-            <ProductCard
-              key={product.pid}
-              product={product}
-              isSelected={session.selectedProduct?.pid === product.pid}
-              onSelect={() => selectProduct(product)}
-            />
-          ))}
+          {products.map((product) => {
+            const resolvedImage = resolveProductImage(product);
+            const normalizedProduct = resolvedImage
+              ? {
+                  ...product,
+                  image: resolvedImage,
+                  image_url: resolvedImage,
+                }
+              : product;
+
+            return (
+              <ProductCard
+                key={product.pid}
+                product={normalizedProduct}
+                isSelected={session.selectedProduct?.pid === product.pid}
+                onSelect={() => selectProduct(product)}
+              />
+            );
+          })}
         </div>
 
-        <Button onClick={onNext} disabled={!session.selectedProduct}>
-          상품 선택 완료
-        </Button>
+        <div className={styles.productSelectionFooter}>
+          <Button onClick={onNext} disabled={!session.selectedProduct}>
+            상품 선택 완료
+          </Button>
+        </div>
       </div>
     </div>
   );

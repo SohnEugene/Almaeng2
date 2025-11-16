@@ -11,7 +11,7 @@
    ============================================================ */
 
 .button {
-  font-size: 56px;
+  font-size: 48px;
   font-weight: var(--font-weight-bold);
   border: none;
   cursor: pointer;
@@ -51,7 +51,7 @@
   color: var(--btn-primary-text);
   border: none;
   height: 8.5vh; /* 15% shorter than default 10vh */
-  font-size: 48px;
+  font-size: 40px;
 }
 
 .buttonOutlinedDouble {
@@ -59,7 +59,7 @@
   color: var(--btn-outline);
   border: 2px solid var(--btn-outline);
   height: 8.5vh; /* 15% shorter than default 10vh */
-  font-size: 48px;
+  font-size: 40px;
 }
 
 .buttonDouble:hover:not(:disabled) {
@@ -89,7 +89,7 @@
   cursor: pointer;
   transition: all 0.2s;
   margin-bottom: var(--spacing-md);
-  height: 15vh;
+  height: 15.5vh;
 }
 
 .productCard:hover {
@@ -104,8 +104,8 @@
 }
 
 .productCardImage {
-  width: 180px;
-  height: 180px;
+  width: 160px;
+  height: 160px;
   object-fit: cover;
   border-radius: var(--radius-md);
   margin-right: var(--spacing-md);

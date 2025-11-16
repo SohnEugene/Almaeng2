@@ -1,5 +1,5 @@
-import Button from '../components/Button';
-import styles from '../styles/pages.module.css';
+import Button from "../components/Button";
+import styles from "../styles/pages.module.css";
 
 export default function HomePage({ onNext }) {
   return (
@@ -8,7 +8,7 @@ export default function HomePage({ onNext }) {
         <div className={styles.homeLogo}>
           <img src="logo_black.png" className={styles.logo1} alt="logo1" />
           <span>×</span>
-          <span className={styles.logo2}>알맹상점</span>
+          <img src="almang_logo.png" className={styles.logo2} alt="" />
         </div>
       </div>
       <div className={styles.homeContent}>
