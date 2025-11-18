@@ -56,11 +56,14 @@ export default function ManagementPage() {
   } = useBluetoothContext();
 
   useEffect(() => {
-    loadAllProducts();
-    if (registeredInfo?.kid) {
-      loadKioskProducts();
+    // 제품 관리 뷰에서만 제품 목록 로드
+    if (currentView === VIEWS.PRODUCTS) {
+      loadAllProducts();
+      if (registeredInfo?.kid) {
+        loadKioskProducts();
+      }
     }
-  }, [registeredInfo?.kid]);
+  }, [currentView, registeredInfo?.kid]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
