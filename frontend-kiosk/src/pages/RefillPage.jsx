@@ -112,6 +112,27 @@ export default function RefillStartPage({ onNext, onReset }) {
     if (onReset) onReset();
   };
 
+  // [DEBUG] 블루투스 연결 건너뛰기
+  const handleDebugSkipBluetooth = () => {
+    setStep(REFILL_STEPS.EMPTY_CONTAINER);
+  };
+
+  // [DEBUG] 공병 무게 측정 건너뛰기 (50g으로 설정)
+  const handleDebugSkipTare = () => {
+    setBottleWeight(50);
+    setStep(REFILL_STEPS.TARE_WEIGHT);
+    setTimeout(() => setStep(REFILL_STEPS.FILL_PRODUCT), 2000);
+  };
+
+  // [DEBUG] 전체 무게 측정 건너뛰기 (100g으로 설정)
+  const handleDebugSkipFill = () => {
+    const debugWeight = 100;
+    const fillWeight = debugWeight - session.bottleWeight;
+    setCombinedWeight(debugWeight);
+    calculateTotalPrice(fillWeight);
+    setStep(REFILL_STEPS.COMPLETE);
+  };
+
   // ===================== 렌더링 =====================
   if (step === REFILL_STEPS.WELCOME) {
     return (
@@ -158,6 +179,14 @@ export default function RefillStartPage({ onNext, onReset }) {
               ? "연결됨"
               : "저울 연결하기"}
           </Button>
+          {/* [DEBUG] 테스트용 - 나중에 삭제 */}
+          <Button
+            variant="small"
+            onClick={handleDebugSkipBluetooth}
+            style={{ marginTop: '10px', backgroundColor: '#ff9800' }}
+          >
+            [DEBUG] 연결 건너뛰기
+          </Button>
         </div>
       </div>
     );
@@ -191,6 +220,14 @@ export default function RefillStartPage({ onNext, onReset }) {
             </div>
             <Button onClick={handleTareComplete} disabled={!stableWeight}>
               무게 측정 완료
+            </Button>
+            {/* [DEBUG] 테스트용 - 나중에 삭제 */}
+            <Button
+              variant="small"
+              onClick={handleDebugSkipTare}
+              style={{ marginTop: '10px', backgroundColor: '#ff9800' }}
+            >
+              [DEBUG] 50g으로 건너뛰기
             </Button>
           </>
         )}
@@ -226,6 +263,14 @@ export default function RefillStartPage({ onNext, onReset }) {
             </div>
             <Button onClick={handleFillComplete} disabled={!stableWeight}>
               리필 완료
+            </Button>
+            {/* [DEBUG] 테스트용 - 나중에 삭제 */}
+            <Button
+              variant="small"
+              onClick={handleDebugSkipFill}
+              style={{ marginTop: '10px', backgroundColor: '#ff9800' }}
+            >
+              [DEBUG] 100g으로 건너뛰기
             </Button>
           </>
         )}
