@@ -36,8 +36,9 @@ def get_s3_client():
     """Get or create S3 client with lazy initialization"""
     global _s3_client
     if _s3_client is None:
-        access_key = os.getenv("AWS_ACCESS_KEY_ID")
-        secret_key = os.getenv("AWS_SECRET_ACCESS_KEY")
+        access_key = os.getenv("AWS_ACCESS_KEY_ID", "").strip()
+        secret_key = os.getenv("AWS_SECRET_ACCESS_KEY", "").strip()
+        region = os.getenv("AWS_REGION", "ap-northeast-2").strip()
 
         if not access_key or not secret_key:
             raise S3ConfigException("AWS credentials not configured")
@@ -46,7 +47,7 @@ def get_s3_client():
             "s3",
             aws_access_key_id=access_key,
             aws_secret_access_key=secret_key,
-            region_name=os.getenv("AWS_REGION", "ap-northeast-2"),
+            region_name=region,
         )
     return _s3_client
 
