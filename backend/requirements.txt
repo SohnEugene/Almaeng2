@@ -1,3 +1,5 @@
+boto3==1.40.16
+botocore==1.40.16
 fastapi==0.121.2
 firebase_admin==7.1.0
 Pillow==12.0.0
