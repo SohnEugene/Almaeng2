@@ -3,19 +3,22 @@ import boto3
 from botocore.exceptions import ClientError
 from datetime import datetime
 
-# 환경변수로 AWS 키/시크릿과 버킷 정보 관리
-AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
-AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
-AWS_REGION = os.getenv("AWS_REGION", "ap-northeast-2")
-BUCKET_NAME = os.getenv("S3_BUCKET_NAME", "almaeng2-images")
+# S3 클라이언트를 lazy initialization으로 생성
+_s3_client = None
 
-# boto3 S3 클라이언트 생성
-s3_client = boto3.client(
-    "s3",
-    aws_access_key_id=AWS_ACCESS_KEY_ID,
-    aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
-    region_name=AWS_REGION,
-)
+def get_s3_client():
+    global _s3_client
+    if _s3_client is None:
+        _s3_client = boto3.client(
+            "s3",
+            aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID"),
+            aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
+            region_name=os.getenv("AWS_REGION", "ap-northeast-2"),
+        )
+    return _s3_client
+
+def get_bucket_name():
+    return os.getenv("S3_BUCKET_NAME", "almaeng2-images")
 
 
 class S3Service:
@@ -29,9 +32,9 @@ class S3Service:
         :return: 업로드 성공 여부
         """
         try:
-            s3_client.upload_fileobj(
+            get_s3_client().upload_fileobj(
                 Fileobj=file_obj,
-                Bucket=BUCKET_NAME,
+                Bucket=get_bucket_name(),
                 Key=key,
                 ExtraArgs={"ContentType": content_type, "ACL": "private"}  # private 유지
             )
@@ -49,9 +52,9 @@ class S3Service:
         :return: presigned URL or None
         """
         try:
-            url = s3_client.generate_presigned_url(
+            url = get_s3_client().generate_presigned_url(
                 ClientMethod="get_object",
-                Params={"Bucket": BUCKET_NAME, "Key": key},
+                Params={"Bucket": get_bucket_name(), "Key": key},
                 ExpiresIn=expires_in
             )
             return url
