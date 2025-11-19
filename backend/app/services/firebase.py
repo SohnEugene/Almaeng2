@@ -2,8 +2,11 @@ import os
 import firebase_admin
 from firebase_admin import credentials, firestore
 from typing import List, Dict, Optional, Any
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 import json
+
+# Korea Standard Time (UTC+9)
+KST = timezone(timedelta(hours=9))
 
 from app.exceptions import (
     KioskException,
@@ -96,8 +99,8 @@ class FirebaseService:
         kiosk_id = f"kiosk_{counter:03d}"
 
         # 2. Add timestamps
-        kiosk_data['created_at'] = datetime.now()
-        kiosk_data['updated_at'] = datetime.now()
+        kiosk_data['created_at'] = datetime.now(KST)
+        kiosk_data['updated_at'] = datetime.now(KST)
 
         # 3. Reference Firestore document
         doc_ref = self.db.collection('kiosks').document(kiosk_id)
@@ -152,7 +155,7 @@ class FirebaseService:
             raise KioskNotFoundException(kid=kid)
 
         # 3. Add updated timestamp
-        kiosk_data['updated_at'] = datetime.now()
+        kiosk_data['updated_at'] = datetime.now(KST)
 
         # 4. Update kiosk
         try:
@@ -315,7 +318,7 @@ class FirebaseService:
         try:
             payment_data['status'] = "ONGOING"        # 승인 전 상태
             payment_data['completed'] = False         # 완료 여부
-            payment_data['created_at'] = datetime.now()
+            payment_data['created_at'] = datetime.now(KST)
             payment_data['approved_at'] = None
         except Exception as e:
             raise TransactionStorageException(txid="N/A", reason=f"Failed to prepare transaction data: {str(e)}") from e
@@ -348,7 +351,7 @@ class FirebaseService:
 
         # 3. Add updated timestamp
         try:
-            updates['updated_at'] = datetime.now()
+            updates['updated_at'] = datetime.now(KST)
         except Exception as e:
             raise TransactionStorageException(txid=txid, reason=f"Failed to add update timestamp: {str(e)}") from e
 
