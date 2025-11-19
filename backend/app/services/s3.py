@@ -36,7 +36,7 @@ class S3Service:
                 Fileobj=file_obj,
                 Bucket=get_bucket_name(),
                 Key=key,
-                ExtraArgs={"ContentType": content_type, "ACL": "private"}  # private 유지
+                ExtraArgs={"ContentType": content_type}
             )
             return True
         except ClientError as e:
