@@ -1,4 +1,8 @@
-export default function KioskSummary({ kioskInfo, onClear, showActions = true }) {
+export default function KioskSummary({
+  kioskInfo,
+  onClear,
+  showActions = true,
+}) {
   if (!kioskInfo) {
     return (
       <section className="management-panel empty-state">

@@ -1,8 +1,7 @@
-@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@latest/dist/web/static/pretendard.css');
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@latest/dist/web/static/pretendard.css");
 
 /**
  * Global Styles
- *
  * 애플리케이션 전역에서 사용되는 스타일을 정의합니다.
  */
 
@@ -16,76 +15,49 @@
   box-sizing: border-box;
 }
 
-body {
-  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  width: 100%;
-  height: 100dvh;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  background-color: var(--color-white);
-  overflow: hidden;
-  color: #2c1f19;
-}
-
-h1, h2, h3, h4, h5, h6 {
-  margin: 0;
-  font-weight: 700;
-  color: #2c1f19;
-}
-
-h1 {
-  font-size: clamp(2rem, 4vw, 2.8rem);
-}
-
-h2 {
-  font-size: clamp(1.5rem, 3vw, 2rem);
-}
-
-h3 {
-  font-size: 1.4rem;
-}
-
-h4 {
-  font-size: 1.2rem;
-}
-
-h5 {
-  font-size: 1rem;
-  font-weight: 600;
-}
-
-h6 {
-  font-size: 0.9rem;
-  font-weight: 600;
-}
-
-p {
-  margin: 0;
-  line-height: 1.5;
-}
-
 html {
   width: 100%;
   height: 100dvh;
   min-height: 100vh;
 }
 
+body {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100dvh;
+  min-height: 100vh;
+  overflow: hidden;
+  background-color: var(--color-white);
+  color: #2c1f19;
+  font-family:
+    "Pretendard",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    "Roboto",
+    "Oxygen",
+    "Ubuntu",
+    "Cantarell",
+    "Fira Sans",
+    "Droid Sans",
+    "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 #root {
+  display: flex;
+  flex: 1;
   width: 100%;
   height: 100%;
-  flex: 1;
-  display: flex;
   overflow: hidden;
 }
 
 .kiosk-shell {
-  flex: 1;
   display: flex;
+  flex: 1;
   width: 100%;
   height: 100%;
   overflow: hidden;
@@ -99,25 +71,24 @@ html {
 }
 
 /* ============================================================
-   CSS 변수 (디자인 토큰)
+   CSS Variables (Design Tokens)
    ============================================================ */
 
 :root {
   /* Primary Colors */
   --color-primary: #ed6c52;
   --color-primary-light: rgba(237, 108, 82, 0.1);
-  --color-primary-border: rgba(237, 108, 82, 0.2);
   --color-white: #ffffff;
   --color-gray-light: #dddddd;
   --color-gray-dark: #718096;
+  --color-gray-400: #9ca3af;
+  --color-gray-900: #111827;
   --color-black: #000000;
   --color-danger: #ef4444;
 
   /* Text Colors */
   --color-text-primary: #2c1f19;
-  --color-text-secondary: rgba(44, 31, 25, 0.65);
   --color-text-muted: rgba(44, 31, 25, 0.6);
-  --color-text-light: rgba(44, 31, 25, 0.45);
 
   /* Border Colors */
   --color-border-light: rgba(44, 31, 25, 0.08);
@@ -126,18 +97,17 @@ html {
   /* Background Colors */
   --color-bg-light: rgba(44, 31, 25, 0.02);
 
-  /* Typography */
-  --font-size-lg: 18px;
-  --font-size-xl: 20px;
-  --font-size-2xl: 24px;
-  --font-size-3xl: 28px;
-  --font-size-4xl: 32px;
-  --font-size-5xl: 48px;
-
+  /* Font Weights */
   --font-weight-normal: 400;
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
   --font-weight-extrabold: 800;
+
+  /* Font Sizes */
+  --font-size-lg: 18px;
+  --font-size-xl: 20px;
+  --font-size-2xl: 24px;
+  --font-size-3xl: 30px;
 
   /* Spacing */
   --spacing-xs: 4px;
@@ -148,201 +118,99 @@ html {
   --spacing-2xl: 48px;
 
   /* Border Radius */
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 20px;
-
-  /* Shadow */
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --radius-xl: 16px;
 }
 
 /* ============================================================
-   Utility Classes
+   Kiosk Layout Components
    ============================================================ */
 
-.container {
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 var(--spacing-md);
-}
-
-.text-center {
-  text-align: center;
-}
-
-.text-left {
-  text-align: left;
-}
-
-.text-right {
-  text-align: right;
-}
-
-.hidden {
-  display: none;
-}
-
-.flex {
-  display: flex;
-}
-
-.flex-column {
-  display: flex;
-  flex-direction: column;
-}
-
-.items-center {
-  align-items: center;
-}
-
-.justify-center {
-  justify-content: center;
-}
-
-.justify-between {
-  justify-content: space-between;
-}
-
-.gap-sm {
-  gap: var(--spacing-sm);
-}
-
-.gap-md {
-  gap: var(--spacing-md);
-}
-
-.gap-lg {
-  gap: var(--spacing-lg);
-}
-
-/* ============================================================
-   Kiosk Common Classes (키오스크 공통 클래스)
-   ============================================================ */
-
-/* 페이지 컨테이너 */
 .kiosk-page {
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
   background-color: var(--color-white);
-}
-
-.kiosk-page-dark {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  background-color: var(--color-gray-600);
 }
 
 .kiosk-page-primary {
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
   background-color: var(--color-primary);
 }
 
-/* 헤더 */
 .kiosk-header {
-  padding: var(--spacing-lg);
-  flex-shrink: 0;
+  padding: 24px;
+  font-size: 20px;
+  font-weight: 600;
 }
 
-.kiosk-header-dark {
-  padding: var(--spacing-lg);
-  color: var(--color-gray-400);
-  font-size: var(--font-size-lg);
-  flex-shrink: 0;
-}
-
-.kiosk-header-light {
-  padding: var(--spacing-lg);
-  color: var(--color-white);
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-semibold);
-  flex-shrink: 0;
-}
-
-/* 컨텐츠 */
 .kiosk-content {
   display: flex;
-  flex-direction: column; /* 위→아래 정렬 */
-  align-items: center; /* 가로 중앙 정렬 */
-  height: 100%; /* 부모 높이에 맞추기 */
+  flex-direction: column;
+  align-items: center;
   flex: 1;
-  padding: 48px;
-  overflow-y: auto;
   gap: 32px;
-  justify-content: space-between
+  padding: 64px;
+  overflow-y: auto;
 }
 
 .kiosk-content-header {
-  gap: 8px;
-}
-
-.kiosk-content-card {
-  flex: 1;
-  background-color: var(--color-white);
-  margin: 0 var(--spacing-lg);
-  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
-  padding: var(--spacing-xl) var(--spacing-lg);
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
+  gap: 8px;
+  margin-bottom: 32px;
 }
 
 .kiosk-content-center {
-  flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  flex: 1;
   padding: var(--spacing-2xl) var(--spacing-xl);
   text-align: center;
 }
 
-/* 푸터 */
 .kiosk-footer {
-  padding: var(--spacing-lg) 0;
   display: flex;
   justify-content: center;
   flex-shrink: 0;
+  margin-bottom: 96px;
 }
 
-/* 타이틀 */
+/* ============================================================
+   Typography
+   ============================================================ */
+
 .kiosk-title {
-  font-size: clamp(36px, 5vw, 48px);
+  font-size: 48px;
   font-weight: var(--font-weight-bold);
   color: var(--color-gray-900);
-  margin-bottom: var(--spacing-md);
   text-align: center;
   line-height: 1.3;
 }
 
 .kiosk-title-light {
-  font-size: clamp(36px, 5vw, 48px);
+  font-size: 48px;
   font-weight: var(--font-weight-bold);
   color: var(--color-white);
-  margin-bottom: var(--spacing-md);
   text-align: center;
   line-height: 1.3;
 }
 
 .kiosk-title-main-light {
-  font-size: clamp(40px, 6vw, 56px);
+  font-size: 56px;
   font-weight: var(--font-weight-extrabold);
   color: var(--color-white);
-  line-height: 1.3;
-  margin-bottom: var(--spacing-lg);
   text-align: center;
+  line-height: 1.3;
 }
 
-/* 서브타이틀 */
 .kiosk-subtitle {
   font-size: clamp(24px, 4vw, 32px);
   color: var(--color-gray-900);
   opacity: 0.6;
-  margin-bottom: var(--spacing-xl);
   text-align: center;
   line-height: 1.5;
 }
@@ -351,131 +219,52 @@ html {
   font-size: clamp(24px, 4vw, 32px);
   color: var(--color-white);
   opacity: 0.9;
-  margin-bottom: var(--spacing-xl);
   text-align: center;
-  line-height: 1.5;
-}
-
-/* 텍스트 */
-.kiosk-text-semibold {
-  font-size: clamp(18px, 3vw, 24px);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-gray-900);
-  opacity: 0.6;
-  line-height: 1.5;
-  text-align: center;
-}
-
-.kiosk-hint {
-  font-size: clamp(14px, 2vw, 16px);
-  color: var(--color-white);
-  opacity: 0.7;
-  margin-top: var(--spacing-lg);
-  text-align: center;
-}
-
-/* 버튼 */
-.kiosk-button-container {
-  display: flex;
-  flex-direction: column; /* 버튼들을 위→아래 */
-  gap: 16px; /* 버튼 간 간격 */
-  justify-content: center; /* 세로 중앙 정렬 */
-  align-items: center; /* 가로 중앙 정렬 */
-  padding-bottom: 100px;
-}
-
-.kiosk-back-button {
-  background: none;
-  border: none;
-  color: var(--color-white);
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-semibold);
-  cursor: pointer;
-  padding: var(--spacing-sm) var(--spacing-md);
-  transition: opacity 0.2s;
-}
-
-.kiosk-back-button:hover {
-  opacity: 0.8;
-}
-
-.kiosk-home-button {
-  background: none;
-  border: none;
-  color: var(--color-gray-400);
-  cursor: pointer;
-  padding: 0;
-  text-transform: uppercase;
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-semibold);
-  opacity: 0.7;
-  transition: opacity 0.2s;
-}
-
-.kiosk-home-button:hover {
-  opacity: 1;
-}
-
-/* 상태 카드 */
-.kiosk-state-card {
-  width: 100%;
-  max-width: 520px;
-  padding: var(--spacing-xl);
-  border-radius: var(--radius-xl);
-  background-color: rgba(255, 123, 97, 0.2);
-  box-shadow: 0 24px 45px rgba(0, 0, 0, 0.08);
-  text-align: center;
-}
-
-.kiosk-state-card-loading {
-  background-color: #fff;
-  box-shadow: none;
-}
-
-.kiosk-state-icon {
-  font-size: clamp(56px, 8vw, 72px);
-  margin-bottom: var(--spacing-lg);
-}
-
-.kiosk-state-title {
-  font-size: clamp(28px, 4vw, 40px);
-  font-weight: var(--font-weight-bold);
-  color: var(--color-gray-900);
-  margin-bottom: var(--spacing-md);
-}
-
-.kiosk-state-description {
-  font-size: clamp(18px, 3vw, 24px);
-  color: var(--color-gray-500);
   line-height: 1.5;
 }
 
 /* ============================================================
-   Button Component Styles (재사용 컴포넌트)
+   Button Components
    ============================================================ */
 
-.button {
-  font-size: clamp(40px, 6vw, 56px);
-  font-weight: var(--font-weight-extrabold);
+.kiosk-button-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+}
+
+.kiosk-home-button {
+  padding: 0;
+  background: none;
   border: none;
+  font-size: 20px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-gray-400);
   cursor: pointer;
-  width: 80vw;
-  max-width: 600px;
-  height: 10vh;
-  min-height: 80px;
+}
+
+.button {
+  min-width: 70vw;
+  padding: 32px 48px;
+  background-color: var(--color-primary);
+  border: none;
   border-radius: 80px;
-  transition: all 0.2s ease;
+  font-size: 64px;
+  font-weight: 900;
+  color: var(--color-white);
+  cursor: pointer;
 }
 
 .button:disabled {
-  cursor: not-allowed;
   opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .buttonPrimary {
   background-color: var(--color-primary);
   color: var(--color-white);
-  border: none;
 }
 
 .buttonPrimary:hover:not(:disabled) {
@@ -484,9 +273,9 @@ html {
 }
 
 .buttonOutlined {
-  background-color: transparent;
-  color: var(--color-primary);
+  background-color: var(--color-white);
   border: 3px solid var(--color-primary);
+  color: var(--color-primary);
 }
 
 .buttonOutlined:hover:not(:disabled) {
@@ -497,85 +286,28 @@ html {
 .buttonDouble {
   background-color: var(--color-primary);
   color: var(--color-white);
-  border: none;
 }
 
 .buttonOutlinedDouble {
   background-color: var(--color-white);
-  color: var(--color-primary);
   border: 3px solid var(--color-primary);
+  color: var(--color-primary);
 }
 
 .buttonSmall {
-  width: auto;
+  min-width: 40vw;
   height: auto;
-  padding: var(--spacing-sm) var(--spacing-md);
-  font-size: var(--font-size-3xl);
-  background-color: rgba(255, 255, 255, 0.25);
-  color: white;
-}
-
-/* ============================================================
-   ProductCard Component Styles (재사용 컴포넌트)
-   ============================================================ */
-
-.productCard {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  padding: 16px;
-  border: 2px solid var(--color-gray-light);
-  border-radius: 16px;
+  padding: 24px 48px;
   background-color: var(--color-white);
-  cursor: pointer;
-  margin-bottom: 16px;
-  height: 220px;
-}
-
-.productCardSelected {
-  border-color: var(--color-primary);
-  background-color: var(--color-primary-light);
-}
-
-.productCardImage {
-  height: 100%;
-  aspect-ratio: 1 / 1;
-  object-fit: cover;
-  border-radius: 16px;
-  margin-right: 24px;
-}
-
-.productCardInfo {
-  flex: 1;
-  height: 100%;
-}
-
-.productCardHeader {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  margin-bottom: 16px;
-}
-
-.productCardName {
-  flex: 7;
-  font-size:32px;
-  font-weight: var(--font-weight-semibold);
-}
-
-.productCardPrice {
-  flex: 3;
-  text-align: right;
+  border: none;
+  border-radius: 100px;
   font-size: 32px;
-  font-weight: var(--font-weight-bold);
+  font-weight: 600;
   color: var(--color-primary);
 }
 
-.productCardDetail {
-  font-size: 20px;
-  color: var(--color-gray-dark);
-}
-
-.bottle-image {
-  width: 60vw;
+.buttonSmall:disabled {
+  background-color: rgba(255, 255, 255, 0.5);
+  opacity: 0.8;
+  cursor: not-allowed;
 }

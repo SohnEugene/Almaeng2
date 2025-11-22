@@ -146,9 +146,9 @@ export default function ManagementPage() {
       setProductLoading(true);
       const response = await getKioskProducts(registeredInfo.kid);
       // response.products에서 product와 available 정보 추출
-      const productsWithStatus = response.products.map(item => ({
+      const productsWithStatus = response.products.map((item) => ({
         ...item.product,
-        available: item.available
+        available: item.available,
       }));
       setKioskProducts(productsWithStatus);
     } catch (err) {
@@ -189,7 +189,9 @@ export default function ManagementPage() {
   const handleRemoveProduct = async (productId) => {
     if (!registeredInfo?.kid) return;
 
-    if (!window.confirm(`제품 ${productId}을(를) 키오스크에서 제거하시겠습니까?`)) {
+    if (
+      !window.confirm(`제품 ${productId}을(를) 키오스크에서 제거하시겠습니까?`)
+    ) {
       return;
     }
 
@@ -279,9 +281,9 @@ export default function ManagementPage() {
           </div>
         </div>
       ) : (
-        <div style={{ padding: '20px', textAlign: 'center', color: '#666' }}>
+        <div style={{ padding: "20px", textAlign: "center", color: "#666" }}>
           <p>관리자가 설정되지 않았습니다.</p>
-          <p style={{ fontSize: '14px', marginTop: '8px' }}>
+          <p style={{ fontSize: "14px", marginTop: "8px" }}>
             결제를 처리하려면 관리자를 설정해주세요.
           </p>
         </div>
@@ -302,24 +304,30 @@ export default function ManagementPage() {
       </div>
 
       <div className="management-subpanel">
-        <div className="bluetooth-status" style={{ padding: '20px' }}>
+        <div className="bluetooth-status" style={{ padding: "20px" }}>
           <div className="status-info">
-            <span className="status-icon" style={{ fontSize: '48px' }}>
+            <span className="status-icon" style={{ fontSize: "48px" }}>
               {isConnected ? "✅" : "⚠️"}
             </span>
             <div>
-              <p className="device-name" style={{ fontSize: '20px', fontWeight: 'bold' }}>
+              <p
+                className="device-name"
+                style={{ fontSize: "20px", fontWeight: "bold" }}
+              >
                 {isConnected
                   ? `연결됨: ${deviceName || "저울"}`
                   : "저울이 연결되지 않았습니다"}
               </p>
-              <p className="current-weight" style={{ fontSize: '32px', marginTop: '8px' }}>
+              <p
+                className="current-weight"
+                style={{ fontSize: "32px", marginTop: "8px" }}
+              >
                 {isConnected ? `${weight} g` : "—"}
               </p>
             </div>
           </div>
           {bleError && (
-            <div className="error-message" style={{ marginTop: '16px' }}>
+            <div className="error-message" style={{ marginTop: "16px" }}>
               ⚠️ {bleError}
             </div>
           )}
@@ -328,13 +336,18 @@ export default function ManagementPage() {
             className={isConnected ? "btn-danger" : "btn-primary"}
             onClick={isConnected ? disconnect : connect}
             disabled={isConnecting}
-            style={{ marginTop: '20px', width: '100%', padding: '16px', fontSize: '18px' }}
+            style={{
+              marginTop: "20px",
+              width: "100%",
+              padding: "16px",
+              fontSize: "18px",
+            }}
           >
             {isConnected
               ? "연결 해제"
               : isConnecting
-              ? "연결 중..."
-              : "저울 연결"}
+                ? "연결 중..."
+                : "저울 연결"}
           </button>
         </div>
       </div>
@@ -461,7 +474,8 @@ export default function ManagementPage() {
           <p className="panel-eyebrow">STEP 03</p>
           <h2>관리자 설정</h2>
           <p className="panel-description">
-            결제를 처리할 관리자를 선택하세요. 선택한 관리자의 계좌로 결제 QR 코드가 생성됩니다.
+            결제를 처리할 관리자를 선택하세요. 선택한 관리자의 계좌로 결제 QR
+            코드가 생성됩니다.
           </p>
         </div>
       </div>
@@ -494,27 +508,31 @@ export default function ManagementPage() {
 
       <div className="management-subpanel">
         <h3>관리자 선택</h3>
-        <div className="product-list" style={{ gap: '12px' }}>
+        <div className="product-list" style={{ gap: "12px" }}>
           {Object.values(MANAGERS).map((manager) => (
             <button
               key={manager.code}
               className="product-item"
               style={{
-                cursor: 'pointer',
-                border: managerInfo?.code === manager.code ? '2px solid #ff6b6b' : '1px solid #e0e0e0',
-                backgroundColor: managerInfo?.code === manager.code ? '#fff5f5' : 'white',
-                transition: 'all 0.2s',
+                cursor: "pointer",
+                border:
+                  managerInfo?.code === manager.code
+                    ? "2px solid #ff6b6b"
+                    : "1px solid #e0e0e0",
+                backgroundColor:
+                  managerInfo?.code === manager.code ? "#fff5f5" : "white",
+                transition: "all 0.2s",
               }}
               onClick={() => handleSelectManager(manager.code)}
             >
               <div className="product-info">
-                <span className="product-name" style={{ fontSize: '18px' }}>
+                <span className="product-name" style={{ fontSize: "18px" }}>
                   {manager.name}
                 </span>
                 <span className="product-id">관리자 코드: {manager.code}</span>
               </div>
               {managerInfo?.code === manager.code && (
-                <span style={{ fontSize: '20px' }}>✓</span>
+                <span style={{ fontSize: "20px" }}>✓</span>
               )}
             </button>
           ))}

@@ -9,21 +9,21 @@
  * - 총 가격
  */
 
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState } from "react";
 
 /**
  * 세션 초기 상태
  */
 const initialSessionState = {
-  selectedProduct: null,      // 선택한 제품 정보
-  pricePerGram: 0,            // 제품 가격 (1g 단위)
+  selectedProduct: null, // 선택한 제품 정보
+  pricePerGram: 0, // 제품 가격 (1g 단위)
   hasContainer: null,
   purchaseContainer: false,
   bottleWeight: 0,
   combinedWeight: 0,
   weight: 0,
   totalPrice: 0,
-  paymentMethod: null,        // 선택한 결제 수단 ('kakaopay' | 'tosspay')
+  paymentMethod: null, // 선택한 결제 수단 ('kakaopay' | 'tosspay')
 };
 
 // Context 생성
@@ -55,7 +55,7 @@ export function SessionProvider({ children }) {
         ...prev,
         hasContainer,
       };
-      console.log('📦 [setHasContainer] SessionContext updated:', newSession);
+      console.log("📦 [setHasContainer] SessionContext updated:", newSession);
       return newSession;
     });
   };
@@ -66,7 +66,10 @@ export function SessionProvider({ children }) {
         ...prev,
         purchaseContainer,
       };
-      console.log('📦 [setPurchaseContainer] SessionContext updated:', newSession);
+      console.log(
+        "📦 [setPurchaseContainer] SessionContext updated:",
+        newSession,
+      );
       return newSession;
     });
   };
@@ -77,7 +80,7 @@ export function SessionProvider({ children }) {
         ...prev,
         bottleWeight,
       };
-      console.log('📦 [setBottleWeight] SessionContext updated:', newSession);
+      console.log("📦 [setBottleWeight] SessionContext updated:", newSession);
       return newSession;
     });
   };
@@ -90,13 +93,14 @@ export function SessionProvider({ children }) {
         combinedWeight,
         weight: netWeight > 0 ? netWeight : 0,
       };
-      console.log('📦 [setCombinedWeight] SessionContext updated:', newSession);
+      console.log("📦 [setCombinedWeight] SessionContext updated:", newSession);
       return newSession;
     });
   };
 
   const calculateTotalPrice = (customWeight) => {
-    const weightToUse = customWeight !== undefined ? customWeight : session.weight;
+    const weightToUse =
+      customWeight !== undefined ? customWeight : session.weight;
     const { pricePerGram, purchaseContainer } = session;
 
     if (weightToUse === 0 || pricePerGram === 0) {
@@ -115,7 +119,7 @@ export function SessionProvider({ children }) {
       ...prev,
       totalPrice: total,
     }));
-    
+
     return total;
   };
 
@@ -125,7 +129,7 @@ export function SessionProvider({ children }) {
         ...prev,
         paymentMethod,
       };
-      console.log('💳 [setPaymentMethod] SessionContext updated:', newSession);
+      console.log("💳 [setPaymentMethod] SessionContext updated:", newSession);
       return newSession;
     });
   };
@@ -134,7 +138,7 @@ export function SessionProvider({ children }) {
    * 세션 초기화 (처음으로 돌아가기)
    */
   const resetSession = () => {
-    console.log('📦 [resetSession] SessionContext reset to initial state');
+    console.log("📦 [resetSession] SessionContext reset to initial state");
     setSession(initialSessionState);
   };
 
@@ -154,9 +158,7 @@ export function SessionProvider({ children }) {
   };
 
   return (
-    <SessionContext.Provider value={value}>
-      {children}
-    </SessionContext.Provider>
+    <SessionContext.Provider value={value}>{children}</SessionContext.Provider>
   );
 }
 
@@ -172,7 +174,7 @@ export function useSession() {
   const context = useContext(SessionContext);
 
   if (!context) {
-    throw new Error('useSession must be used within a SessionProvider');
+    throw new Error("useSession must be used within a SessionProvider");
   }
 
   return context;

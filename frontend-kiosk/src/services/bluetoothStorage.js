@@ -4,7 +4,7 @@
  * localStorage를 사용하여 연결된 Bluetooth 장치 정보를 저장합니다.
  */
 
-const STORAGE_KEY = 'bluetooth_device_info';
+const STORAGE_KEY = "bluetooth_device_info";
 
 /**
  * Bluetooth 장치 정보 저장
@@ -16,9 +16,9 @@ const STORAGE_KEY = 'bluetooth_device_info';
 export function saveBluetoothDevice(deviceInfo) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(deviceInfo));
-    console.log('✅ Bluetooth 장치 정보 저장:', deviceInfo);
+    console.log("✅ Bluetooth 장치 정보 저장:", deviceInfo);
   } catch (error) {
-    console.error('❌ Bluetooth 장치 정보 저장 실패:', error);
+    console.error("❌ Bluetooth 장치 정보 저장 실패:", error);
   }
 }
 
@@ -32,7 +32,7 @@ export function getBluetoothDevice() {
     const data = localStorage.getItem(STORAGE_KEY);
     return data ? JSON.parse(data) : null;
   } catch (error) {
-    console.error('❌ Bluetooth 장치 정보 불러오기 실패:', error);
+    console.error("❌ Bluetooth 장치 정보 불러오기 실패:", error);
     return null;
   }
 }
@@ -43,9 +43,9 @@ export function getBluetoothDevice() {
 export function clearBluetoothDevice() {
   try {
     localStorage.removeItem(STORAGE_KEY);
-    console.log('🗑️ Bluetooth 장치 정보 삭제됨');
+    console.log("🗑️ Bluetooth 장치 정보 삭제됨");
   } catch (error) {
-    console.error('❌ Bluetooth 장치 정보 삭제 실패:', error);
+    console.error("❌ Bluetooth 장치 정보 삭제 실패:", error);
   }
 }
 

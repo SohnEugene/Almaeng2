@@ -1,6 +1,6 @@
 // src/contexts/BluetoothContext.jsx
-import React, { createContext, useContext, useEffect } from 'react';
-import { useBluetooth } from '../hooks/useBluetooth';
+import React, { createContext, useContext, useEffect } from "react";
+import { useBluetooth } from "../hooks/useBluetooth";
 
 // Context 생성
 const BluetoothContext = createContext(null);
@@ -20,7 +20,9 @@ export function BluetoothProvider({ children }) {
 export function useBluetoothContext() {
   const context = useContext(BluetoothContext);
   if (!context) {
-    throw new Error('useBluetoothContext must be used within a BluetoothProvider');
+    throw new Error(
+      "useBluetoothContext must be used within a BluetoothProvider",
+    );
   }
   return context;
 }

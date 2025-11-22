@@ -4,9 +4,9 @@
  * 제품 이미지 등 제품 관련 상수를 정의합니다.
  */
 
-import product1 from '../assets/images/products/product1.png';
-import product2 from '../assets/images/products/product2.png';
-import product3 from '../assets/images/products/product3.png';
+import product1 from "../assets/images/products/product1.png";
+import product2 from "../assets/images/products/product2.png";
+import product3 from "../assets/images/products/product3.png";
 
 /**
  * 제품 이미지 매핑

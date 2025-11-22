@@ -10,10 +10,10 @@ export default function RegisterView({
   return (
     <section className="management-panel">
       <div className="subpage-header">
-          <h2>새 키오스크 등록</h2>
-          <p className="panel-description">
-            Railway 백엔드에 키오스크를 등록하고 식별자를 저장합니다.
-          </p>
+        <h2>새 키오스크 등록</h2>
+        <p className="panel-description">
+          Railway 백엔드에 키오스크를 등록하고 식별자를 저장합니다.
+        </p>
       </div>
 
       {kioskInfo ? (
@@ -32,7 +32,8 @@ export default function RegisterView({
             <span className="info-id">ID: {kioskInfo.kid}</span>
           </div>
           <p className="info-notice">
-            새 키오스크를 등록하려면 먼저 현재 등록된 키오스크 정보를 삭제해야 합니다.
+            새 키오스크를 등록하려면 먼저 현재 등록된 키오스크 정보를 삭제해야
+            합니다.
           </p>
         </div>
       ) : (

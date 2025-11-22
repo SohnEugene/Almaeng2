@@ -1,26 +1,47 @@
 // src/components/ProductCard.jsx
 export default function ProductCard({ product, isSelected, onSelect }) {
-  const cardClassName = [
-    "productCard",
-    isSelected ? "productCardSelected" : "",
-  ]
+  const cardClassName = ["productCard", isSelected ? "productCardSelected" : ""]
     .join(" ")
     .trim();
 
+  // 원가 대비 절약률 계산
+  const calculateSavings = () => {
+    if (!product.original_price || !product.original_gram) return null;
+
+    const originalPricePerGram = product.original_price / product.original_gram;
+    const refillPricePerGram = product.price;
+    const savingsPercent = (
+      ((originalPricePerGram - refillPricePerGram) / originalPricePerGram) *
+      100
+    ).toFixed(0);
+
+    return {
+      originalPricePerGram: Math.round(originalPricePerGram),
+      savingsPercent: savingsPercent > 0 ? savingsPercent : 0,
+    };
+  };
+
+  const savings = calculateSavings();
+
   return (
     <div className={cardClassName} onClick={() => onSelect(product.pid)}>
-      <img
-        src={product.image_url || product.image || "/default-product.png"}
-        alt={product.name}
-        className="productCardImage"
-      />
+      <img src={product.image_url} className="productCardImage" />
       <div className="productCardInfo">
         <div className="productCardHeader">
           <div className="productCardName">{product.name}</div>
-          <div className="productCardPrice">₩{product.price} /g</div>
+          <div className="productCardPrice">₩{product.price}/g</div>
         </div>
         <div className="productCardDetail">{product.description}</div>
-        <div className="productCardCompare"></div>
+        {savings && (
+          <div className="productCardCompare">
+            <span className="productCardOriginalPrice">
+              원가: ₩{savings.originalPricePerGram} /g
+            </span>
+            <span className="productCardSavings">
+              {savings.savingsPercent}% 절약
+            </span>
+          </div>
+        )}
       </div>
     </div>
   );

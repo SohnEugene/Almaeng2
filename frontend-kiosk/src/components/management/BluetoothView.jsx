@@ -40,8 +40,8 @@ export default function BluetoothView({
             {isConnected
               ? "연결 해제"
               : isConnecting
-              ? "연결 중..."
-              : "저울 연결"}
+                ? "연결 중..."
+                : "저울 연결"}
           </button>
         </div>
       </div>

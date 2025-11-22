@@ -1,5 +1,6 @@
 // src/pages/ContainerCheckPage.jsx
 import Button from "../components/Button";
+import KioskHeader from "../components/KioskHeader";
 import { useSession } from "../contexts/SessionContext";
 
 export default function ContainerCheckPage({
@@ -21,39 +22,29 @@ export default function ContainerCheckPage({
     onNoContainer();
   };
 
-  const handleHomeClick = () => {
-    if (onHome) onHome();
-  };
-
   return (
     <div className="kiosk-page">
-      <div className="kiosk-header">
-        <button
-          type="button"
-          className="kiosk-home-button"
-          onClick={handleHomeClick}
-        >
-          처음 화면으로
-        </button>
-      </div>
+      <KioskHeader onHome={onHome} />
       <div className="kiosk-content">
         <div className="kiosk-content-header">
           <h1 className="kiosk-title">
-            리필에 사용할 용기를 가지고 계신가요?
+            리필에 사용할 용기를
+            <br />
+            가지고 계신가요?
           </h1>
         </div>
-        <div className="kiosk-content-footer">
-          <div className="kiosk-button-container">
-            <Button variant="double" onClick={handleNo}>
-              아니요, 용기가 없어요
-            </Button>
+      </div>
+      <div className="kiosk-footer">
+        <div className="kiosk-button-container">
+          <Button variant="double" onClick={handleNo}>
+            아니요, 용기가 없어요
+          </Button>
 
-            <Button variant="outlinedDouble" onClick={handleYes}>
-              네, 용기를 가져왔어요
-            </Button>
-          </div>
+          <Button variant="outlinedDouble" onClick={handleYes}>
+            네, 용기를 가져왔어요
+          </Button>
         </div>
-        </div>
+      </div>
     </div>
   );
 }

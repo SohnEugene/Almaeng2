@@ -31,7 +31,8 @@ export default function ProductsView({
         <div>
           <h2>제품 관리</h2>
           <p className="panel-description">
-            키오스크에 노출할 제품을 선택하세요. (현재 {kioskProducts.length}개 선택됨)
+            키오스크에 노출할 제품을 선택하세요. (현재 {kioskProducts.length}개
+            선택됨)
           </p>
         </div>
       </div>

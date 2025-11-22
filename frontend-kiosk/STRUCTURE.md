@@ -47,11 +47,13 @@ frontend-kiosk/
 ### 1. `src/main.jsx` - 애플리케이션 진입점
 
 **역할:**
+
 - React 앱을 DOM에 마운트
 - 전역 스타일 import
 - StrictMode 설정
 
 **파일 흐름:**
+
 ```
 index.html → main.jsx → App.jsx
 ```
@@ -61,11 +63,13 @@ index.html → main.jsx → App.jsx
 ### 2. `src/App.jsx` - 메인 앱 컴포넌트
 
 **역할:**
+
 - 페이지 라우팅 (페이지 전환 로직)
 - 전역 상태 관리 (BLE 연결 등)
 - 페이지 렌더링 제어
 
 **주요 상태:**
+
 - `currentPage`: 현재 표시 중인 페이지 번호
 - BLE 연결 상태 (useBluetooth Hook 사용)
 
@@ -75,15 +79,16 @@ index.html → main.jsx → App.jsx
 
 각 화면을 담당하는 컴포넌트들입니다.
 
-| 파일명 | 설명 | 주요 기능 |
-|--------|------|----------|
-| `HomePage.jsx` | 홈/인트로 화면 | 시작 버튼 |
-| `ProductSelectionPage.jsx` | 제품 선택 화면 | 제품 목록, 선택 |
-| `ContainerCheckPage.jsx` | 용기 확인 화면 | 용기 보유 여부 확인 |
-| `ContainerPurchaseModal.jsx` | 용기 구매 모달 | 다회용기 추가 |
-| `RefillStartPage.jsx` | 리필 시작 화면 | 무게 측정 시작 |
+| 파일명                       | 설명           | 주요 기능           |
+| ---------------------------- | -------------- | ------------------- |
+| `HomePage.jsx`               | 홈/인트로 화면 | 시작 버튼           |
+| `ProductSelectionPage.jsx`   | 제품 선택 화면 | 제품 목록, 선택     |
+| `ContainerCheckPage.jsx`     | 용기 확인 화면 | 용기 보유 여부 확인 |
+| `ContainerPurchaseModal.jsx` | 용기 구매 모달 | 다회용기 추가       |
+| `RefillStartPage.jsx`        | 리필 시작 화면 | 무게 측정 시작      |
 
 **특징:**
+
 - 한 화면 = 하나의 페이지 컴포넌트
 - `onNext` prop으로 페이지 전환
 - 인라인 스타일 사용
@@ -94,12 +99,13 @@ index.html → main.jsx → App.jsx
 
 여러 페이지에서 공통으로 사용되는 UI 컴포넌트들입니다.
 
-| 파일명 | 설명 | Props |
-|--------|------|-------|
-| `Button.jsx` | 버튼 컴포넌트 | `variant`, `onClick`, `disabled` |
-| `ProductCard.jsx` | 제품 카드 | `product`, `isSelected`, `onSelect` |
+| 파일명            | 설명          | Props                               |
+| ----------------- | ------------- | ----------------------------------- |
+| `Button.jsx`      | 버튼 컴포넌트 | `variant`, `onClick`, `disabled`    |
+| `ProductCard.jsx` | 제품 카드     | `product`, `isSelected`, `onSelect` |
 
 **사용 예시:**
+
 ```jsx
 <Button variant="primary" onClick={handleClick}>
   클릭
@@ -107,6 +113,7 @@ index.html → main.jsx → App.jsx
 ```
 
 **언제 추가해야 하나?**
+
 - ✅ 2개 이상의 페이지에서 사용
 - ✅ 독립적으로 재사용 가능
 - ✅ Props로 동작 제어 가능
@@ -117,16 +124,18 @@ index.html → main.jsx → App.jsx
 
 비즈니스 로직과 상태 관리를 캡슐화한 Hooks입니다.
 
-| 파일명 | 설명 | 반환값 |
-|--------|------|--------|
+| 파일명            | 설명                         | 반환값                                         |
+| ----------------- | ---------------------------- | ---------------------------------------------- |
 | `useBluetooth.js` | BLE 장치 연결 및 데이터 수신 | `{ weight, isConnected, connect, disconnect }` |
 
 **사용 예시:**
+
 ```jsx
 const { weight, isConnected, connect } = useBluetooth();
 ```
 
 **언제 추가해야 하나?**
+
 - ✅ 복잡한 상태 관리 로직
 - ✅ 여러 컴포넌트에서 재사용
 - ✅ 외부 API/장치 통신
@@ -137,18 +146,20 @@ const { weight, isConnected, connect } = useBluetooth();
 
 백엔드 API 통신 및 외부 서비스 연동을 담당합니다.
 
-| 파일명 | 설명 |
-|--------|------|
+| 파일명   | 설명                              |
+| -------- | --------------------------------- |
 | `api.js` | REST API 호출 함수들, Mock 데이터 |
 
 **주요 함수:**
+
 - `getProducts()`: 제품 목록 조회
 - `createOrder()`: 주문 생성
 - `getMockProducts()`: 개발용 Mock 데이터
 
 **사용 예시:**
+
 ```jsx
-import { getMockProducts } from '../services/api';
+import { getMockProducts } from "../services/api";
 
 const products = getMockProducts();
 ```
@@ -159,16 +170,18 @@ const products = getMockProducts();
 
 애플리케이션 전체에서 사용되는 상수들을 정의합니다.
 
-| 파일명 | 설명 |
-|--------|------|
+| 파일명         | 설명             |
+| -------------- | ---------------- |
 | `bluetooth.js` | BLE UUID, 설정값 |
 
 **사용 예시:**
+
 ```jsx
-import { SCALE_SERVICE_UUID } from '../constants/bluetooth';
+import { SCALE_SERVICE_UUID } from "../constants/bluetooth";
 ```
 
 **언제 추가해야 하나?**
+
 - ✅ 여러 곳에서 사용되는 고정값
 - ✅ 설정 값 (UUID, API URL 등)
 - ✅ Magic Number 제거
@@ -179,19 +192,21 @@ import { SCALE_SERVICE_UUID } from '../constants/bluetooth';
 
 순수 함수 형태의 헬퍼 함수들입니다.
 
-| 파일명 | 설명 |
-|--------|------|
+| 파일명          | 설명                             |
+| --------------- | -------------------------------- |
 | `formatters.js` | 데이터 포맷팅 (무게, 가격, 날짜) |
-| `validators.js` | 데이터 검증 (유효성 체크) |
+| `validators.js` | 데이터 검증 (유효성 체크)        |
 
 **사용 예시:**
+
 ```jsx
-import { formatWeight } from '../utils/formatters';
+import { formatWeight } from "../utils/formatters";
 
 const text = formatWeight(1250); // "1,250g"
 ```
 
 **언제 추가해야 하나?**
+
 - ✅ 순수 함수 (입력 → 출력)
 - ✅ UI와 무관한 로직
 - ✅ 여러 곳에서 재사용
@@ -200,15 +215,14 @@ const text = formatWeight(1250); // "1,250g"
 
 ### 9. `src/styles/` - 스타일 관리
 
-| 파일명 | 설명 |
-|--------|------|
+| 파일명       | 설명                      |
+| ------------ | ------------------------- |
 | `global.css` | 전역 CSS, CSS 변수, Reset |
 
 **CSS 변수 사용:**
+
 ```jsx
-<div style={{ color: 'var(--color-primary)' }}>
-  텍스트
-</div>
+<div style={{ color: "var(--color-primary)" }}>텍스트</div>
 ```
 
 ---
@@ -218,6 +232,7 @@ const text = formatWeight(1250); // "1,250g"
 이미지, 폰트, 비디오 등의 파일을 저장합니다.
 
 **권장 구조:**
+
 ```
 assets/
 ├── images/
@@ -228,10 +243,11 @@ assets/
 ```
 
 **사용 예시:**
-```jsx
-import logoImage from '../assets/images/logo.png';
 
-<img src={logoImage} alt="Logo" />
+```jsx
+import logoImage from "../assets/images/logo.png";
+
+<img src={logoImage} alt="Logo" />;
 ```
 
 ---
@@ -264,10 +280,10 @@ useBluetooth (BLE 로직)
 
 ```jsx
 // 컴포넌트에서
-import Button from '../components/Button';
-import { useBluetooth } from '../hooks/useBluetooth';
-import { formatWeight } from '../utils/formatters';
-import { SCALE_SERVICE_UUID } from '../constants/bluetooth';
+import Button from "../components/Button";
+import { useBluetooth } from "../hooks/useBluetooth";
+import { formatWeight } from "../utils/formatters";
+import { SCALE_SERVICE_UUID } from "../constants/bluetooth";
 ```
 
 ### Import 순서
@@ -278,11 +294,11 @@ import { SCALE_SERVICE_UUID } from '../constants/bluetooth';
 4. 스타일
 
 ```jsx
-import { useState } from 'react';              // 1. React
-import axios from 'axios';                     // 2. 외부 라이브러리
-import Button from '../components/Button';     // 3. 내부 모듈
-import { formatWeight } from '../utils/formatters';
-import './styles.css';                         // 4. 스타일
+import { useState } from "react"; // 1. React
+import axios from "axios"; // 2. 외부 라이브러리
+import Button from "../components/Button"; // 3. 내부 모듈
+import { formatWeight } from "../utils/formatters";
+import "./styles.css"; // 4. 스타일
 ```
 
 ---
