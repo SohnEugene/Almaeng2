@@ -1,18 +1,18 @@
 // src/App.jsx
-import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
-import HomePage from './pages/HomePage';
-import ProductSelectionPage from './pages/ProductSelectionPage';
-import ContainerCheckPage from './pages/ContainerCheckPage';
-import ContainerPurchasePage from './pages/ContainerPurchasePage';
-import RefillPage from './pages/RefillPage';
-import PaymentMethodPage from './pages/PaymentMethodPage';
-import PaymentProcessingPage from './pages/PaymentProcessingPage';
-import PaymentCompletePage from './pages/PaymentCompletePage';
-import ManagementPage from './pages/ManagementPage';
-import { useBluetooth } from './hooks/useBluetooth';
-import { BluetoothProvider } from './contexts/BluetoothContext';
-import { SessionProvider, useSession } from './contexts/SessionContext';
+import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import HomePage from "./pages/HomePage";
+import ProductSelectionPage from "./pages/ProductSelectionPage";
+import ContainerCheckPage from "./pages/ContainerCheckPage";
+import ContainerPurchasePage from "./pages/ContainerPurchasePage";
+import RefillPage from "./pages/RefillPage";
+import PaymentMethodPage from "./pages/PaymentMethodPage";
+import PaymentProcessingPage from "./pages/PaymentProcessingPage";
+import PaymentCompletePage from "./pages/PaymentCompletePage";
+import ManagementPage from "./pages/ManagementPage";
+import { useBluetooth } from "./hooks/useBluetooth";
+import { BluetoothProvider } from "./contexts/BluetoothContext";
+import { SessionProvider, useSession } from "./contexts/SessionContext";
 
 export default function App() {
   return (
@@ -32,7 +32,7 @@ export default function App() {
 // 키오스크 메인 플로우 컴포넌트
 function KioskFlow() {
   const navigate = useNavigate();
-  const [currentPage, setCurrentPage] = useState('home');
+  const [currentPage, setCurrentPage] = useState("home");
   const { resetSession } = useSession();
 
   // BLE 관련 상태와 함수 (커스텀 훅)
@@ -49,15 +49,15 @@ function KioskFlow() {
   // 페이지 전환 핸들러
   const goToNextPage = () => {
     const order = [
-      'home',
-      'product',
-      'container',
-      'container_purchase',
-      'refill',
-      'payment_method',
-      'payment_processing',
-      'payment_complete',
-      'ble_monitor',
+      "home",
+      "product",
+      "container",
+      "container_purchase",
+      "refill",
+      "payment_method",
+      "payment_processing",
+      "payment_complete",
+      "ble_monitor",
     ];
     const nextIndex = order.indexOf(currentPage) + 1;
     if (nextIndex < order.length) setCurrentPage(order[nextIndex]);
@@ -68,47 +68,45 @@ function KioskFlow() {
   };
 
   const resetToHome = () => {
-    console.log('🏠 resetToHome 호출됨 - 세션 초기화');
+    console.log("🏠 resetToHome 호출됨 - 세션 초기화");
     resetSession();
-    setCurrentPage('home');
+    setCurrentPage("home");
   };
 
   // 페이지 맵 정의
   const pages = {
     home: <HomePage onNext={goToNextPage} />,
     product: (
-      <ProductSelectionPage
-        onNext={goToNextPage}
-        onHome={resetToHome}
-      />
+      <ProductSelectionPage onNext={goToNextPage} onHome={resetToHome} />
     ),
     container: (
       <ContainerCheckPage
-        onHasContainer={() => goToPage('refill')}
-        onNoContainer={() => goToPage('container_purchase')}
+        onHasContainer={() => goToPage("refill")}
+        onNoContainer={() => goToPage("container_purchase")}
         onHome={resetToHome}
       />
     ),
     container_purchase: (
       <ContainerPurchasePage
-        onYes={() => goToPage('refill')}
-        onNo={() => goToPage('refill')}
+        onYes={() => goToPage("refill")}
+        onNo={() => goToPage("refill")}
         onHome={resetToHome}
       />
     ),
-    refill: <RefillPage onNext={goToNextPage} onReset={resetToHome} />,
-    payment_method: (
-      <PaymentMethodPage
+    refill: (
+      <RefillPage
         onNext={goToNextPage}
-        onBack={() => goToPage('refill')}
+        onReset={resetToHome}
+        onHome={resetToHome}
       />
     ),
+    payment_method: (
+      <PaymentMethodPage onNext={goToNextPage} onHome={resetToHome} />
+    ),
     payment_processing: (
-      <PaymentProcessingPage onNext={goToNextPage} />
+      <PaymentProcessingPage onNext={goToNextPage} onHome={resetToHome} />
     ),
-    payment_complete: (
-      <PaymentCompletePage onReset={resetToHome} />
-    ),
+    payment_complete: <PaymentCompletePage onReset={resetToHome} />,
     ble_monitor: (
       <BleMonitorPage
         isConnected={isConnected}
@@ -144,17 +142,17 @@ function BleMonitorPage({
       <div style={{ marginBottom: 20 }}>
         {!isConnected ? (
           <button onClick={connect} disabled={isConnecting}>
-            {isConnecting ? 'Connecting...' : 'Connect to Scale'}
+            {isConnecting ? "Connecting..." : "Connect to Scale"}
           </button>
         ) : (
           <button onClick={disconnect}>Disconnect</button>
         )}
       </div>
 
-      {error && <div style={{ color: 'red' }}>Error: {error}</div>}
+      {error && <div style={{ color: "red" }}>Error: {error}</div>}
 
       <div>
-        Status: <strong>{isConnected ? 'Connected' : 'Disconnected'}</strong>
+        Status: <strong>{isConnected ? "Connected" : "Disconnected"}</strong>
       </div>
 
       {deviceName && (

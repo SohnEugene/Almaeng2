@@ -8,7 +8,8 @@
  * API 기본 URL
  * @constant {string}
  */
-export const BASE_URL = import.meta.env.VITE_BASE_URL || 'http://localhost:8000/api';
+export const BASE_URL =
+  import.meta.env.VITE_BASE_URL || "http://localhost:8000/api";
 
 /**
  * HTTP 요청 헬퍼 함수
@@ -18,13 +19,13 @@ export const BASE_URL = import.meta.env.VITE_BASE_URL || 'http://localhost:8000/
  * @param {'json' | 'blob'} responseType - 응답 타입 (기본값: 'json')
  * @returns {Promise<Object | Blob>} 응답 데이터
  */
-export async function request(endpoint, options = {}, responseType = 'json') {
-  console.log('API Request to:', `${BASE_URL}${endpoint}`);
+export async function request(endpoint, options = {}, responseType = "json") {
+  console.log("API Request to:", `${BASE_URL}${endpoint}`);
   const url = `${BASE_URL}${endpoint}`;
 
   const config = {
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       ...options.headers,
     },
     ...options,
@@ -35,9 +36,9 @@ export async function request(endpoint, options = {}, responseType = 'json') {
 
     if (!response.ok) {
       // Try to get error details from response body
-      let errorDetail = '';
+      let errorDetail = "";
       try {
-        if (responseType === 'json') {
+        if (responseType === "json") {
           const errorData = await response.json();
           errorDetail = errorData.detail || JSON.stringify(errorData);
         } else {
@@ -47,17 +48,19 @@ export async function request(endpoint, options = {}, responseType = 'json') {
         errorDetail = `Failed to parse error response: ${e.message}`;
       }
 
-      console.error('API Error Details:', errorDetail);
-      throw new Error(`HTTP Error: ${response.status} ${response.statusText} - ${errorDetail}`);
+      console.error("API Error Details:", errorDetail);
+      throw new Error(
+        `HTTP Error: ${response.status} ${response.statusText} - ${errorDetail}`,
+      );
     }
 
-    if (responseType === 'blob') {
+    if (responseType === "blob") {
       return await response.blob();
     } else {
       return await response.json();
     }
   } catch (error) {
-    console.error('API Request Error:', error);
+    console.error("API Request Error:", error);
     throw error;
   }
 }

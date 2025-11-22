@@ -4,17 +4,17 @@
  * 관리자 정보를 localStorage에 저장/조회/삭제합니다.
  */
 
-const STORAGE_KEY = 'manager_info';
+const STORAGE_KEY = "manager_info";
 
 /**
  * 관리자 정보 매핑
  */
 export const MANAGERS = {
-  KIM: { code: 'KIM', name: '김나현' },
-  SOHN: { code: 'SOHN', name: '손유진' },
-  AHN: { code: 'AHN', name: '안유경' },
-  LEE: { code: 'LEE', name: '이지현' },
-  HWANG: { code: 'HWANG', name: '황지현' }
+  KIM: { code: "KIM", name: "김나현" },
+  SOHN: { code: "SOHN", name: "손유진" },
+  AHN: { code: "AHN", name: "안유경" },
+  LEE: { code: "LEE", name: "이지현" },
+  HWANG: { code: "HWANG", name: "황지현" },
 };
 
 /**
@@ -28,9 +28,9 @@ export function saveManagerInfo(managerCode) {
       throw new Error(`Invalid manager code: ${managerCode}`);
     }
     localStorage.setItem(STORAGE_KEY, managerCode);
-    console.log('✅ 관리자 정보 저장 완료:', MANAGERS[managerCode].name);
+    console.log("✅ 관리자 정보 저장 완료:", MANAGERS[managerCode].name);
   } catch (error) {
-    console.error('❌ 관리자 정보 저장 실패:', error);
+    console.error("❌ 관리자 정보 저장 실패:", error);
     throw error;
   }
 }
@@ -45,7 +45,7 @@ export function getManagerCode() {
     const code = localStorage.getItem(STORAGE_KEY);
     return code || null;
   } catch (error) {
-    console.error('❌ 관리자 정보 조회 실패:', error);
+    console.error("❌ 관리자 정보 조회 실패:", error);
     return null;
   }
 }
@@ -75,9 +75,9 @@ export function isManagerSet() {
 export function clearManagerInfo() {
   try {
     localStorage.removeItem(STORAGE_KEY);
-    console.log('🗑️ 관리자 정보 삭제 완료');
+    console.log("🗑️ 관리자 정보 삭제 완료");
   } catch (error) {
-    console.error('❌ 관리자 정보 삭제 실패:', error);
+    console.error("❌ 관리자 정보 삭제 실패:", error);
     throw error;
   }
 }

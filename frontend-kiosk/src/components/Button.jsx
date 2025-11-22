@@ -1,6 +1,4 @@
 // src/components/Button.jsx
-import styles from "../styles/components.module.css";
-
 export default function Button({
   children,
   onClick,
@@ -10,14 +8,14 @@ export default function Button({
 }) {
   const variantClass =
     {
-      primary: styles.buttonPrimary,
-      outlined: styles.buttonOutlined,
-      double: styles.buttonDouble,
-      outlinedDouble: styles.buttonOutlinedDouble,
-      small: styles.buttonSmall,
-    }[variant] || styles.buttonPrimary;
+      primary: "buttonPrimary",
+      outlined: "buttonOutlined",
+      double: "buttonDouble",
+      outlinedDouble: "buttonOutlinedDouble",
+      small: "buttonSmall",
+    }[variant] || "buttonPrimary";
 
-  const classNames = [styles.button, variantClass].join(" ");
+  const classNames = ["button", variantClass].join(" ");
 
   return (
     <button

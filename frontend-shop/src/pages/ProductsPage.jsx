@@ -14,6 +14,8 @@ function ProductsPage() {
     name: '',
     description: '',
     price: '',
+    original_price: '',
+    original_gram: '',
     image_url: '',
   });
   const [imageFile, setImageFile] = useState(null);
@@ -43,6 +45,8 @@ function ProductsPage() {
         name: product.name,
         description: product.description || '',
         price: product.price,
+        original_price: product.original_price || '',
+        original_gram: product.original_gram || '',
         image_url: product.image_url || '',
       });
       setImagePreview(product.image_url || null);
@@ -52,6 +56,8 @@ function ProductsPage() {
         name: '',
         description: '',
         price: '',
+        original_price: '',
+        original_gram: '',
         image_url: '',
       });
       setImagePreview(null);
@@ -67,6 +73,8 @@ function ProductsPage() {
       name: '',
       description: '',
       price: '',
+      original_price: '',
+      original_gram: '',
       image_url: '',
     });
     setImageFile(null);
@@ -93,6 +101,8 @@ function ProductsPage() {
         name: formData.name,
         description: formData.description,
         price: Number(formData.price),
+        original_price: formData.original_price !== '' ? Number(formData.original_price) : null,
+        original_gram: formData.original_gram !== '' ? Number(formData.original_gram) : null,
         image_url: formData.image_url || '',
       };
 
@@ -105,7 +115,6 @@ function ProductsPage() {
         productId = result.pid;
       }
 
-      // Upload image if selected
       if (imageFile && productId) {
         await uploadProductImage(productId, imageFile);
       }
@@ -199,6 +208,7 @@ function ProductsPage() {
                   required
                 />
               </div>
+
               <div className={styles.formGroup}>
                 <label>Description</label>
                 <textarea
@@ -207,6 +217,7 @@ function ProductsPage() {
                   rows={3}
                 />
               </div>
+
               <div className={styles.formGroup}>
                 <label>Price per gram (won) *</label>
                 <input
@@ -217,6 +228,27 @@ function ProductsPage() {
                   min="0"
                 />
               </div>
+
+              <div className={styles.formGroup}>
+                <label>Original Price (won)</label>
+                <input
+                  type="number"
+                  value={formData.original_price}
+                  onChange={(e) => setFormData({ ...formData, original_price: e.target.value })}
+                  min="0"
+                />
+              </div>
+
+              <div className={styles.formGroup}>
+                <label>Original Gram (g)</label>
+                <input
+                  type="number"
+                  value={formData.original_gram}
+                  onChange={(e) => setFormData({ ...formData, original_gram: e.target.value })}
+                  min="0"
+                />
+              </div>
+
               <div className={styles.formGroup}>
                 <label>Product Image</label>
                 <input
@@ -230,6 +262,7 @@ function ProductsPage() {
                   </div>
                 )}
               </div>
+
               <div className={styles.modalActions}>
                 <Button type="button" variant="secondary" onClick={handleCloseModal}>
                   Cancel

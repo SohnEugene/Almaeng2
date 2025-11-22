@@ -4,7 +4,7 @@
  * 키오스크 관련 API 호출 함수를 제공합니다.
  */
 
-import { request } from './client.js';
+import { request } from "./client.js";
 
 /**
  * 키오스크 등록
@@ -23,8 +23,8 @@ import { request } from './client.js';
  * console.log(response.kid); // 'kiosk_001'
  */
 export async function createKiosk(kioskData) {
-  return request('/kiosks/', {
-    method: 'POST',
+  return request("/kiosks/", {
+    method: "POST",
     body: JSON.stringify(kioskData),
   });
 }
@@ -60,7 +60,7 @@ export async function getKioskProducts(kioskId) {
  */
 export async function addProductToKiosk(kioskId, productId) {
   return request(`/kiosks/${kioskId}/products`, {
-    method: 'POST',
+    method: "POST",
     body: JSON.stringify({ pid: productId }),
   });
 }
@@ -79,6 +79,6 @@ export async function addProductToKiosk(kioskId, productId) {
  */
 export async function removeProductFromKiosk(kioskId, productId) {
   return request(`/kiosks/${kioskId}/products/${productId}`, {
-    method: 'DELETE',
+    method: "DELETE",
   });
 }

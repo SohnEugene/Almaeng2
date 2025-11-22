@@ -1,7 +1,9 @@
 // src/pages/ContainerPurchasePage.jsx
 import Button from "../components/Button";
-import styles from "../styles/pages.module.css";
+import KioskHeader from "../components/KioskHeader";
+import "../styles/pages.css";
 import { useSession } from "../contexts/SessionContext";
+import bottlesImage from "../assets/images/bottles.png";
 
 export default function ContainerPurchasePage({ onYes, onNo, onHome }) {
   const { setPurchaseContainer } = useSession();
@@ -18,34 +20,22 @@ export default function ContainerPurchasePage({ onYes, onNo, onHome }) {
     onNo();
   };
 
-  const handleHomeClick = () => {
-    if (onHome) onHome();
-  };
-
   return (
-    <div className={styles.containerPurchaseContainer}>
-      <div className={styles.containerPurchaseHeader}>
-        <button
-          type="button"
-          className={styles.headerHomeButton}
-          onClick={handleHomeClick}
-        >
-          home
-        </button>
-      </div>
-      <div className={styles.containerPurchaseContent}>
-        <img src="bottles.png" alt="" />
+    <div className="kiosk-page">
+      <KioskHeader onHome={onHome} />
+      <div className="kiosk-content">
+        <img className="bottle-image" src={bottlesImage} alt="" />
 
-        <div className={styles.containerPurchaseText}>
-          미니리필 전용 다회용기
-          <span className={styles.purchaseTextDetail}> 500원</span>
+        <div className="kiosk-title">
+          리필 전용 다회용기를
           <br />
-          장바구니에 추가하시겠어요?
+          추가하시겠어요?
         </div>
-
-        <div className={styles.containerPurchaseButtons}>
+      </div>
+      <div className="kiosk-footer">
+        <div className="kiosk-button-container">
           <Button variant="double" onClick={handlePurchase}>
-            추가하기
+            추가하기 (500원)
           </Button>
 
           <Button onClick={handleSkip} variant="outlinedDouble">

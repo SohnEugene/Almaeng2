@@ -1,0 +1,312 @@
+/**
+ * Pages Module CSS
+ * 페이지별 고유 스타일만 정의합니다.
+ * 공통 레이아웃/타이틀/버튼은 global.css의 kiosk-* 클래스를 사용하세요.
+ */
+
+/* ============================================================
+   HomePage
+   ============================================================ */
+
+.homeContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: var(--color-white);
+}
+
+.homeHeader {
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  flex: 1;
+  padding: 32px;
+}
+
+.homeLogo {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  font-size: 32px;
+}
+
+.logo1 {
+  width: 160px;
+  height: auto;
+}
+
+.logo2 {
+  width: 60px;
+  height: auto;
+}
+
+.homeContent {
+  display: flex;
+  flex: 11;
+  overflow: hidden;
+}
+
+.homeContent img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.homeFooter {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 2;
+  padding: 32px;
+}
+
+/* ============================================================
+   PaymentMethodPage
+   ============================================================ */
+
+.payment-button-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 32px;
+  height: 100%;
+}
+
+.paymentMethodButton {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60vw;
+  height: 200px;
+  padding: 0;
+  background-color: var(--color-white);
+  border: 3px solid var(--color-gray-light);
+  border-radius: 64px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.paymentMethodButtonSelected {
+  border-color: var(--color-primary);
+}
+
+.paymentMethodImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ============================================================
+   PaymentProcessingPage
+   ============================================================ */
+
+.paymentProcessingContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: var(--spacing-2xl);
+  background-color: var(--color-white);
+}
+
+.paymentProcessingContent {
+  width: 100%;
+  max-width: 500px;
+  text-align: center;
+}
+
+.paymentProcessingText {
+  margin-bottom: var(--spacing-2xl);
+  font-size: 36px;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-gray-900);
+}
+
+.paymentProcessingAction {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--spacing-2xl);
+}
+
+.qr-image {
+  width: 50vw;
+  height: 50vw;
+}
+
+/* ============================================================
+   PaymentCompletePage
+   ============================================================ */
+
+.paymentCompleteContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: var(--spacing-2xl);
+  background: linear-gradient(135deg, #ff9d8f 0%, #ffb5a7 100%);
+}
+
+.paymentCompleteContent {
+  width: 100%;
+  max-width: 600px;
+  text-align: center;
+}
+
+.paymentCompleteMainText {
+  margin-bottom: var(--spacing-xl);
+  font-size: 56px;
+  font-weight: var(--font-weight-extrabold);
+  color: var(--color-white);
+  line-height: 1.3;
+}
+
+.paymentCompleteSubText {
+  margin-bottom: 120px;
+  font-size: var(--font-size-2xl);
+  color: var(--color-white);
+  opacity: 0.95;
+  line-height: 1.5;
+}
+
+.paymentCompleteAction {
+  display: flex;
+  justify-content: center;
+}
+
+/* ============================================================
+   RefillPage
+   ============================================================ */
+
+.scale-image {
+  width: 40vw;
+  margin-top: 48px;
+}
+
+.refillWeightDisplay {
+  padding: 16px 32px;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 48px;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--color-white);
+}
+
+.refillPricePreview {
+  display: flex;
+  flex-direction: row;
+  margin-top: -8px;
+  padding: 16px 32px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 50px;
+  text-align: center;
+}
+
+.refillPriceCalculation {
+  font-size: 24px;
+  color: var(--color-white);
+  opacity: 0.9;
+}
+
+.refillPriceTotal {
+  font-size: 24px;
+  font-weight: 900;
+  color: var(--color-white);
+}
+
+/* ============================================================
+   ContainerPurchasePage
+   ============================================================ */
+
+.bottle-image {
+  width: 50vw;
+}
+
+/* ============================================================
+   ProductSelectionPage & ProductCard
+   ============================================================ */
+
+.productCard {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 220px;
+  margin-bottom: 24px;
+  padding: 16px;
+  background-color: var(--color-white);
+  border: 2px solid var(--color-gray-light);
+  border-radius: 16px;
+  cursor: pointer;
+}
+
+.productCardSelected {
+  background-color: var(--color-primary-light);
+  border-color: var(--color-primary);
+}
+
+.productCardImage {
+  height: 100%;
+  margin-right: 24px;
+  border-radius: 16px;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+}
+
+.productCardInfo {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 8px;
+  height: 100%;
+}
+
+.productCardHeader {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.productCardName {
+  flex: 7;
+  margin-bottom: 16px;
+  font-size: 32px;
+  font-weight: var(--font-weight-bold);
+}
+
+.productCardPrice {
+  flex: 3;
+  font-size: 32px;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+  text-align: right;
+}
+
+.productCardDetail {
+  font-size: 20px;
+  color: var(--color-gray-dark);
+}
+
+.productCardCompare {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: auto;
+}
+
+.productCardOriginalPrice {
+  font-size: 20px;
+  color: var(--color-text-muted);
+  text-decoration: line-through;
+}
+
+.productCardSavings {
+  padding: 4px 12px;
+  background: rgba(34, 197, 94, 0.1);
+  border-radius: 8px;
+  font-size: 20px;
+  font-weight: var(--font-weight-bold);
+  color: #22c55e;
+}

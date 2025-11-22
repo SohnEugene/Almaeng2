@@ -10,12 +10,13 @@ import { request } from "./client.js";
  * 전체 제품 목록 조회
  *
  * @async
- * @returns {Promise<Array<Product>>} 제품 목록 [{ pid, name, price, description, image_url, tags }]
+ * @returns {Promise<Array<Product>>} 제품 목록 [{ pid, name, price, description, image_url, tags, original_price, original_gram }]
  *
  * @example
  * const products = await getProducts();
  * products.forEach(product => {
  *   console.log(product.pid, product.name, product.price);
+ *   console.log('원가:', product.original_price, '원래 용량:', product.original_gram);
  * });
  */
 export async function getProducts() {
@@ -27,11 +28,12 @@ export async function getProducts() {
  *
  * @async
  * @param {string} productId - 제품 ID (pid)
- * @returns {Promise<Product>} 제품 상세 정보 { pid, name, price, description, image_url, tags }
+ * @returns {Promise<Product>} 제품 상세 정보 { pid, name, price, description, image_url, tags, original_price, original_gram }
  *
  * @example
  * const product = await getProductById('prod_001');
  * console.log(product.name, product.price);
+ * console.log('원가:', product.original_price, '원래 용량:', product.original_gram);
  */
 export async function getProductById(productId) {
   return request(`/products/${productId}`);

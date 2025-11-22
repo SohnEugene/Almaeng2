@@ -1,34 +1,47 @@
 // src/components/ProductCard.jsx
-import styles from "../styles/components.module.css";
-
 export default function ProductCard({ product, isSelected, onSelect }) {
-  // CSS 모듈 클래스 조합
-  const cardClassName = [
-    styles.productCard,
-    isSelected ? styles.productCardSelected : "",
-  ]
+  const cardClassName = ["productCard", isSelected ? "productCardSelected" : ""]
     .join(" ")
     .trim();
 
+  // 원가 대비 절약률 계산
+  const calculateSavings = () => {
+    if (!product.original_price || !product.original_gram) return null;
+
+    const originalPricePerGram = product.original_price / product.original_gram;
+    const refillPricePerGram = product.price;
+    const savingsPercent = (
+      ((originalPricePerGram - refillPricePerGram) / originalPricePerGram) *
+      100
+    ).toFixed(0);
+
+    return {
+      originalPricePerGram: Math.round(originalPricePerGram),
+      savingsPercent: savingsPercent > 0 ? savingsPercent : 0,
+    };
+  };
+
+  const savings = calculateSavings();
+
   return (
     <div className={cardClassName} onClick={() => onSelect(product.pid)}>
-      <img
-        src={product.image_url || product.image || "/default-product.png"}
-        alt={product.name}
-        className={styles.productCardImage}
-      />
-      <div className={styles.productCardInfo}>
-        <div className={styles.productCardBrand}>{product.brand || ""}</div>
-        <div className={styles.productCardName}>{product.name}</div>
-        <div className={styles.productCardBrand}>{product.detail}</div>
-      </div>
-      <div className={styles.productCardPriceContainer}>
-        {product.originalPrice && (
-          <span className={styles.productCardOriginalPrice}>
-            {product.originalPrice}
-          </span>
+      <img src={product.image_url} className="productCardImage" />
+      <div className="productCardInfo">
+        <div className="productCardHeader">
+          <div className="productCardName">{product.name}</div>
+          <div className="productCardPrice">₩{product.price}/g</div>
+        </div>
+        <div className="productCardDetail">{product.description}</div>
+        {savings && (
+          <div className="productCardCompare">
+            <span className="productCardOriginalPrice">
+              원가: ₩{savings.originalPricePerGram} /g
+            </span>
+            <span className="productCardSavings">
+              {savings.savingsPercent}% 절약
+            </span>
+          </div>
         )}
-        <span className={styles.productCardPrice}>₩{product.price} /g</span>
       </div>
     </div>
   );

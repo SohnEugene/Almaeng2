@@ -1,20 +1,23 @@
 import Button from "../components/Button";
-import styles from "../styles/pages.module.css";
+import "../styles/pages.css";
+import coverImage from "../assets/images/cover.png";
+import logoBlack from "../assets/images/logo_black.png";
+import almangLogo from "../assets/images/almang_logo.png";
 
 export default function HomePage({ onNext }) {
   return (
-    <div className={styles.homeContainer}>
-      <div className={styles.homeHeader}>
-        <div className={styles.homeLogo}>
-          <img src="logo_black.png" className={styles.logo1} alt="logo1" />
+    <div className="homeContainer">
+      <div className="homeHeader">
+        <div className="homeLogo">
+          <img src={logoBlack} className="logo1" alt="logo1" />
           <span>×</span>
-          <img src="almang_logo.png" className={styles.logo2} alt="" />
+          <img src={almangLogo} className="logo2" alt="" />
         </div>
       </div>
-      <div className={styles.homeContent}>
-        <img src="ad_image.png" alt="광고 이미지" />
+      <div className="homeContent">
+        <img src={coverImage} alt="Cover" />
       </div>
-      <div className={styles.homeFooter}>
+      <div className="homeFooter">
         <Button onClick={onNext}>리필 시작</Button>
       </div>
     </div>

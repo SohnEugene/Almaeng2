@@ -1,17 +1,18 @@
 // src/pages/PaymentMethodPage.jsx
-import { useState } from 'react';
-import styles from '../styles/pages.module.css';
-import kakaoPayImage from '../assets/images/kakaopay.png';
-import tossPayImage from '../assets/images/tosspay.png';
-import { useSession } from '../contexts/SessionContext';
-import Button from '../components/Button';
+import { useState } from "react";
+import "../styles/pages.css";
+import kakaoPayImage from "../assets/images/kakaopay.png";
+import tossPayImage from "../assets/images/tosspay.png";
+import { useSession } from "../contexts/SessionContext";
+import Button from "../components/Button";
+import KioskHeader from "../components/KioskHeader";
 
 const PAYMENT_METHODS = {
-  KAKAO: 'kakaopay',
-  TOSS: 'tosspay',
+  KAKAO: "kakaopay",
+  TOSS: "tosspay",
 };
 
-export default function PaymentMethodPage({ onNext, onBack }) {
+export default function PaymentMethodPage({ onNext, onHome }) {
   const { setPaymentMethod } = useSession();
   const [selectedMethod, setSelectedMethod] = useState(null);
 
@@ -27,72 +28,57 @@ export default function PaymentMethodPage({ onNext, onBack }) {
   };
 
   return (
-    <div className={styles.paymentMethodContainer}>
-      <div className={styles.paymentMethodHeader}>
-        <button className={styles.paymentMethodBackButton} onClick={onBack}>
-          ←
-        </button>
-      </div>
+    <div className="kiosk-page">
+      <KioskHeader onHome={onHome} />
 
-      <div className={styles.paymentMethodContent}>
-        <h1 className={styles.paymentMethodTitle}>결제 수단</h1>
+      <div className="kiosk-content">
+        <div className="kiosk-content-header">
+          <h1 className="kiosk-title">결제 수단</h1>
+          <div className="kiosk-subtitle">간편한 QR 송금으로 결제할게요!</div>
+        </div>
 
-        <div className={styles.paymentMethodOptions}>
-          {/* 카카오페이 결제 */}
+        <div className="payment-button-container">
           <button
-            className={`${styles.paymentMethodButton} ${
-              selectedMethod === PAYMENT_METHODS.KAKAO ? styles.paymentMethodButtonSelected : ''
+            className={`paymentMethodButton ${
+              selectedMethod === PAYMENT_METHODS.KAKAO
+                ? "paymentMethodButtonSelected"
+                : ""
             }`}
             onClick={() => handleMethodSelect(PAYMENT_METHODS.KAKAO)}
           >
-            <div className={styles.paymentMethodButtonContent}>
-              <img
-                src={kakaoPayImage}
-                alt="카카오페이"
-                className={styles.paymentMethodImage}
-              />
-              <span className={styles.paymentMethodButtonText}>카카오페이</span>
-            </div>
-            {selectedMethod === PAYMENT_METHODS.KAKAO && (
-              <span className={styles.paymentMethodCheckmark}>✓</span>
-            )}
+            <img
+              src={kakaoPayImage}
+              alt="카카오페이"
+              className="paymentMethodImage"
+            />
           </button>
 
           {/* 토스페이 결제 */}
           <button
-            className={`${styles.paymentMethodButton} ${
-              selectedMethod === PAYMENT_METHODS.TOSS ? styles.paymentMethodButtonSelected : ''
+            className={`paymentMethodButton ${
+              selectedMethod === PAYMENT_METHODS.TOSS
+                ? "paymentMethodButtonSelected"
+                : ""
             }`}
             onClick={() => handleMethodSelect(PAYMENT_METHODS.TOSS)}
           >
-            <div className={styles.paymentMethodButtonContent}>
-              <img
-                src={tossPayImage}
-                alt="토스페이"
-                className={styles.paymentMethodImage}
-              />
-              <span className={styles.paymentMethodButtonText}>토스페이</span>
-            </div>
-            {selectedMethod === PAYMENT_METHODS.TOSS && (
-              <span className={styles.paymentMethodCheckmark}>✓</span>
-            )}
+            <img
+              src={tossPayImage}
+              alt="토스페이"
+              className="paymentMethodImage"
+            />
           </button>
         </div>
-
-        <div className={styles.paymentMethodActions}>
-          <Button
-            variant="primary"
-            size="large"
-            onClick={handleNext}
-            disabled={!selectedMethod}
-          >
-            다음
-          </Button>
-        </div>
-
-        <div className={styles.paymentMethodFooter}>
-          <div className={styles.paymentMethodLogo}>ALMAENG</div>
-        </div>
+      </div>
+      <div className="kiosk-footer">
+        <Button
+          variant="primary"
+          size="large"
+          onClick={handleNext}
+          disabled={!selectedMethod}
+        >
+          선택 완료
+        </Button>
       </div>
     </div>
   );

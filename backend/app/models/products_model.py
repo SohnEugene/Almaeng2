@@ -9,6 +9,8 @@ class Product(BaseModel):
     description: str = ""
     image_url: str = ""
     tags: List[str] = []
+    original_price: Optional[int] = None
+    original_gram: Optional[int] = None
 
 
 class RegisterProductRequest(BaseModel):
@@ -18,6 +20,8 @@ class RegisterProductRequest(BaseModel):
     description: str = ""
     image_url: str = ""
     tags: List[str] = []
+    original_price: Optional[int] = None
+    original_gram: Optional[int] = None
 
 
 class RegisterProductResponse(BaseModel):

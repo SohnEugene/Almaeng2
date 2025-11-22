@@ -4,7 +4,7 @@
  * 결제 관련 API 호출 함수를 제공합니다.
  */
 
-import { request } from './client.js';
+import { request } from "./client.js";
 
 /**
  * 결제 준비 (Kakao Pay / Toss Pay)
@@ -34,8 +34,8 @@ import { request } from './client.js';
  * });
  */
 export async function preparePayment(paymentData) {
-  return request('/payments/', {
-    method: 'POST',
+  return request("/payments/", {
+    method: "POST",
     body: JSON.stringify(paymentData),
   });
 }
@@ -54,8 +54,8 @@ export async function preparePayment(paymentData) {
  * });
  */
 export async function approvePayment(approvalData) {
-  return request('/payments/approve', {
-    method: 'POST',
+  return request("/payments/approve", {
+    method: "POST",
     body: JSON.stringify(approvalData),
   });
 }

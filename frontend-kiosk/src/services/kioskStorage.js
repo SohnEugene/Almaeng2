@@ -4,7 +4,7 @@
  * 키오스크 등록 정보를 localStorage에 저장/조회/삭제합니다.
  */
 
-const STORAGE_KEY = 'kiosk_info';
+const STORAGE_KEY = "kiosk_info";
 
 /**
  * 키오스크 정보를 localStorage에 저장
@@ -17,9 +17,9 @@ const STORAGE_KEY = 'kiosk_info';
 export function saveKioskInfo(kioskInfo) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(kioskInfo));
-    console.log('✅ 키오스크 정보 저장 완료:', kioskInfo);
+    console.log("✅ 키오스크 정보 저장 완료:", kioskInfo);
   } catch (error) {
-    console.error('❌ 키오스크 정보 저장 실패:', error);
+    console.error("❌ 키오스크 정보 저장 실패:", error);
     throw error;
   }
 }
@@ -37,7 +37,7 @@ export function getKioskInfo() {
     }
     return JSON.parse(data);
   } catch (error) {
-    console.error('❌ 키오스크 정보 조회 실패:', error);
+    console.error("❌ 키오스크 정보 조회 실패:", error);
     return null;
   }
 }
@@ -58,9 +58,9 @@ export function isKioskRegistered() {
 export function clearKioskInfo() {
   try {
     localStorage.removeItem(STORAGE_KEY);
-    console.log('🗑️ 키오스크 정보 삭제 완료');
+    console.log("🗑️ 키오스크 정보 삭제 완료");
   } catch (error) {
-    console.error('❌ 키오스크 정보 삭제 실패:', error);
+    console.error("❌ 키오스크 정보 삭제 실패:", error);
     throw error;
   }
 }
@@ -75,4 +75,3 @@ export function getKioskId() {
   console.log(info);
   return info ? info.kid : null;
 }
-

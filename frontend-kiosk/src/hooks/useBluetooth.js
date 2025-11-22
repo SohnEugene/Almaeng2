@@ -12,9 +12,13 @@
  * @version 1.0.0
  */
 
-import { useState, useRef, useCallback } from 'react';
-import { SCALE_SERVICE_UUID, SCALE_CHAR_UUID } from '../constants/bluetooth';
-import { saveBluetoothDevice, clearBluetoothDevice, getBluetoothDevice } from '../services/bluetoothStorage';
+import { useState, useRef, useCallback } from "react";
+import { SCALE_SERVICE_UUID, SCALE_CHAR_UUID } from "../constants/bluetooth";
+import {
+  saveBluetoothDevice,
+  clearBluetoothDevice,
+  getBluetoothDevice,
+} from "../services/bluetoothStorage";
 
 /**
  * useBluetooth - BLE 장치 연결 및 데이터 수신을 위한 React Hook
@@ -81,13 +85,16 @@ export function useBluetooth({ saveToStorage = false } = {}) {
   const disconnect = useCallback(() => {
     // 이벤트 리스너 정리
     if (deviceRef.current && disconnectHandlerRef.current) {
-      deviceRef.current.removeEventListener('gattserverdisconnected', disconnectHandlerRef.current);
+      deviceRef.current.removeEventListener(
+        "gattserverdisconnected",
+        disconnectHandlerRef.current,
+      );
       disconnectHandlerRef.current = null;
     }
 
     // GATT 연결 해제
     if (deviceRef.current?.gatt?.connected) {
-      console.log('🔌 Disconnecting from device...');
+      console.log("🔌 Disconnecting from device...");
       deviceRef.current.gatt.disconnect();
     }
 
@@ -130,11 +137,11 @@ export function useBluetooth({ saveToStorage = false } = {}) {
   const parseWeight = useCallback((value) => {
     // ArrayBuffer → Hex String
     const hexStr = Array.from(new Uint8Array(value.buffer))
-      .map((b) => b.toString(16).padStart(2, '0'))
-      .join('');
+      .map((b) => b.toString(16).padStart(2, "0"))
+      .join("");
 
     // 저울 프로토콜 상 유효 데이터 추출
-    const middleHex = hexStr.slice(16, 28).replace(/^0+/, '');
+    const middleHex = hexStr.slice(16, 28).replace(/^0+/, "");
     return middleHex ? parseInt(middleHex, 16) : 0;
   }, []);
 
@@ -175,16 +182,14 @@ export function useBluetooth({ saveToStorage = false } = {}) {
 
       if (savedDevice?.name) {
         // 저장된 기기 이름으로 필터링
-        console.log('🔍 Filtering by saved device name:', savedDevice.name);
+        console.log("🔍 Filtering by saved device name:", savedDevice.name);
         requestOptions = {
-          filters: [
-            { name: savedDevice.name }
-          ],
+          filters: [{ name: savedDevice.name }],
           optionalServices: [SCALE_SERVICE_UUID],
         };
       } else {
         // 저장된 기기 없으면 모든 기기 표시
-        console.log('🔍 No saved device, showing all devices');
+        console.log("🔍 No saved device, showing all devices");
         requestOptions = {
           acceptAllDevices: true,
           optionalServices: [SCALE_SERVICE_UUID],
@@ -194,13 +199,13 @@ export function useBluetooth({ saveToStorage = false } = {}) {
       const device = await navigator.bluetooth.requestDevice(requestOptions);
 
       deviceRef.current = device;
-      setDeviceName(device.name || 'Unknown Device');
+      setDeviceName(device.name || "Unknown Device");
 
       // localStorage에 장치 정보 저장 (saveToStorage가 true일 경우에만)
       if (saveToStorage) {
         saveBluetoothDevice({
           id: device.id,
-          name: device.name || 'Unknown Device',
+          name: device.name || "Unknown Device",
         });
       }
 
@@ -209,7 +214,7 @@ export function useBluetooth({ saveToStorage = false } = {}) {
         disconnect();
       };
       disconnectHandlerRef.current = handleDisconnect;
-      device.addEventListener('gattserverdisconnected', handleDisconnect);
+      device.addEventListener("gattserverdisconnected", handleDisconnect);
 
       // GATT 서버 연결
       const server = await device.gatt.connect();
@@ -220,26 +225,28 @@ export function useBluetooth({ saveToStorage = false } = {}) {
 
       // Notify 지원 확인
       if (!characteristic.properties.notify) {
-        throw new Error('This device does not support notifications. Please use a compatible scale.');
+        throw new Error(
+          "This device does not support notifications. Please use a compatible scale.",
+        );
       }
 
       // 수신된 데이터 처리 핸들러
       const handleValue = (value) => {
         const newWeight = parseWeight(value);
-        const adjustedWeight = Math.round(newWeight/100); // 들어오는 무게는 .0g 단위
+        const adjustedWeight = Math.round(newWeight / 100); // 들어오는 무게는 .0g 단위
         setWeight(adjustedWeight);
       };
 
       // Notify로 데이터 수신 시작
       await characteristic.startNotifications();
-      characteristic.addEventListener('characteristicvaluechanged', (e) => {
+      characteristic.addEventListener("characteristicvaluechanged", (e) => {
         handleValue(e.target.value);
       });
-      
+
       setIsConnected(true);
       setIsConnecting(false);
     } catch (err) {
-      setError(err.message || 'Failed to connect to scale');
+      setError(err.message || "Failed to connect to scale");
       setIsConnecting(false);
       disconnect();
     }
