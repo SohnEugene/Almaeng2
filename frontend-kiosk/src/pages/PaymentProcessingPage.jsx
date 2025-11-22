@@ -1,5 +1,5 @@
 // src/pages/PaymentProcessingPage.jsx
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useSession } from "../contexts/SessionContext";
 import { preparePayment, approvePayment } from "../services/api/payment";
 import { getKioskId } from "../services/kioskStorage";
@@ -16,68 +16,65 @@ export default function PaymentProcessingPage({ onNext, onHome }) {
   const [isLoading, setIsLoading] = useState(true);
   const [isApproving, setIsApproving] = useState(false);
 
-  useEffect(() => {
-    const initializePayment = async () => {
-      try {
-        setIsLoading(true);
-        setError(null);
+  const initializedRef = useRef(false);
 
-        // 세션 데이터 검증
-        if (!session.selectedProduct) {
-          throw new Error("선택된 제품이 없습니다.");
-        }
+useEffect(() => {
+  if (initializedRef.current) return;
+  initializedRef.current = true;
 
-        if (!session.paymentMethod) {
-          throw new Error("결제 수단이 선택되지 않았습니다.");
-        }
+  const initializePayment = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
 
-        // 키오스크 ID 가져오기
-        const kioskId = getKioskId();
-        if (!kioskId) {
-          throw new Error(
-            "키오스크 ID가 없습니다. /manage 페이지에서 키오스크를 먼저 등록해주세요.",
-          );
-        }
-
-        // 관리자 정보 가져오기
-        const managerCode = getManagerCode();
-        if (!managerCode) {
-          throw new Error(
-            "관리자가 설정되지 않았습니다. /manage 페이지에서 관리자를 먼저 설정해주세요.",
-          );
-        }
-
-        // 결제 준비 데이터 구성
-        const paymentData = {
-          kid: kioskId,
-          pid: session.selectedProduct.pid,
-          amount_grams: Math.round(session.weight),
-          extra_bottle: session.purchaseContainer,
-          product_price: session.pricePerGram,
-          total_price: session.totalPrice,
-          payment_method: session.paymentMethod,
-          manager: managerCode,
-        };
-
-        console.log("💳 결제 준비 요청:", paymentData);
-
-        // 결제 준비 및 QR 코드 가져오기
-        const response = await preparePayment(paymentData);
-
-        console.log("✅ 결제 준비 응답:", response);
-
-        setTxid(response.txid);
-        setQrCodeBase64(response.qr_code_base64);
-      } catch (err) {
-        console.error("❌ 결제 준비 실패:", err);
-        setError(err.message || "결제 준비 중 오류가 발생했습니다.");
-      } finally {
-        setIsLoading(false);
+      if (!session.selectedProduct) {
+        throw new Error("선택된 제품이 없습니다.");
       }
-    };
 
-    initializePayment();
-  }, [session]);
+      if (!session.paymentMethod) {
+        throw new Error("결제 수단이 선택되지 않았습니다.");
+      }
+
+      const kioskId = getKioskId();
+      if (!kioskId) {
+        throw new Error("키오스크 ID가 없습니다.");
+      }
+
+      const managerCode = getManagerCode();
+      if (!managerCode) {
+        throw new Error("관리자가 설정되지 않았습니다.");
+      }
+
+      const paymentData = {
+        kid: kioskId,
+        pid: session.selectedProduct.pid,
+        amount_grams: Math.round(session.weight),
+        extra_bottle: session.purchaseContainer,
+        product_price: session.pricePerGram,
+        total_price: session.totalPrice,
+        payment_method: session.paymentMethod,
+        manager: managerCode,
+      };
+
+      console.log("💳 결제 준비 요청:", paymentData);
+
+      const response = await preparePayment(paymentData);
+
+      console.log("✅ 결제 준비 응답:", response);
+
+      setTxid(response.txid);
+      setQrCodeBase64(response.qr_code_base64);
+    } catch (err) {
+      console.error("❌ 결제 준비 실패:", err);
+      setError(err.message || "결제 준비 중 오류가 발생했습니다.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  initializePayment();
+}, []);
+
 
   const handleApprovePayment = async () => {
     if (!txid) {
