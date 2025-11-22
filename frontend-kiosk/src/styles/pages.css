@@ -31,13 +31,13 @@
 }
 
 .logo1 {
-  width: 200px;
+  width: 160px;
   height: auto;
 }
 
 .logo2 {
-  width: auto;
-  height: 60px;
+  width: 60px;
+  height: auto;
 }
 
 .homeContent {
@@ -86,10 +86,6 @@
   cursor: pointer;
   overflow: hidden;
   transition: all 0.2s ease;
-}
-
-.paymentMethodButton:hover {
-  border-color: var(--color-gray-400);
 }
 
 .paymentMethodButtonSelected {

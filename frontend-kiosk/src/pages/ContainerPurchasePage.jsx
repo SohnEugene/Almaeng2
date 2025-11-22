@@ -3,6 +3,7 @@ import Button from "../components/Button";
 import KioskHeader from "../components/KioskHeader";
 import "../styles/pages.css";
 import { useSession } from "../contexts/SessionContext";
+import bottlesImage from "../assets/images/bottles.png";
 
 export default function ContainerPurchasePage({ onYes, onNo, onHome }) {
   const { setPurchaseContainer } = useSession();
@@ -23,7 +24,7 @@ export default function ContainerPurchasePage({ onYes, onNo, onHome }) {
     <div className="kiosk-page">
       <KioskHeader onHome={onHome} />
       <div className="kiosk-content">
-        <img className="bottle-image" src="bottles.png" alt="" />
+        <img className="bottle-image" src={bottlesImage} alt="" />
 
         <div className="kiosk-title">
           리필 전용 다회용기를

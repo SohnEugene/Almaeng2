@@ -135,7 +135,7 @@ export default function RefillStartPage({ onNext, onReset, onHome }) {
   if (step === REFILL_STEPS.CONNECT_SCALE) {
     return (
       <div className="kiosk-page-primary">
-        <KioskHeader onHome={onHome} />
+        <KioskHeader onHome={onHome} variant="light" />
         <div className="kiosk-content">
           <div className="kiosk-content-header">
             <h1 className="kiosk-title-light">저울을 연결해주세요</h1>
@@ -163,7 +163,7 @@ export default function RefillStartPage({ onNext, onReset, onHome }) {
 
   return (
     <div className="kiosk-page-primary">
-      <KioskHeader onHome={onHome} />
+      <KioskHeader onHome={onHome} variant="light" />
 
       {step === REFILL_STEPS.EMPTY_CONTAINER && (
         <>

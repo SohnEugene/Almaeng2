@@ -20,6 +20,7 @@ import {
 } from "../services/managerStorage";
 import { useBluetoothContext } from "../contexts/BluetoothContext";
 import "../styles/ManagementPage.css";
+import logoBlack from "../assets/images/logo_black.png";
 
 const VIEWS = {
   HOME: "home",
@@ -713,7 +714,7 @@ export default function ManagementPage() {
         {currentView === VIEWS.BLUETOOTH && renderBluetoothView()}
       </main>
       <footer>
-        <img src="logo_black.png" className="management-logo" alt="" />
+        <img src={logoBlack} className="management-logo" alt="" />
       </footer>
     </div>
   );
