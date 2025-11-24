@@ -2,34 +2,14 @@ import os
 import boto3
 from botocore.exceptions import ClientError, NoCredentialsError, PartialCredentialsError
 from typing import Optional
-
-# Custom exceptions for S3 operations
-class S3Exception(Exception):
-    """Base exception for S3 operations"""
-    pass
-
-class S3UploadException(S3Exception):
-    """Exception raised when S3 upload fails"""
-    def __init__(self, key: str, reason: str):
-        self.key = key
-        self.reason = reason
-        super().__init__(f"Failed to upload {key}: {reason}")
-
-class S3PresignedException(S3Exception):
-    """Exception raised when presigned URL generation fails"""
-    def __init__(self, key: str, reason: str):
-        self.key = key
-        self.reason = reason
-        super().__init__(f"Failed to generate presigned URL for {key}: {reason}")
-
-class S3ConfigException(S3Exception):
-    """Exception raised when S3 configuration is invalid"""
-    def __init__(self, reason: str):
-        self.reason = reason
-        super().__init__(f"S3 configuration error: {reason}")
+from app.exceptions import (
+    S3UploadException,
+    S3PresignedException,
+    S3ConfigException
+)
 
 
-# S3 클라이언트를 lazy initialization으로 생성
+# lazy initialization
 _s3_client = None
 
 def get_s3_client():
@@ -39,10 +19,6 @@ def get_s3_client():
         access_key = os.getenv("AWS_ACCESS_KEY_ID", "").strip()
         secret_key = os.getenv("AWS_SECRET_ACCESS_KEY", "").strip()
         region = os.getenv("AWS_REGION", "ap-northeast-2").strip()
-
-        # Debug: 환경변수 값 확인 (첫 4자만 출력)
-        print(f"AWS_ACCESS_KEY_ID starts with: '{access_key[:4] if access_key else 'EMPTY'}'")
-        print(f"AWS_ACCESS_KEY_ID length: {len(access_key)}")
 
         if not access_key or not secret_key:
             raise S3ConfigException("AWS credentials not configured")
@@ -63,21 +39,7 @@ def get_bucket_name() -> str:
 class S3Service:
     @staticmethod
     def upload_file(file_obj, key: str, content_type: str = "image/png") -> bool:
-        """
-        S3 버킷에 파일 업로드
-
-        Args:
-            file_obj: 파일 객체 (예: FastAPI UploadFile.file)
-            key: S3 내 저장 경로, 예: 'products/product1.png'
-            content_type: MIME 타입
-
-        Returns:
-            업로드 성공 여부
-
-        Raises:
-            S3UploadException: 업로드 실패 시
-            S3ConfigException: AWS 설정 오류 시
-        """
+        """ Upload image file on S3 bucket"""
         try:
             client = get_s3_client()
             bucket = get_bucket_name()
@@ -103,19 +65,10 @@ class S3Service:
             raise S3UploadException(key, str(e)) from e
 
     @staticmethod
-    def generate_presigned_url(key: str, expires_in: int = 3600) -> Optional[str]:
-        """
-        S3 presigned URL 생성
-
-        Args:
-            key: S3 내 저장 경로
-            expires_in: 유효기간(초), 기본 1시간
-
-        Returns:
-            presigned URL 또는 None (실패 시)
-        """
+    def generate_presigned_url(key: str, expires_in: int = 3600) -> str:
+        """ Generate S3 presigned URL"""
         if not key:
-            return None
+            raise S3PresignedException(key, "S3 key is empty")
 
         try:
             client = get_s3_client()
@@ -129,36 +82,28 @@ class S3Service:
             return url
 
         except S3ConfigException:
-            # AWS 설정이 없으면 None 반환 (presigned URL은 선택적 기능)
-            return None
-        except (NoCredentialsError, PartialCredentialsError):
-            return None
+            raise
+        except NoCredentialsError as e:
+            raise S3PresignedException(key, "AWS credentials not found") from e
+        except PartialCredentialsError as e:
+            raise S3PresignedException(key, "Incomplete AWS credentials") from e
         except ClientError as e:
-            print(f"Presigned URL 생성 에러: {e}")
-            return None
+            error_code = e.response.get('Error', {}).get('Code', 'Unknown')
+            raise S3PresignedException(key, f"AWS error: {error_code}") from e
         except Exception as e:
-            print(f"Presigned URL 일반 에러: {type(e).__name__}: {e}")
-            return None
+            raise S3PresignedException(key, str(e)) from e
 
     @staticmethod
     def convert_to_presigned_url(image_url: Optional[str], expires_in: int = 3600) -> Optional[str]:
-        """
-        image_url이 S3 key인 경우 presigned URL로 변환
-
-        Args:
-            image_url: 이미지 URL 또는 S3 key
-            expires_in: URL 유효기간(초)
-
-        Returns:
-            presigned URL 또는 원본 URL
-        """
+        """ convert S3 key to presigned URL if image_url were S3 key"""
         if not image_url:
             return None
 
-        # S3 key 패턴인 경우에만 변환
         if image_url.startswith("products/"):
-            presigned_url = S3Service.generate_presigned_url(image_url, expires_in)
-            return presigned_url if presigned_url else image_url
+            return S3Service.generate_presigned_url(image_url, expires_in)
 
-        # 이미 URL인 경우 그대로 반환
         return image_url
+
+
+# create a singleton instance
+s3_service = S3Service()

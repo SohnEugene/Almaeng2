@@ -17,9 +17,13 @@ from app.exceptions import (
     ProductDataCorruptedException,
     PaymentException,
     TransactionStorageException,
-    PaymentNotFoundException
+    PaymentNotFoundException,
+    FirebaseConnectionException,
+    FirebaseInitializationException,
+    FirebaseCredentialsException
 )
 from app.models import Kiosk, Product, Payment
+from app.services.s3 import s3_service
 
 
 class FirebaseService:
@@ -37,33 +41,53 @@ class FirebaseService:
                 cred_path = os.getenv("FIREBASE_CREDENTIALS_PATH")
                 if cred_path:
                     print("use credentials path")
-                    cred = credentials.Certificate(cred_path)
-                    firebase_admin.initialize_app(cred)
+                    try:
+                        cred = credentials.Certificate(cred_path)
+                        firebase_admin.initialize_app(cred)
+                    except FileNotFoundError as e:
+                        raise FirebaseCredentialsException(f"Credentials file not found: {cred_path}") from e
+                    except json.JSONDecodeError as e:
+                        raise FirebaseCredentialsException(f"Invalid credentials file format: {cred_path}") from e
                 else:
                     # Fall back to credentials JSON string
                     print("use credentials json")
                     firebase_json = os.environ.get("FIREBASE_CREDENTIALS_JSON")
                     if firebase_json:
-                        cred = credentials.Certificate(json.loads(firebase_json))
-                        firebase_admin.initialize_app(cred)
+                        try:
+                            cred = credentials.Certificate(json.loads(firebase_json))
+                            firebase_admin.initialize_app(cred)
+                        except json.JSONDecodeError as e:
+                            raise FirebaseCredentialsException("Invalid credentials JSON format") from e
                     else:
                         cred_json = os.getenv("FIREBASE_CREDENTIALS_JSON")
                         if cred_json:
-                            cred_dict = json.loads(cred_json)
-                            cred = credentials.Certificate(cred_dict)
-                            firebase_admin.initialize_app(cred)
+                            try:
+                                cred_dict = json.loads(cred_json)
+                                cred = credentials.Certificate(cred_dict)
+                                firebase_admin.initialize_app(cred)
+                            except json.JSONDecodeError as e:
+                                raise FirebaseCredentialsException("Invalid credentials JSON format") from e
                         else:
-                            raise ValueError("Firebase credentials not found. Set FIREBASE_CREDENTIALS_PATH or FIREBASE_CREDENTIALS_JSON")
+                            raise FirebaseCredentialsException("Firebase credentials not found. Set FIREBASE_CREDENTIALS_PATH or FIREBASE_CREDENTIALS_JSON")
 
-                self.db = firestore.client()
-                print("Firebase initialized successfully")
+                try:
+                    self.db = firestore.client()
+                    print("Firebase initialized successfully")
+                except Exception as e:
+                    raise FirebaseConnectionException(f"Failed to connect to Firestore: {str(e)}") from e
             else:
-                self.db = firestore.client()
-                print("Using existing Firebase app")
+                try:
+                    self.db = firestore.client()
+                    print("Using existing Firebase app")
+                except Exception as e:
+                    raise FirebaseConnectionException(f"Failed to get Firestore client: {str(e)}") from e
 
+        except (FirebaseCredentialsException, FirebaseConnectionException):
+            # Re-raise our custom exceptions
+            raise
         except Exception as e:
             print(f"Error initializing Firebase: {e}")
-            raise
+            raise FirebaseInitializationException(f"Unexpected initialization error: {str(e)}") from e
 
     # Counter operations
     def get_next_counter(self, counter_name: str) -> int:
@@ -229,8 +253,6 @@ class FirebaseService:
     
     def get_all_products(self) -> List[Product]:
         """Get all products from Firebase with presigned URLs"""
-        from app.services.s3 import S3Service
-
         try:
             products_ref = self.db.collection('products')
             docs = products_ref.stream()
@@ -241,7 +263,7 @@ class FirebaseService:
                 try:
                     product = Product(**product_data, pid=doc.id)
                     # Convert S3 key to presigned URL
-                    product.image_url = S3Service.convert_to_presigned_url(product.image_url)
+                    product.image_url = s3_service.convert_to_presigned_url(product.image_url)
                     products.append(product)
                 except Exception as e:
                     raise ProductDataCorruptedException(pid=doc.id, reason=str(e)) from e
@@ -254,8 +276,6 @@ class FirebaseService:
 
     def get_product_by_id(self, pid: str) -> Product:
         """Get a specific product by ID with presigned URL"""
-        from app.services.s3 import S3Service
-
         # 1. Get document reference and fetch
         doc_ref = self.db.collection('products').document(pid)
 
@@ -273,7 +293,7 @@ class FirebaseService:
         try:
             product = Product(**data, pid=doc.id)
             # Convert S3 key to presigned URL
-            product.image_url = S3Service.convert_to_presigned_url(product.image_url)
+            product.image_url = s3_service.convert_to_presigned_url(product.image_url)
             return product
         except Exception as e:
             raise ProductDataCorruptedException(pid=pid, reason=str(e)) from e
@@ -317,6 +337,34 @@ class FirebaseService:
             doc_ref.delete()
         except Exception as e:
             raise ProductException(f"Failed to delete product {product_id}: {str(e)}") from e
+
+    def upload_product_image(self, pid: str, file_obj, filename: str, content_type: str) -> str:
+        """Upload product image to S3 and update product"""
+        # 1. Check if product exists
+        self.get_product_by_id(pid)
+
+        # 2. Generate S3 key
+        file_extension = filename.split(".")[-1] if filename else "png"
+        s3_key = f"products/{pid}.{file_extension}"
+
+        # 3. Upload to S3
+        s3_service.upload_file(file_obj, s3_key, content_type)
+
+        # 4. Update product with image key
+        self.update_product(pid, {"image_key": s3_key, "image_url": s3_key})
+
+        return s3_key
+
+    def get_product_image_url(self, pid: str, expires_in: int = 3600) -> str:
+        """Get presigned URL for product image"""
+        # 1. Get product
+        product = self.get_product_by_id(pid)
+
+        # 2. Get image key
+        image_key = product.image_key if hasattr(product, "image_key") and product.image_key else f"products/{pid}.png"
+
+        # 3. Generate presigned URL
+        return s3_service.generate_presigned_url(image_key, expires_in)
 
 
 
@@ -433,5 +481,6 @@ class FirebaseService:
             raise PaymentException(f"Failed to get transactions for kiosk {kiosk_id}: {str(e)}") from e
 
 
-# Global Firebase service instance
+
+# create a singleton instance
 firebase_service = FirebaseService()

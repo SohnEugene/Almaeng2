@@ -14,7 +14,6 @@ class Product(BaseModel):
 
 
 class RegisterProductRequest(BaseModel):
-    """Request model for creating a new product"""
     name: str
     price: float
     description: str = ""
@@ -23,7 +22,23 @@ class RegisterProductRequest(BaseModel):
     original_price: Optional[int] = None
     original_gram: Optional[int] = None
 
-
 class RegisterProductResponse(BaseModel):
-    """Response model for product creation"""
     pid: str  # product_id
+
+
+class UpdateProductResponse(BaseModel):
+    message: str
+
+
+class DeleteProductResponse(BaseModel):
+    message: str
+
+
+class UploadProductImageResponse(BaseModel):
+    message: str
+    s3_key: str
+
+
+class GetProductImageUrlResponse(BaseModel):
+    url: str
+    expires_in: int

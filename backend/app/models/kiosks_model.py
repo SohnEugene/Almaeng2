@@ -3,6 +3,7 @@
 from __future__ import annotations
 from pydantic import BaseModel, Field
 from typing import List, Optional, Dict, Any
+from app.models.products_model import Product
 
 
 class Kiosk(BaseModel):
@@ -11,6 +12,12 @@ class Kiosk(BaseModel):
     location: str = Field(..., min_length=1, description="Kiosk location must not be empty")
     status: str = "active"
     products: List[Dict[str, Any]] = []  # List of {"pid": str, "available": bool}
+
+class KioskProductItem(BaseModel):
+    product: "Product"
+    available: bool
+
+KioskProductItem.model_rebuild()
 
 
 class RegisterKioskRequest(BaseModel):
@@ -21,21 +28,19 @@ class RegisterKioskResponse(BaseModel):
     kid: str
 
 
+class DeleteKioskResponse(BaseModel):
+    message: str
+
+
+class GetKioskProductsResponse(BaseModel):
+    products: List[KioskProductItem]
+
+
 class AddProductToKioskRequest(BaseModel):
     pid: str
 
 class AddProductToKioskResponse(BaseModel):
     message: str
-
-
-class KioskProductItem(BaseModel):
-    """Single product with kiosk-specific availability"""
-    product: "Product"
-    available: bool
-
-class GetKioskProductsResponse(BaseModel):
-    """Response model for getting all products at a kiosk"""
-    products: List[KioskProductItem]
 
 
 class UpdateProductStatusRequest(BaseModel):
@@ -45,8 +50,5 @@ class UpdateProductStatusResponse(BaseModel):
     message: str
 
 
-# Import Product at the end to avoid circular import
-from app.models.products_model import Product
-
-# Update forward references
-KioskProductItem.model_rebuild()
+class DeleteProductFromKioskResponse(BaseModel):
+    message: str

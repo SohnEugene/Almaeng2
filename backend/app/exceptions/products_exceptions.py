@@ -68,3 +68,42 @@ class ProductDataCorruptedException(ProductException):
             detail=msg,
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
+
+
+class ProductImageUploadException(ProductException):
+    """Raised when product image upload to S3 fails."""
+    def __init__(self, pid: str, reason: str):
+        super().__init__(
+            detail=f"Failed to upload image for product {pid}: {reason}",
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
+
+class ProductImageNotFoundException(ProductException):
+    """Raised when product image is not found."""
+    def __init__(self, pid: str):
+        super().__init__(
+            detail=f"Image not found for product {pid}",
+            status_code=status.HTTP_404_NOT_FOUND
+        )
+
+
+class ProductImageUrlGenerationException(ProductException):
+    """Raised when presigned URL generation fails."""
+    def __init__(self, pid: str, reason: str = ""):
+        msg = f"Failed to generate image URL for product {pid}"
+        if reason:
+            msg += f": {reason}"
+        super().__init__(
+            detail=msg,
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
+
+class S3ServiceUnavailableException(ProductException):
+    """Raised when S3 service is not configured or unavailable."""
+    def __init__(self, reason: str):
+        super().__init__(
+            detail=f"S3 service not configured: {reason}",
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE
+        )

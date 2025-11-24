@@ -16,14 +16,20 @@ from app.models.kiosks_model import (
     AddProductToKioskResponse,
     GetKioskProductsResponse,
     UpdateProductStatusRequest,
-    UpdateProductStatusResponse
+    UpdateProductStatusResponse,
+    DeleteKioskResponse,
+    DeleteProductFromKioskResponse
 )
 
 # Product models
 from app.models.products_model import (
     Product,
     RegisterProductRequest,
-    RegisterProductResponse
+    RegisterProductResponse,
+    UpdateProductResponse,
+    DeleteProductResponse,
+    UploadProductImageResponse,
+    GetProductImageUrlResponse
 )
 
 # Payment models
@@ -45,10 +51,16 @@ __all__ = [
     "GetKioskProductsResponse",
     "UpdateProductStatusRequest",
     "UpdateProductStatusResponse",
-        # Product
+    "DeleteKioskResponse",
+    "DeleteProductFromKioskResponse",
+    # Product
     "Product",
     "RegisterProductRequest",
     "RegisterProductResponse",
+    "UpdateProductResponse",
+    "DeleteProductResponse",
+    "UploadProductImageResponse",
+    "GetProductImageUrlResponse",
     # Payment
     "Payment",
     "PaymentRequest",

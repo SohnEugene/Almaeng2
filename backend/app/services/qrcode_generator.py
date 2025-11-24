@@ -1,7 +1,12 @@
 import qrcode
 from io import BytesIO
 from urllib.parse import quote
-from PIL import Image
+from app.exceptions import (
+    QRCodeGenerationException,
+    InvalidPaymentTypeException,
+    InvalidManagerException,
+    PaymentInfoNotSetException
+)
 
 KAKAO_UID = {
     "KIM" : "FY0PfA6Rh",
@@ -28,22 +33,19 @@ TOSS_ACCOUNT = {
 }
 
 class QRCodeService:
-    """Service for generating Kakao Pay / Toss Pay QR codes"""
 
     def __init__(self):
-        # 빈 초기화
         self.pay_type = None
         self.manager = None
         self.amount = None
 
     def set_payment_info(self, pay_type: str, manager: str, amount: float | int):
         if pay_type not in ("kakaopay", "tosspay"):
-            raise ValueError(f"Unknown pay_type: {pay_type}. Must be 'kakaopay' or 'tosspay'")
-
-        # Convert manager to uppercase for case-insensitive matching
+            raise InvalidPaymentTypeException(pay_type)
+        
         manager_upper = manager.upper()
         if manager_upper not in KAKAO_UID:
-            raise ValueError(f"Unknown manager: {manager}. Must be one of: {', '.join(KAKAO_UID.keys())}")
+            raise InvalidManagerException(manager, list(KAKAO_UID.keys()))
 
         self.pay_type = pay_type
         self.manager = manager_upper
@@ -51,20 +53,28 @@ class QRCodeService:
 
     def generate_kakaopay_url(self) -> str:
         if self.manager is None or self.amount is None:
-            raise ValueError("Payment info not set")
-        amount_int = int(round(self.amount))
-        shifted = amount_int << 19
-        hex_value = hex(shifted)[2:].upper()
-        return f"https://qr.kakaopay.com/{KAKAO_UID[self.manager]}{hex_value}"
+            raise PaymentInfoNotSetException()
+
+        try:
+            amount_int = int(round(self.amount))
+            shifted = amount_int << 19
+            hex_value = hex(shifted)[2:].upper()
+            return f"https://qr.kakaopay.com/{KAKAO_UID[self.manager]}{hex_value}"
+        except Exception as e:
+            raise QRCodeGenerationException(f"Failed to generate Kakao Pay URL: {str(e)}")
 
     def generate_tosspay_url(self) -> str:
         if self.manager is None or self.amount is None:
-            raise ValueError("Payment info not set")
-        amount_int = int(round(self.amount))
-        bank_str = quote(TOSS_BANK[self.manager])
-        return_str = f"supertoss://send?amount={amount_int}&bank={bank_str}&accountNo={TOSS_ACCOUNT[self.manager]}&origin=qr"
-        print(return_str)
-        return return_str
+            raise PaymentInfoNotSetException()
+
+        try:
+            amount_int = int(round(self.amount))
+            bank_str = quote(TOSS_BANK[self.manager])
+            return_str = f"supertoss://send?amount={amount_int}&bank={bank_str}&accountNo={TOSS_ACCOUNT[self.manager]}&origin=qr"
+            print(return_str)
+            return return_str
+        except Exception as e:
+            raise QRCodeGenerationException(f"Failed to generate Toss Pay URL: {str(e)}")
 
     def generate_qr_img(
         self,
@@ -74,29 +84,35 @@ class QRCodeService:
         fill_color: str = "black",
         back_color: str = "white",
     ) -> BytesIO:
-        if self.pay_type is None:
-            raise ValueError("Payment info not set")
+        try:
+            # Generate URL based on payment type (will raise PaymentInfoNotSetException if not set)
+            url = (
+                self.generate_kakaopay_url()
+                if self.pay_type == "kakaopay"
+                else self.generate_tosspay_url()
+            )
 
-        url = (
-            self.generate_kakaopay_url()
-            if self.pay_type == "kakaopay"
-            else self.generate_tosspay_url()
-        )
+            # Create QR code
+            qr = qrcode.QRCode(
+                version=version,
+                error_correction=qrcode.constants.ERROR_CORRECT_L,
+                box_size=box_size,
+                border=border,
+            )
+            qr.add_data(url)
+            qr.make(fit=True)
 
-        qr = qrcode.QRCode(
-            version=version,
-            error_correction=qrcode.constants.ERROR_CORRECT_L,
-            box_size=box_size,
-            border=border,
-        )
-        qr.add_data(url)
-        qr.make(fit=True)
-
-        img = qr.make_image(fill_color=fill_color, back_color=back_color).convert("RGB")
-        img_io = BytesIO()
-        img.save(img_io, format="PNG")
-        img_io.seek(0)
-        return img_io
+            # Generate image
+            img = qr.make_image(fill_color=fill_color, back_color=back_color).convert("RGB")
+            img_io = BytesIO()
+            img.save(img_io, format="PNG")
+            img_io.seek(0)
+            return img_io
+        except (InvalidPaymentTypeException, InvalidManagerException, PaymentInfoNotSetException, QRCodeGenerationException):
+            raise
+        except Exception as e:
+            raise QRCodeGenerationException(f"Unexpected error during QR code generation: {str(e)}")
 
 
+# create a singleton instance
 qrcode_service = QRCodeService()
