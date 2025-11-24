@@ -183,6 +183,7 @@ export function useBluetooth({ saveToStorage = false } = {}) {
   const connect = useCallback(async () => {
     console.log("🔵 [BLE] 연결 시도 시작");
     setIsConnecting(true);
+    console.log("🔄 [BLE] 상태 변경: isConnecting = true");
     setError(null);
 
     try {
@@ -228,6 +229,9 @@ export function useBluetooth({ saveToStorage = false } = {}) {
       const handleDisconnect = () => {
         console.log("⚠️ [BLE] 장치 연결이 예기치 않게 끊어졌습니다");
         setIsConnected(false);
+        console.log("🔄 [BLE] 상태 변경: isConnected = false (예기치 않은 연결 해제)");
+        setIsConnecting(false); // 연결 중 상태도 해제
+        console.log("🔄 [BLE] 상태 변경: isConnecting = false (예기치 않은 연결 해제)");
         setError("장치 연결이 끊어졌습니다. 다시 연결해주세요.");
         // 장치 정보는 유지하고 상태만 초기화 (재연결 가능하도록)
       };
@@ -238,13 +242,24 @@ export function useBluetooth({ saveToStorage = false } = {}) {
       console.log("🔗 [BLE] GATT 서버 연결 중...");
       const server = await device.gatt.connect();
       console.log("✅ [BLE] GATT 서버 연결 성공");
+      console.log("🔍 [BLE] 서버 상태 - connected:", server.connected, "device:", server.device);
 
       console.log("🔎 [BLE] 서비스 검색 중... UUID:", SCALE_SERVICE_UUID);
-      const service = await server.getPrimaryService(SCALE_SERVICE_UUID);
+      const service = await Promise.race([
+        server.getPrimaryService(SCALE_SERVICE_UUID),
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error("서비스 검색 타임아웃 (10초)")), 10000)
+        ),
+      ]);
       console.log("✅ [BLE] 서비스 발견");
 
       console.log("🔎 [BLE] Characteristic 검색 중... UUID:", SCALE_CHAR_UUID);
-      const characteristic = await service.getCharacteristic(SCALE_CHAR_UUID);
+      const characteristic = await Promise.race([
+        service.getCharacteristic(SCALE_CHAR_UUID),
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error("Characteristic 검색 타임아웃 (10초)")), 10000)
+        ),
+      ]);
       console.log("✅ [BLE] Characteristic 발견");
 
       characteristicRef.current = characteristic;
@@ -278,12 +293,15 @@ export function useBluetooth({ saveToStorage = false } = {}) {
 
       console.log("🎉 [BLE] 연결 완료!");
       setIsConnected(true);
+      console.log("🔄 [BLE] 상태 변경: isConnected = true");
       setIsConnecting(false);
+      console.log("🔄 [BLE] 상태 변경: isConnecting = false");
     } catch (err) {
       console.error("❌ [BLE] 연결 실패:", err.message);
       console.error("❌ [BLE] 에러 상세:", err);
       setError(err.message || "Failed to connect to scale");
       setIsConnecting(false);
+      console.log("🔄 [BLE] 상태 변경: isConnecting = false (에러 발생)");
       // 연결 실패 시에는 저장된 정보를 유지 (clearStorage=false)
       disconnect(false);
     }

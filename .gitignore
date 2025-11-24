@@ -153,4 +153,4 @@ backend/.env
 .claude
 screenshots/
 backend/firebase_credentials.json
-.drawio
+*.drawio
