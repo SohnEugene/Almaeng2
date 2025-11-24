@@ -5,19 +5,17 @@ import "../styles/pages.css";
 import { useSession } from "../contexts/SessionContext";
 import bottlesImage from "../assets/images/bottles.png";
 
-export default function ContainerPurchasePage({ onYes, onNo, onHome }) {
+export default function ContainerPurchasePage({ onNext, onHome }) {
   const { setPurchaseContainer } = useSession();
 
   const handlePurchase = () => {
-    // 세션에 용기 구매 정보 저장
     setPurchaseContainer(true);
-    onYes();
+    onNext();
   };
 
   const handleSkip = () => {
-    // 용기 구매하지 않음
     setPurchaseContainer(false);
-    onNo();
+    onNext();
   };
 
   return (
@@ -34,11 +32,11 @@ export default function ContainerPurchasePage({ onYes, onNo, onHome }) {
       </div>
       <div className="kiosk-footer">
         <div className="kiosk-button-container">
-          <Button variant="double" onClick={handlePurchase}>
+          <Button variant="primary" onClick={handlePurchase}>
             추가하기 (500원)
           </Button>
 
-          <Button onClick={handleSkip} variant="outlinedDouble">
+          <Button onClick={handleSkip} variant="outlined">
             건너뛰기
           </Button>
         </div>

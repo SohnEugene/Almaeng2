@@ -1,11 +1,11 @@
 // src/pages/PaymentMethodPage.jsx
-import { useState } from "react";
-import "../styles/pages.css";
-import kakaoPayImage from "../assets/images/kakaopay.png";
-import tossPayImage from "../assets/images/tosspay.png";
-import { useSession } from "../contexts/SessionContext";
 import Button from "../components/Button";
 import KioskHeader from "../components/KioskHeader";
+import "../styles/pages.css";
+import { useSession } from "../contexts/SessionContext";
+import kakaoPayImage from "../assets/images/kakaopay.png";
+import tossPayImage from "../assets/images/tosspay.png";
+
 
 const PAYMENT_METHODS = {
   KAKAO: "kakaopay",
@@ -13,19 +13,12 @@ const PAYMENT_METHODS = {
 };
 
 export default function PaymentMethodPage({ onNext, onHome }) {
-  const { setPaymentMethod } = useSession();
-  const [selectedMethod, setSelectedMethod] = useState(null);
+  const { session, setPaymentMethod } = useSession();
 
   const handleMethodSelect = (method) => {
-    setSelectedMethod(method);
     setPaymentMethod(method);
   };
-
-  const handleNext = () => {
-    if (selectedMethod) {
-      onNext();
-    }
-  };
+  const currentSelectedMethod = session.paymentMethod;
 
   return (
     <div className="kiosk-page">
@@ -39,9 +32,9 @@ export default function PaymentMethodPage({ onNext, onHome }) {
 
         <div className="payment-button-container">
           <button
-            className={`paymentMethodButton ${
-              selectedMethod === PAYMENT_METHODS.KAKAO
-                ? "paymentMethodButtonSelected"
+            className={`payment-method-button ${
+              currentSelectedMethod === PAYMENT_METHODS.KAKAO
+                ? "payment-method-button-selected"
                 : ""
             }`}
             onClick={() => handleMethodSelect(PAYMENT_METHODS.KAKAO)}
@@ -49,15 +42,15 @@ export default function PaymentMethodPage({ onNext, onHome }) {
             <img
               src={kakaoPayImage}
               alt="카카오페이"
-              className="paymentMethodImage"
+              className="payment-method-image"
             />
           </button>
 
           {/* 토스페이 결제 */}
           <button
-            className={`paymentMethodButton ${
-              selectedMethod === PAYMENT_METHODS.TOSS
-                ? "paymentMethodButtonSelected"
+            className={`payment-method-button ${
+              currentSelectedMethod === PAYMENT_METHODS.TOSS
+                ? "payment-method-button-selected"
                 : ""
             }`}
             onClick={() => handleMethodSelect(PAYMENT_METHODS.TOSS)}
@@ -65,7 +58,7 @@ export default function PaymentMethodPage({ onNext, onHome }) {
             <img
               src={tossPayImage}
               alt="토스페이"
-              className="paymentMethodImage"
+              className="payment-method-image"
             />
           </button>
         </div>
@@ -74,8 +67,8 @@ export default function PaymentMethodPage({ onNext, onHome }) {
         <Button
           variant="primary"
           size="large"
-          onClick={handleNext}
-          disabled={!selectedMethod}
+          onClick={onNext}
+          disabled={!session.paymentMethod}
         >
           선택 완료
         </Button>

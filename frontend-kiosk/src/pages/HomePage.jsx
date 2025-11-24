@@ -6,18 +6,18 @@ import almangLogo from "../assets/images/almang_logo.png";
 
 export default function HomePage({ onNext }) {
   return (
-    <div className="homeContainer">
-      <div className="homeHeader">
-        <div className="homeLogo">
-          <img src={logoBlack} className="logo1" alt="logo1" />
+    <div className="home-container">
+      <div className="home-header">
+        <div className="home-logo">
+          <img src={logoBlack} className="logo1" />
           <span>×</span>
-          <img src={almangLogo} className="logo2" alt="" />
+          <img src={almangLogo} className="logo2" />
         </div>
       </div>
-      <div className="homeContent">
-        <img src={coverImage} alt="Cover" />
+      <div className="home-content">
+        <img src={coverImage} />
       </div>
-      <div className="homeFooter">
+      <div className="home-footer">
         <Button onClick={onNext}>리필 시작</Button>
       </div>
     </div>

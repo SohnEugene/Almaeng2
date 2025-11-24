@@ -1,4 +1,5 @@
 // src/components/KioskHeader.jsx
+import "../styles/components.css";
 import { useSession } from "../contexts/SessionContext";
 import logoBlack from "../assets/images/logo_black.png";
 import almangLogo from "../assets/images/almang_logo.png";

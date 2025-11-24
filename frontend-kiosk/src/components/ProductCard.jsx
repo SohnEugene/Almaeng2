@@ -1,6 +1,8 @@
 // src/components/ProductCard.jsx
+import "../styles/components.css";
+
 export default function ProductCard({ product, isSelected, onSelect }) {
-  const cardClassName = ["productCard", isSelected ? "productCardSelected" : ""]
+  const cardClassName = ["product-card", isSelected ? "product-card-selected" : ""]
     .join(" ")
     .trim();
 
@@ -25,19 +27,19 @@ export default function ProductCard({ product, isSelected, onSelect }) {
 
   return (
     <div className={cardClassName} onClick={() => onSelect(product.pid)}>
-      <img src={product.image_url} className="productCardImage" />
-      <div className="productCardInfo">
-        <div className="productCardHeader">
-          <div className="productCardName">{product.name}</div>
-          <div className="productCardPrice">₩{product.price}/g</div>
+      <img src={product.image_url} className="product-card-image" />
+      <div className="product-card-info">
+        <div className="product-card-header">
+          <div className="product-card-name">{product.name}</div>
+          <div className="product-card-price">₩{product.price}/g</div>
         </div>
-        <div className="productCardDetail">{product.description}</div>
+        <div className="product-card-detail">{product.description}</div>
         {savings && (
-          <div className="productCardCompare">
-            <span className="productCardOriginalPrice">
+          <div className="product-card-compare">
+            <span className="product-card-original-price">
               원가: ₩{savings.originalPricePerGram} /g
             </span>
-            <span className="productCardSavings">
+            <span className="product-card-savings">
               {savings.savingsPercent}% 절약
             </span>
           </div>

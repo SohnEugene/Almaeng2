@@ -1,23 +1,17 @@
-/**
- * @fileoverview Product API
- *
- * 제품 관련 API 호출 함수를 제공합니다.
- */
-
 import { request } from "./client.js";
 
 /**
  * 전체 제품 목록 조회
- *
- * @async
- * @returns {Promise<Array<Product>>} 제품 목록 [{ pid, name, price, description, image_url, tags, original_price, original_gram }]
- *
- * @example
- * const products = await getProducts();
- * products.forEach(product => {
- *   console.log(product.pid, product.name, product.price);
- *   console.log('원가:', product.original_price, '원래 용량:', product.original_gram);
- * });
+* @returns {Promise<Array<{
+ * pid: string, 
+ * name: string, 
+ * price: number, 
+ * description: string, 
+ * image_url: string, 
+ * tags: string[], 
+ * original_price: number, 
+ * original_gram: number
+ * }>>}
  */
 export async function getProducts() {
   return request("/products/");
@@ -25,15 +19,17 @@ export async function getProducts() {
 
 /**
  * 특정 제품 상세 정보 조회
- *
- * @async
- * @param {string} productId - 제품 ID (pid)
- * @returns {Promise<Product>} 제품 상세 정보 { pid, name, price, description, image_url, tags, original_price, original_gram }
- *
- * @example
- * const product = await getProductById('prod_001');
- * console.log(product.name, product.price);
- * console.log('원가:', product.original_price, '원래 용량:', product.original_gram);
+ * @param {string} productId - 제품 ID
+ * @returns {Promise<{
+ * pid: string, 
+ * name: string, 
+ * price: number, 
+ * description: string, 
+ * image_url: string, 
+ * tags: string[], 
+ * original_price: number, 
+ * original_gram: number
+ * }>}
  */
 export async function getProductById(productId) {
   return request(`/products/${productId}`);

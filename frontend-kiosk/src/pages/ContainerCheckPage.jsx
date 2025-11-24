@@ -1,6 +1,7 @@
 // src/pages/ContainerCheckPage.jsx
 import Button from "../components/Button";
 import KioskHeader from "../components/KioskHeader";
+import "../styles/pages.css";
 import { useSession } from "../contexts/SessionContext";
 
 export default function ContainerCheckPage({
@@ -11,13 +12,11 @@ export default function ContainerCheckPage({
   const { setHasContainer } = useSession();
 
   const handleYes = () => {
-    // 용기 보유 여부 세션에 저장
     setHasContainer(true);
     onHasContainer();
   };
 
   const handleNo = () => {
-    // 용기 보유하지 않음
     setHasContainer(false);
     onNoContainer();
   };
@@ -36,11 +35,11 @@ export default function ContainerCheckPage({
       </div>
       <div className="kiosk-footer">
         <div className="kiosk-button-container">
-          <Button variant="double" onClick={handleNo}>
+          <Button variant="primary" onClick={handleNo}>
             아니요, 용기가 없어요
           </Button>
 
-          <Button variant="outlinedDouble" onClick={handleYes}>
+          <Button variant="outlined" onClick={handleYes}>
             네, 용기를 가져왔어요
           </Button>
         </div>

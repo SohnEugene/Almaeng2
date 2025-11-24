@@ -1,12 +1,13 @@
 // src/pages/PaymentProcessingPage.jsx
 import { useEffect, useState, useRef } from "react";
+import Button from "../components/Button";
+import KioskHeader from "../components/KioskHeader";
+import "../styles/pages.css";
 import { useSession } from "../contexts/SessionContext";
 import { preparePayment, approvePayment } from "../services/api/payment";
 import { getKioskId } from "../services/kioskStorage";
 import { getManagerCode } from "../services/managerStorage";
-import Button from "../components/Button";
-import "../styles/pages.css";
-import KioskHeader from "../components/KioskHeader";
+
 
 export default function PaymentProcessingPage({ onNext, onHome }) {
   const { session } = useSession();
@@ -16,7 +17,7 @@ export default function PaymentProcessingPage({ onNext, onHome }) {
   const [isLoading, setIsLoading] = useState(true);
   const [isApproving, setIsApproving] = useState(false);
 
-  const initializedRef = useRef(false);
+  const initializedRef = useRef(false); // dev 환경에서 transaction 중복 생성 방지
 
 useEffect(() => {
   if (initializedRef.current) return;
@@ -27,19 +28,17 @@ useEffect(() => {
       setIsLoading(true);
       setError(null);
 
+      // --- 유효성 검사 ---
       if (!session.selectedProduct) {
         throw new Error("선택된 제품이 없습니다.");
       }
-
       if (!session.paymentMethod) {
         throw new Error("결제 수단이 선택되지 않았습니다.");
       }
-
       const kioskId = getKioskId();
       if (!kioskId) {
         throw new Error("키오스크 ID가 없습니다.");
       }
-
       const managerCode = getManagerCode();
       if (!managerCode) {
         throw new Error("관리자가 설정되지 않았습니다.");
@@ -56,16 +55,11 @@ useEffect(() => {
         manager: managerCode,
       };
 
-      console.log("💳 결제 준비 요청:", paymentData);
-
       const response = await preparePayment(paymentData);
-
-      console.log("✅ 결제 준비 응답:", response);
-
       setTxid(response.txid);
       setQrCodeBase64(response.qr_code_base64);
+
     } catch (err) {
-      console.error("❌ 결제 준비 실패:", err);
       setError(err.message || "결제 준비 중 오류가 발생했습니다.");
     } finally {
       setIsLoading(false);
@@ -85,17 +79,10 @@ useEffect(() => {
     try {
       setIsApproving(true);
       setError(null);
-
-      console.log("💳 결제 승인 요청:", { txid });
-
       const response = await approvePayment({ txid });
-
-      console.log("✅ 결제 승인 응답:", response);
-
-      // 결제 승인 성공 후 다음 페이지로 이동
       onNext();
+      
     } catch (err) {
-      console.error("❌ 결제 승인 실패:", err);
       setError(err.message || "결제 승인 중 오류가 발생했습니다.");
     } finally {
       setIsApproving(false);
@@ -115,12 +102,12 @@ useEffect(() => {
 
           {error && (
             <>
-              <div className="paymentProcessingText" style={{ color: "red" }}>
-                ❌ {error}
+              <div className="kiosk-title">
+                {error}
               </div>
-              <div className="paymentProcessingAction">
-                <Button onClick={() => window.location.reload()}>
-                  다시 시도
+              <div className="kiosk-footer">
+                <Button onClick={onHome}>
+                  시작 화면으로
                 </Button>
               </div>
             </>

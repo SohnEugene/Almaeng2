@@ -1,4 +1,12 @@
 // src/components/Button.jsx
+import "../styles/components.css";
+
+const VARIANT_CLASSES = {
+  primary: "button-primary",
+  outlined: "button-outlined",
+  small: "button-small",
+};
+
 export default function Button({
   children,
   onClick,
@@ -6,22 +14,13 @@ export default function Button({
   disabled = false,
   style = {},
 }) {
-  const variantClass =
-    {
-      primary: "buttonPrimary",
-      outlined: "buttonOutlined",
-      double: "buttonDouble",
-      outlinedDouble: "buttonOutlinedDouble",
-      small: "buttonSmall",
-    }[variant] || "buttonPrimary";
-
-  const classNames = ["button", variantClass].join(" ");
+  const variantClass = VARIANT_CLASSES[variant] || VARIANT_CLASSES.primary;
 
   return (
     <button
       onClick={onClick}
       disabled={disabled}
-      className={classNames}
+      className={`button ${variantClass}`}
       style={style}
     >
       {children}

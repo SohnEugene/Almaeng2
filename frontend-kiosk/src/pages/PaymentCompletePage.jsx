@@ -1,12 +1,12 @@
 // src/pages/PaymentCompletePage.jsx
 import Button from "../components/Button";
-import "../styles/pages.css";
 import KioskHeader from "../components/KioskHeader";
+import "../styles/pages.css";
 
-export default function PaymentCompletePage({ onReset }) {
+export default function PaymentCompletePage({ onHome }) {
   return (
     <div className="kiosk-page">
-      <KioskHeader onHome={onReset} />
+      <KioskHeader onHome={onHome} />
       <div className="kiosk-content">
         <div className="kiosk-title">결제가 완료되었습니다.</div>
 
@@ -15,7 +15,7 @@ export default function PaymentCompletePage({ onReset }) {
         </div>
       </div>
       <div className="kiosk-footer">
-        <Button onClick={onReset}>처음으로</Button>
+        <Button onClick={onHome}>처음으로</Button>
       </div>
     </div>
   );

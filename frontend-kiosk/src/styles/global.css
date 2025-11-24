@@ -2,7 +2,6 @@
 
 /**
  * Global Styles
- * 애플리케이션 전역에서 사용되는 스타일을 정의합니다.
  */
 
 /* ============================================================
@@ -139,15 +138,6 @@ body {
   background-color: var(--color-primary);
 }
 
-.kiosk-header {
-  display:flex;
-  flex-direction: row;
-  justify-content: space-between;
-  padding: 24px;
-  font-size: 20px;
-  font-weight: 600;
-}
-
 .kiosk-content {
   display: flex;
   flex-direction: column;
@@ -182,6 +172,14 @@ body {
   margin-bottom: 96px;
 }
 
+.kiosk-button-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+}
+
 /* ============================================================
    Typography
    ============================================================ */
@@ -197,14 +195,6 @@ body {
 .kiosk-title-light {
   font-size: 48px;
   font-weight: var(--font-weight-bold);
-  color: var(--color-white);
-  text-align: center;
-  line-height: 1.3;
-}
-
-.kiosk-title-main-light {
-  font-size: 56px;
-  font-weight: var(--font-weight-extrabold);
   color: var(--color-white);
   text-align: center;
   line-height: 1.3;
@@ -230,29 +220,6 @@ body {
    Button Components
    ============================================================ */
 
-.kiosk-button-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 16px;
-}
-
-.kiosk-home-button {
-  padding: 0;
-  background: none;
-  border: none;
-  font-size: 20px;
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-gray-400);
-  cursor: pointer;
-}
-
-.kiosk-home-button.kiosk-home-button-light {
-  color: var(--color-white) !important;
-  opacity: 0.9;
-}
-
 .button {
   min-width: 70vw;
   padding: 32px 48px;
@@ -270,39 +237,39 @@ body {
   cursor: not-allowed;
 }
 
-.buttonPrimary {
+.button-primary {
   background-color: var(--color-primary);
   color: var(--color-white);
 }
 
-.buttonPrimary:hover:not(:disabled) {
+.button-primary:hover:not(:disabled) {
   opacity: 0.9;
   transform: translateY(-2px);
 }
 
-.buttonOutlined {
+.button-outlined {
   background-color: var(--color-white);
   border: 3px solid var(--color-primary);
   color: var(--color-primary);
 }
 
-.buttonOutlined:hover:not(:disabled) {
+.button-outlined:hover:not(:disabled) {
   background-color: var(--color-primary);
   color: var(--color-white);
 }
 
-.buttonDouble {
+.button-double {
   background-color: var(--color-primary);
   color: var(--color-white);
 }
 
-.buttonOutlinedDouble {
+.button-outlined-double {
   background-color: var(--color-white);
   border: 3px solid var(--color-primary);
   color: var(--color-primary);
 }
 
-.buttonSmall {
+.button-small {
   min-width: 40vw;
   height: auto;
   padding: 24px 48px;
@@ -314,14 +281,8 @@ body {
   color: var(--color-primary);
 }
 
-.buttonSmall:disabled {
+.button-small:disabled {
   background-color: rgba(255, 255, 255, 0.5);
   opacity: 0.8;
   cursor: not-allowed;
-}
-
-.kiosk-header-logo {
-  display: flex;
-  align-items: center;
-  gap: 8px;
 }

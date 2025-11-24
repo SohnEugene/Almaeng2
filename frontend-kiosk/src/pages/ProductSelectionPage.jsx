@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import Button from "../components/Button";
 import ProductCard from "../components/ProductCard";
 import KioskHeader from "../components/KioskHeader";
+import "../styles/pages.css";
 import { getKioskProducts } from "../services/api";
 import { getKioskId } from "../services/kioskStorage";
 import { useSession } from "../contexts/SessionContext";
@@ -29,16 +30,14 @@ export default function ProductSelectionPage({ onNext, onHome }) {
           );
         }
 
-        // 백엔드에서 이 키오스크의 제품 목록 가져오기
+        // API로 키오스크에 등록된 제품 호출
         const response = await getKioskProducts(kioskId);
-
-        // 판매 가능한 제품만 필터링
         const availableProducts = response.products
           .filter((item) => item.available)
           .map((item) => item.product);
         setProducts(availableProducts);
+
       } catch (err) {
-        console.error("제품 목록 로드 실패:", err);
         setError(err.message);
       } finally {
         setIsLoading(false);

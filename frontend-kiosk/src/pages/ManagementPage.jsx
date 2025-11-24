@@ -4,7 +4,7 @@ import {
   registerKiosk,
   getKioskProducts,
   addProductToKiosk,
-  removeProductFromKiosk,
+  deleteProductFromKiosk,
   getProducts,
 } from "../services/api";
 import {
@@ -137,7 +137,7 @@ export default function ManagementPage() {
   const handleToggleProduct = async (productId, isCurrentlySelected) => {
     try {
       if (isCurrentlySelected) {
-        await removeProductFromKiosk(registeredInfo.kid, productId);
+        await deleteProductFromKiosk(registeredInfo.kid, productId);
       } else {
         await addProductToKiosk(registeredInfo.kid, productId);
       }
