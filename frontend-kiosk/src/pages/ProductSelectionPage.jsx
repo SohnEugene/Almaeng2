@@ -4,8 +4,8 @@ import Button from "../components/Button";
 import ProductCard from "../components/ProductCard";
 import KioskHeader from "../components/KioskHeader";
 import "../styles/pages.css";
-import { getKioskProducts } from "../services/api";
-import { getKioskId } from "../services/kioskStorage";
+import { getKioskProducts } from "../api";
+import { getKioskId } from "../storage/kiosk";
 import { useSession } from "../contexts/SessionContext";
 
 export default function ProductSelectionPage({ onNext, onHome }) {

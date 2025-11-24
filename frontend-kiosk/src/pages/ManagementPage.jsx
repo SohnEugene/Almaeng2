@@ -6,18 +6,18 @@ import {
   addProductToKiosk,
   deleteProductFromKiosk,
   getProducts,
-} from "../services/api";
+} from "../api";
 import {
   saveKioskInfo,
   getKioskInfo,
   clearKioskInfo,
-} from "../services/kioskStorage";
+} from "../storage/kiosk";
 import {
   MANAGERS,
   saveManagerInfo,
   getManagerInfo,
   clearManagerInfo,
-} from "../services/managerStorage";
+} from "../storage/manager";
 import { useBluetoothContext } from "../contexts/BluetoothContext";
 import HomeView from "../components/management/HomeView";
 import RegisterView from "../components/management/RegisterView";

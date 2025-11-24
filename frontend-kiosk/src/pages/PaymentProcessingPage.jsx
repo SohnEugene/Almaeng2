@@ -4,9 +4,9 @@ import Button from "../components/Button";
 import KioskHeader from "../components/KioskHeader";
 import "../styles/pages.css";
 import { useSession } from "../contexts/SessionContext";
-import { preparePayment, approvePayment } from "../services/api/payment";
-import { getKioskId } from "../services/kioskStorage";
-import { getManagerCode } from "../services/managerStorage";
+import { preparePayment, approvePayment } from "../api/payment";
+import { getKioskId } from "../storage/kiosk";
+import { getManagerCode } from "../storage/manager";
 
 
 export default function PaymentProcessingPage({ onNext, onHome }) {

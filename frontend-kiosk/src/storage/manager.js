@@ -28,9 +28,7 @@ export function saveManagerInfo(managerCode) {
       throw new Error(`Invalid manager code: ${managerCode}`);
     }
     localStorage.setItem(STORAGE_KEY, managerCode);
-    console.log("✅ 관리자 정보 저장 완료:", MANAGERS[managerCode].name);
   } catch (error) {
-    console.error("❌ 관리자 정보 저장 실패:", error);
     throw error;
   }
 }
@@ -45,7 +43,6 @@ export function getManagerCode() {
     const code = localStorage.getItem(STORAGE_KEY);
     return code || null;
   } catch (error) {
-    console.error("❌ 관리자 정보 조회 실패:", error);
     return null;
   }
 }
@@ -61,23 +58,12 @@ export function getManagerInfo() {
 }
 
 /**
- * 관리자가 설정되었는지 확인
- *
- * @returns {boolean} 설정 여부
- */
-export function isManagerSet() {
-  return getManagerCode() !== null;
-}
-
-/**
  * localStorage에서 관리자 정보 삭제
  */
 export function clearManagerInfo() {
   try {
     localStorage.removeItem(STORAGE_KEY);
-    console.log("🗑️ 관리자 정보 삭제 완료");
   } catch (error) {
-    console.error("❌ 관리자 정보 삭제 실패:", error);
     throw error;
   }
 }
