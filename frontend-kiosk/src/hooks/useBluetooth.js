@@ -261,23 +261,41 @@ export function useBluetooth({ saveToStorage = false } = {}) {
       console.log("✅ [BLE] GATT 서버 연결 성공");
       console.log("🔍 [BLE] 서버 상태 - connected:", server.connected, "device:", server.device);
 
+      // 사용 가능한 모든 서비스 목록 출력
+      try {
+        console.log("📋 [BLE] 사용 가능한 서비스 목록 조회 중...");
+        const services = await server.getPrimaryServices();
+        console.log("📋 [BLE] 총", services.length, "개의 서비스 발견:");
+        services.forEach((service, index) => {
+          console.log(`  ${index + 1}. UUID: ${service.uuid}`);
+        });
+      } catch (servicesErr) {
+        console.warn("⚠️ [BLE] 서비스 목록 조회 실패:", servicesErr.message);
+      }
+
       console.log("🔎 [BLE] 서비스 검색 중... UUID:", SCALE_SERVICE_UUID);
+      console.log("⏱️ [BLE] 타임아웃: 30초");
+      const serviceStartTime = Date.now();
       const service = await Promise.race([
         server.getPrimaryService(SCALE_SERVICE_UUID),
         new Promise((_, reject) =>
-          setTimeout(() => reject(new Error("서비스 검색 타임아웃 (10초)")), 10000)
+          setTimeout(() => reject(new Error("서비스 검색 타임아웃 (30초)")), 30000)
         ),
       ]);
-      console.log("✅ [BLE] 서비스 발견");
+      const serviceEndTime = Date.now();
+      console.log("✅ [BLE] 서비스 발견 (소요 시간:", (serviceEndTime - serviceStartTime) / 1000, "초)");
 
       console.log("🔎 [BLE] Characteristic 검색 중... UUID:", SCALE_CHAR_UUID);
+      console.log("⏱️ [BLE] 타임아웃: 30초");
+      const charStartTime = Date.now();
       const characteristic = await Promise.race([
         service.getCharacteristic(SCALE_CHAR_UUID),
         new Promise((_, reject) =>
-          setTimeout(() => reject(new Error("Characteristic 검색 타임아웃 (10초)")), 10000)
+          setTimeout(() => reject(new Error("Characteristic 검색 타임아웃 (30초)")), 30000)
         ),
       ]);
-      console.log("✅ [BLE] Characteristic 발견");
+      const charEndTime = Date.now();
+      console.log("✅ [BLE] Characteristic 발견 (소요 시간:", (charEndTime - charStartTime) / 1000, "초)");
 
       characteristicRef.current = characteristic;
 
