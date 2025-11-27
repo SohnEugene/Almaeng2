@@ -268,6 +268,8 @@ export function useBluetooth({ saveToStorage = false } = {}) {
 
       // 사용 가능한 모든 서비스 목록 출력
       try {
+        console.log("📋 [BLE] 사용 가능한 서비스 목록 조회 중...");
+        const services = await server.getPrimaryServices();
         console.log("📋 [BLE] 총", services.length, "개의 서비스 발견:");
         services.forEach((service, index) => {
           console.log(`  ${index + 1}. UUID: ${service.uuid}`);

@@ -26,7 +26,42 @@ export default function RefillStartPage({ onNext, onHome }) {
   const displayWeight = devWeight !== null ? devWeight : btWeight;
   const isScaleConnected = isConnected || devWeight !== null;
 
-  // Welcome 화면 자동 진행
+  // 개발용: 콘솔에서 무게를 설정할 수 있도록 전역 함수 노출
+  useEffect(() => {
+    // 전역 함수 추가
+    window.setWeight = (weight) => {
+      console.log(`🔧 [DEV] 무게를 ${weight}g로 설정합니다`);
+      setDevWeight(weight);
+    };
+
+    window.resetWeight = () => {
+      console.log("🔧 [DEV] 무게를 블루투스 값으로 초기화합니다");
+      setDevWeight(null);
+    };
+
+    window.getCurrentStep = () => {
+      console.log("🔧 [DEV] 현재 단계:", step);
+      console.log("🔧 [DEV] 현재 무게:", displayWeight);
+      console.log("🔧 [DEV] 공병 무게:", session.bottleWeight);
+      console.log("🔧 [DEV] isConnected:", isConnected);
+      return { step, weight: displayWeight, bottleWeight: session.bottleWeight, isConnected };
+    };
+
+    // 컴포넌트 언마운트 시 정리
+    return () => {
+      delete window.setWeight;
+      delete window.resetWeight;
+      delete window.getCurrentStep;
+    };
+  }, [step, displayWeight, session.bottleWeight, isConnected]);
+
+  // step 변경 시 로그
+  useEffect(() => {
+    console.log("Step changed to:", step);
+    console.log("SessionContext:", session);
+  }, [step, session]);
+
+  // 시작 화면 자동 진행
   useEffect(() => {
     if (step === REFILL_STEPS.WELCOME) {
       const timer = setTimeout(() => {
