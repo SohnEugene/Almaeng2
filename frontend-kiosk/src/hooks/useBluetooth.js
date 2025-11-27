@@ -208,27 +208,12 @@ export function useBluetooth({ saveToStorage = false } = {}) {
     setError(null);
 
     try {
-      // localStorage에서 이전에 연결한 기기 정보 가져오기
-      const savedDevice = getBluetoothDevice();
-      console.log("📦 [BLE] 저장된 장치 정보:", savedDevice);
-
-      let requestOptions;
-
-      if (savedDevice?.name) {
-        // 저장된 기기 이름으로 필터링
-        console.log("🔍 [BLE] 저장된 장치로 필터링:", savedDevice.name);
-        requestOptions = {
-          filters: [{ name: savedDevice.name }],
-          optionalServices: [SCALE_SERVICE_UUID],
-        };
-      } else {
-        // 저장된 기기 없으면 모든 기기 표시
-        console.log("🔍 [BLE] 저장된 장치 없음, 모든 장치 표시");
-        requestOptions = {
-          acceptAllDevices: true,
-          optionalServices: [SCALE_SERVICE_UUID],
-        };
-      }
+      // 모든 블루투스 장치 표시 (필터 없음)
+      console.log("🔍 [BLE] 모든 블루투스 장치 표시");
+      const requestOptions = {
+        acceptAllDevices: true,
+        optionalServices: [SCALE_SERVICE_UUID],
+      };
 
       console.log("🔎 [BLE] 장치 검색 시작...");
       console.log("🔍 [BLE] 검색 옵션:", JSON.stringify(requestOptions, null, 2));
