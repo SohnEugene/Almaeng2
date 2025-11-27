@@ -37,6 +37,7 @@
    ============================================================ */
 
 .product-card {
+  width: 100%;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -81,9 +82,16 @@
   margin-bottom: 16px;
   font-size: 32px;
   font-weight: var(--font-weight-bold);
-  white-space: nowrap;
+  word-wrap: break-word;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  line-height: 1.2;
+  max-height: 2.4em; /* 2줄 제한 (line-height * 2) */
   overflow: hidden;
-  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 
 .product-card-price {
@@ -92,16 +100,25 @@
   font-weight: var(--font-weight-bold);
   color: var(--color-primary);
   text-align: right;
-  white-space: nowrap;
-  overflow: hidden;
+  word-wrap: break-word;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  line-height: 1.2;
 }
 
 .product-card-detail {
   font-size: 20px;
   color: var(--color-gray-dark);
-  white-space: nowrap;
+  word-wrap: break-word;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  line-height: 1.3;
+  max-height: 2.6em; /* 2줄 제한 (line-height * 2) */
   overflow: hidden;
-  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 
 .product-card-compare {

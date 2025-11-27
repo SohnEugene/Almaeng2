@@ -32,7 +32,7 @@ export default function ProductCard({ product, isSelected, onSelect }) {
 
   // 텍스트 크기 동적 조정
   useEffect(() => {
-    const adjustFontSize = (element, maxSize, minSize = 14) => {
+    const adjustFontSize = (element, maxSize, minSize = 14, maxLines = 2) => {
       if (!element) return;
 
       const container = element.parentElement;
@@ -42,17 +42,22 @@ export default function ProductCard({ product, isSelected, onSelect }) {
       let fontSize = maxSize;
       element.style.fontSize = `${fontSize}px`;
 
-      // 텍스트가 넘치지 않을 때까지 폰트 크기 감소
-      while (element.scrollWidth > containerWidth && fontSize > minSize) {
+      // 텍스트가 너비와 높이를 모두 넘치지 않을 때까지 폰트 크기 감소
+      while (fontSize > minSize) {
+        const isOverflowing = element.scrollWidth > containerWidth ||
+                             element.scrollHeight > element.clientHeight;
+
+        if (!isOverflowing) break;
+
         fontSize -= 1;
         element.style.fontSize = `${fontSize}px`;
       }
     };
 
     // 각 요소의 폰트 크기 조정
-    if (nameRef.current) adjustFontSize(nameRef.current, 32, 18);
-    if (priceRef.current) adjustFontSize(priceRef.current, 32, 18);
-    if (descriptionRef.current) adjustFontSize(descriptionRef.current, 20, 14);
+    if (nameRef.current) adjustFontSize(nameRef.current, 32, 18, 2);
+    if (priceRef.current) adjustFontSize(priceRef.current, 32, 20, 1);
+    if (descriptionRef.current) adjustFontSize(descriptionRef.current, 20, 14, 2);
   }, [product.name, product.price, product.description]);
 
   return (

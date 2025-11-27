@@ -145,7 +145,7 @@ export default function ProductSelectionPage({ onNext, onHome }) {
         <div className="kiosk-content-header">
           <h1 className="kiosk-title">리필할 제품을 선택해주세요.</h1>
         </div>
-        <div>
+        <div className="card-container">
           {products.map((product) => (
             <ProductCard
               key={product.pid}
