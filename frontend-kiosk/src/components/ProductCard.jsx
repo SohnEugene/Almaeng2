@@ -55,9 +55,9 @@ export default function ProductCard({ product, isSelected, onSelect }) {
     };
 
     // 각 요소의 폰트 크기 조정
-    if (nameRef.current) adjustFontSize(nameRef.current, 32, 18, 2);
-    if (priceRef.current) adjustFontSize(priceRef.current, 32, 20, 1);
-    if (descriptionRef.current) adjustFontSize(descriptionRef.current, 20, 14, 2);
+    if (nameRef.current) adjustFontSize(nameRef.current, 28, 16, 2);
+    if (priceRef.current) adjustFontSize(priceRef.current, 28, 18, 1);
+    if (descriptionRef.current) adjustFontSize(descriptionRef.current, 18, 12, 2);
   }, [product.name, product.price, product.description]);
 
   return (

@@ -155,7 +155,7 @@ body {
   align-items: center;
   flex: 1;
   gap: 32px;
-  padding: 64px 120px 64px 120px;
+  padding: 64px;
   overflow-y: auto;
 }
 
