@@ -1,0 +1,258 @@
+/**
+ * 페이지별 고유 스타일 정의
+ */
+
+/* ============================================================
+   HomePage
+   ============================================================ */
+
+.home-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: var(--color-white);
+}
+
+.home-header {
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  flex: 1;
+  padding: 32px;
+}
+
+.home-logo {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  font-size: 32px;
+}
+
+.logo1 {
+  width: 160px;
+  height: auto;
+}
+
+.logo2 {
+  width: 60px;
+  height: auto;
+}
+
+.home-content {
+  display: flex;
+  flex: 11;
+  overflow: hidden;
+}
+
+.home-content img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.home-footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 2;
+  padding: 32px;
+}
+
+/* ============================================================
+   ContainerPurchasePage
+   ============================================================ */
+
+.bottle-image {
+  width: 40vw;
+  height: 40vw;
+}
+
+/* ============================================================
+   ProductSelectionPage
+   ============================================================ */
+
+.loading-gif {
+  width: 200px;
+  height: auto;
+  margin: 0 auto;
+}
+
+.card-container {
+  width: 100%;
+}
+
+/* ============================================================
+   RefillPage
+   ============================================================ */
+
+.bluetooth-warning {
+  margin-top: 16px;
+  padding: 16px 24px;
+  background-color: rgba(255, 193, 7, 0.2);
+  border: 2px solid rgba(255, 193, 7, 0.6);
+  border-radius: 12px;
+  color: var(--color-white);
+  font-size: 18px;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.product-name {
+  font-size: 72px;
+  font-weight: 900;
+  color: var(--color-white);
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+.scale-image {
+  width: 40vw;
+  margin-top: 24px;
+}
+
+.refill-weight-display {
+  padding: 16px 32px;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 48px;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--color-white);
+}
+
+.refill-price-preview {
+  display: flex;
+  flex-direction: row;
+  margin-top: -8px;
+  padding: 16px 32px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 50px;
+  text-align: center;
+}
+
+.refill-price-calculation {
+  font-size: 24px;
+  color: var(--color-white);
+  opacity: 0.9;
+}
+
+.refill-price-total {
+  font-size: 24px;
+  font-weight: 900;
+  color: var(--color-white);
+}
+
+/* ============================================================
+   PaymentMethodPage
+   ============================================================ */
+
+.payment-button-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 32px;
+  height: 100%;
+}
+
+.payment-method-button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60vw;
+  height: 200px;
+  padding: 0;
+  background-color: var(--color-white);
+  border: 3px solid var(--color-gray-light);
+  border-radius: 64px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.payment-method-button-selected {
+  border-color: var(--color-primary);
+}
+
+.payment-method-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ============================================================
+   PaymentProcessingPage
+   ============================================================ */
+
+.qr-image {
+  width: 50vw;
+  height: 50vw;
+}
+
+/* ============================================================
+   PaymentCompletePage
+   ============================================================ */
+
+.savings-info {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  margin: 32px 0;
+  width: 100%;
+  max-width: 600px;
+}
+
+.price-comparison {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  background-color: var(--color-bg-light);
+  border-radius: 12px;
+}
+
+.price-label {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.price-value {
+  font-size: 28px;
+  font-weight: 900;
+}
+
+.price-value.original {
+  color: var(--color-gray-dark);
+  text-decoration: line-through;
+}
+
+.price-value.refill {
+  color: var(--color-primary);
+}
+
+.savings-summary {
+  display: flex;
+  justify-content: center;
+  width: auto;
+  align-items: center;
+  padding: 24px 32px;
+  gap: 24px;
+}
+
+.savings-amount {
+  font-size: 48px;
+  font-weight: 900;
+  color: var(--color-primary);
+}
+
+.savings-percent {
+  font-size: 32px;
+  font-weight: 600;
+  color: var(--color-primary);
+}
