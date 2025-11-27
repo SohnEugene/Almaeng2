@@ -3,6 +3,8 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef } fr
 import refillStartVoice from "../assets/voices/리필시작.mp3";
 import qrCheckVoice from "../assets/voices/qr제품확인.mp3";
 import containerCheckVoice from "../assets/voices/리필빈병확인.mp3";
+import emptyContainerScaleVoice from "../assets/voices/빈병저울.mp3";
+import filledContainerScaleVoice from "../assets/voices/제품병저울.mp3";
 
 const SoundContext = createContext(null);
 
@@ -10,6 +12,8 @@ const SOUND_SOURCES = {
   REFILL_START: refillStartVoice,
   QR_PRODUCT_CHECK: qrCheckVoice,
   CONTAINER_CHECK: containerCheckVoice,
+  EMPTY_CONTAINER_SCALE: emptyContainerScaleVoice,
+  FILLED_CONTAINER_SCALE: filledContainerScaleVoice,
 };
 
 export function SoundProvider({ children }) {
