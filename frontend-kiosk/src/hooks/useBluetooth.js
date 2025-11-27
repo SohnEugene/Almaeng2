@@ -217,11 +217,11 @@ export function useBluetooth({ saveToStorage = false } = {}) {
         );
       }
 
-      // 블루투스 장치 검색 (이름이 있는 장치만)
-      console.log("🔍 [BLE] 블루투스 장치 검색 (이름 필터링)");
+      // 블루투스 장치 검색 (Service UUID로 필터링)
+      console.log("🔍 [BLE] 블루투스 장치 검색 (저울 서비스 UUID 필터링)");
       const requestOptions = {
         filters: [
-          { namePrefix: '' }  // 빈 문자열로 시작하는 이름 = 이름이 있는 모든 장치
+          { services: [SCALE_SERVICE_UUID] }  // 저울 서비스를 제공하는 장치만 표시
         ],
         optionalServices: [SCALE_SERVICE_UUID],
       };
