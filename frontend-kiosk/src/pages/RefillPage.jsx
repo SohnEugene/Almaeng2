@@ -269,8 +269,8 @@ export default function RefillStartPage({ onNext, onHome }) {
               <h1 className="product-name" ref={productNameRef}>
                 {session.selectedProduct?.name}
               </h1>
-              <h1 className="kiosk-title-light">
-                를 리필하시고 <br/> 저울에 올려주세요
+              <h1 className="kiosk-subtitle-light">
+                를 리필하시고 저울에 올려주세요
               </h1>
             </div>
             <ScaleDisplay showBottle />
