@@ -81,6 +81,9 @@
   margin-bottom: 16px;
   font-size: 32px;
   font-weight: var(--font-weight-bold);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .product-card-price {
@@ -89,11 +92,16 @@
   font-weight: var(--font-weight-bold);
   color: var(--color-primary);
   text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .product-card-detail {
   font-size: 20px;
   color: var(--color-gray-dark);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .product-card-compare {
