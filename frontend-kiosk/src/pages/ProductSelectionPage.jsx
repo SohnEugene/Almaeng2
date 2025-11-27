@@ -7,6 +7,7 @@ import "../styles/pages.css";
 import { getKioskProducts } from "../api";
 import { getKioskId } from "../storage/kiosk";
 import { useSession } from "../contexts/SessionContext";
+import loadingGif from "../assets/loading.gif";
 
 export default function ProductSelectionPage({ onNext, onHome }) {
   const { session, selectProduct } = useSession();
@@ -63,7 +64,17 @@ export default function ProductSelectionPage({ onNext, onHome }) {
 
   // 로딩 중
   if (isLoading) {
-    return renderStateMessage("제품을 불러오는 중입니다");
+    return (
+      <div className="kiosk-page">
+        <KioskHeader onHome={onHome} />
+        <div className="kiosk-content">
+          <div className="kiosk-content-header">
+            <h1 className="kiosk-title">제품을 불러오는 중입니다</h1>
+            <img src={loadingGif} alt="로딩 중" className="loading-gif" />
+          </div>
+        </div>
+      </div>
+    );
   }
 
   // 에러 발생
