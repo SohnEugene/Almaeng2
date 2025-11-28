@@ -5,6 +5,7 @@ import "../styles/pages.css";
 import { useSession } from "../contexts/SessionContext";
 import { useBluetoothContext } from "../contexts/BluetoothContext";
 import scaleImg from "../assets/images/measurement.png";
+import { useSound } from "../contexts/SoundContext";
 
 const REFILL_STEPS = {
   WELCOME: "welcome",
@@ -55,6 +56,18 @@ export default function RefillStartPage({ onNext, onHome }) {
       delete window.getCurrentStep;
     };
   }, [step, displayWeight, session.bottleWeight, isConnected]);
+
+  useEffect(() => {
+    if (step === REFILL_STEPS.EMPTY_CONTAINER) {
+      playSound("EMPTY_CONTAINER_SCALE");
+    }
+  }, [step, playSound]);
+
+  useEffect(() => {
+    if (step === REFILL_STEPS.FILL_PRODUCT) {
+      playSound("FILLED_CONTAINER_SCALE");
+    }
+  }, [step, playSound]);
 
   // step 변경 시 로그
   useEffect(() => {

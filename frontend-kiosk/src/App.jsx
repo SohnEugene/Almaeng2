@@ -11,6 +11,7 @@ import PaymentMethodPage from "./pages/PaymentMethodPage";
 import PaymentProcessingPage from "./pages/PaymentProcessingPage";
 import PaymentCompletePage from "./pages/PaymentCompletePage";
 import ManagementPage from "./pages/ManagementPage";
+import { SoundProvider, useSound } from "./contexts/SoundContext";
 
 import { BluetoothProvider } from "./contexts/BluetoothContext";
 import { SessionProvider, useSession } from "./contexts/SessionContext";
@@ -20,10 +21,12 @@ export default function App() {
     <BrowserRouter>
       <BluetoothProvider>
         <SessionProvider>
-          <Routes>
-            <Route path="/" element={<KioskFlow />} />
-            <Route path="/manage" element={<ManagementPage />} />
-          </Routes>
+          <SoundProvider>
+            <Routes>
+              <Route path="/" element={<KioskFlow />} />
+              <Route path="/manage" element={<ManagementPage />} />
+            </Routes>
+          </SoundProvider>
         </SessionProvider>
       </BluetoothProvider>
     </BrowserRouter>
@@ -41,12 +44,19 @@ const KIOSK_ORDER = [
   "paymentComplete",
 ];
 
-
+// 페이지별 사운드 맵핑
+const PAGE_SOUNDS = {
+  product: "REFILL_START",
+  paymentComplete: "QR_PRODUCT_CHECK",
+  container: "CONTAINER_CHECK",
+  // containerPurchase, paymentMethod 등은 사운드 없음
+};
 
 // 키오스크 메인 플로우 컴포넌트
 function KioskFlow() {
   const [currentPage, setCurrentPage] = useState("home");
   const { resetSession } = useSession();
+  const { playSound } = useSound();
 
   // 전체화면 모드 진입
   useEffect(() => {
@@ -81,7 +91,14 @@ function KioskFlow() {
   }, []);
 
   // 페이지 전환 핸들러
-  const goToPage = useCallback((page) => setCurrentPage(page), []);
+  const goToPage = useCallback((page) => {
+    // 페이지 전환 시 해당 페이지의 사운드 자동 재생
+    const soundId = PAGE_SOUNDS[page];
+    if (soundId) {
+      playSound(soundId);
+    }
+    setCurrentPage(page);
+  }, [playSound]);
 
   const resetToHome = useCallback(() => {
     resetSession();
@@ -90,8 +107,16 @@ function KioskFlow() {
 
   const goToNextPage = useCallback(() => {
     const nextIndex = KIOSK_ORDER.indexOf(currentPage) + 1;
-    if (nextIndex < KIOSK_ORDER.length) setCurrentPage(KIOSK_ORDER[nextIndex]);
-  }, [currentPage]);
+    if (nextIndex < KIOSK_ORDER.length) {
+      const nextPage = KIOSK_ORDER[nextIndex];
+      // 다음 페이지의 사운드 자동 재생
+      const soundId = PAGE_SOUNDS[nextPage];
+      if (soundId) {
+        playSound(soundId);
+      }
+      setCurrentPage(nextPage);
+    }
+  }, [currentPage, playSound]);
 
   // 페이지 맵 정의
   const pages = {
