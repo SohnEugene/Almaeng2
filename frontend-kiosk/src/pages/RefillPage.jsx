@@ -291,18 +291,6 @@ export default function RefillStartPage({ onNext, onHome }) {
               </h1>
             </div>
             <ScaleDisplay showBottle />
-            {displayWeight > session.bottleWeight && (
-              <div className="refill-price-preview">
-                <div className="refill-price-calculation">
-                  ₩{session.selectedProduct?.price}/g × ({displayWeight} -{" "}
-                  {session.bottleWeight})g
-                  {session.purchaseContainer && " + ₩500"} =
-                </div>
-                <div className="refill-price-total">
-                  ₩{calculatePrice().toLocaleString()}
-                </div>
-              </div>
-            )}
           </div>
         );
 
@@ -332,7 +320,7 @@ export default function RefillStartPage({ onNext, onHome }) {
             onClick={handleFillComplete}
             disabled={!stableWeight}
           >
-            결제하기
+            리필 완료
           </Button>
         );
 

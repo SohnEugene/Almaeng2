@@ -30,7 +30,8 @@ export default function PaymentCompletePage({ onHome }) {
     };
   };
 
-  const savings = calculateSavings();
+  // 0으로 세팅
+  const savings = 0;
 
   const originalTotalPrice = savings
     ? (session.selectedProduct.original_price / session.selectedProduct.original_gram) * session.weight
@@ -40,31 +41,7 @@ export default function PaymentCompletePage({ onHome }) {
     <div className="kiosk-page">
       <KioskHeader onHome={onHome} />
       <div className="kiosk-content">
-        <div className="kiosk-title">결제가 완료되었습니다.</div>
-
-        {savings && (
-          <div className="savings-info">
-            <div className="price-comparison">
-              <div className="price-row">
-                <span className="price-label">일반 제품 구매 시</span>
-                <span className="price-value original">₩{Math.round(originalTotalPrice).toLocaleString()}</span>
-              </div>
-              <div className="price-row">
-                <span className="price-label">리필 결제 금액</span>
-                <span className="price-value refill">₩{session.totalPrice.toLocaleString()}</span>
-              </div>
-            </div>
-            <div className="savings-summary">
-              <div className="savings-amount">
-                ₩{savings.savedAmount.toLocaleString()} 절약
-              </div>
-              <div className="savings-percent">
-                {savings.savedPercent}% 할인
-              </div>
-            </div>
-          </div>
-        )}
-
+        <div className="kiosk-title">리필이 완료되었습니다.</div>
         <div className="kiosk-subtitle">
           당신의 리필이 작은 변화를 만듭니다.
         </div>
