@@ -44,12 +44,10 @@ const KIOSK_ORDER = [
   "paymentComplete",
 ];
 
-// 페이지별 사운드 맵핑
 const PAGE_SOUNDS = {
   product: "REFILL_START",
   paymentComplete: "QR_PRODUCT_CHECK",
   container: "CONTAINER_CHECK",
-  // containerPurchase, paymentMethod 등은 사운드 없음
 };
 
 // 키오스크 메인 플로우 컴포넌트

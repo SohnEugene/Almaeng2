@@ -24,6 +24,7 @@ export default function RefillStartPage({ onNext, onHome }) {
 
   const { session, setBottleWeight, setCombinedWeight, calculateTotalPrice } = useSession();
   const { weight: btWeight, isConnected, isConnecting, connect } = useBluetoothContext();
+  const { playSound } = useSound();
 
   const displayWeight = devWeight !== null ? devWeight : btWeight;
   const isScaleConnected = isConnected || devWeight !== null;
@@ -57,12 +58,14 @@ export default function RefillStartPage({ onNext, onHome }) {
     };
   }, [step, displayWeight, session.bottleWeight, isConnected]);
 
+  // 빈 병 저울 단계 진입 시 안내 음성 재생
   useEffect(() => {
     if (step === REFILL_STEPS.EMPTY_CONTAINER) {
       playSound("EMPTY_CONTAINER_SCALE");
     }
   }, [step, playSound]);
 
+  // 제품 리필 단계 진입 시 안내 음성 재생
   useEffect(() => {
     if (step === REFILL_STEPS.FILL_PRODUCT) {
       playSound("FILLED_CONTAINER_SCALE");
