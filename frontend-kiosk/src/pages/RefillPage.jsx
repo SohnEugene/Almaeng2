@@ -321,7 +321,7 @@ export default function RefillStartPage({ onNext, onHome }) {
             onClick={handleTareComplete}
             disabled={!stableWeight}
           >
-            공병 무게 측정 완료
+            빈 병 무게 측정 완료
           </Button>
         );
 
