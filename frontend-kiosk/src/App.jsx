@@ -9,6 +9,7 @@ import ContainerPurchasePage from "./pages/ContainerPurchasePage";
 import RefillPage from "./pages/RefillPage";
 import PaymentMethodPage from "./pages/PaymentMethodPage";
 import PaymentProcessingPage from "./pages/PaymentProcessingPage";
+import TempPaymentProcessingPage from "./pages/TempPaymentProcessingPage";
 import PaymentCompletePage from "./pages/PaymentCompletePage";
 import ManagementPage from "./pages/ManagementPage";
 import { SoundProvider, useSound } from "./contexts/SoundContext";
@@ -39,6 +40,7 @@ const KIOSK_ORDER = [
   "container",
   "containerPurchase",
   "refill",
+  "tempPaymentProcessing",
   //"paymentMethod",
   //"paymentProcessing",
   "paymentComplete",
@@ -148,21 +150,27 @@ function KioskFlow() {
         onHome={resetToHome}
       />
     ),
+    tempPaymentProcessing: (
+      <TempPaymentProcessingPage
+        onNext={goToNextPage}
+        onHome={resetToHome}
+      />
+    ),
     paymentMethod: (
-      <PaymentMethodPage 
-        onNext={goToNextPage} 
-        onHome={resetToHome} 
+      <PaymentMethodPage
+        onNext={goToNextPage}
+        onHome={resetToHome}
       />
     ),
     paymentProcessing: (
-      <PaymentProcessingPage 
-        onNext={goToNextPage} 
-        onHome={resetToHome} 
+      <PaymentProcessingPage
+        onNext={goToNextPage}
+        onHome={resetToHome}
       />
     ),
     paymentComplete: (
-      <PaymentCompletePage 
-        onHome={resetToHome} 
+      <PaymentCompletePage
+        onHome={resetToHome}
       />),
   };
 
