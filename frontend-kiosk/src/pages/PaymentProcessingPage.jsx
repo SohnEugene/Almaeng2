@@ -7,6 +7,7 @@ import { useSession } from "../contexts/SessionContext";
 import { preparePayment, approvePayment } from "../api/payment";
 import { getKioskId } from "../storage/kiosk";
 import { getManagerCode } from "../storage/manager";
+import useInactivityTimeout from "../hooks/useInactivityTimeout";
 
 
 export default function PaymentProcessingPage({ onNext, onHome }) {
@@ -18,6 +19,9 @@ export default function PaymentProcessingPage({ onNext, onHome }) {
   const [isApproving, setIsApproving] = useState(false);
 
   const initializedRef = useRef(false); // dev 환경에서 transaction 중복 생성 방지
+
+  // 5분 동안 인터랙션이 없으면 HomePage로 이동
+  useInactivityTimeout(onHome, 300000);
 
 useEffect(() => {
   if (initializedRef.current) return;

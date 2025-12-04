@@ -5,6 +5,7 @@ import "../styles/pages.css";
 import { useSession } from "../contexts/SessionContext";
 import kakaoPayImage from "../assets/images/kakaopay.png";
 import tossPayImage from "../assets/images/tosspay.png";
+import useInactivityTimeout from "../hooks/useInactivityTimeout";
 
 
 const PAYMENT_METHODS = {
@@ -14,6 +15,9 @@ const PAYMENT_METHODS = {
 
 export default function PaymentMethodPage({ onNext, onHome }) {
   const { session, setPaymentMethod } = useSession();
+
+  // 5분 동안 인터랙션이 없으면 HomePage로 이동
+  useInactivityTimeout(onHome, 300000);
 
   const handleMethodSelect = (method) => {
     setPaymentMethod(method);

@@ -9,12 +9,16 @@ import { getKioskId } from "../storage/kiosk";
 import { useSession } from "../contexts/SessionContext";
 import { getProductsCache, saveProductsCache } from "../storage/products";
 import loadingGif from "../assets/loading.gif";
+import useInactivityTimeout from "../hooks/useInactivityTimeout";
 
 export default function ProductSelectionPage({ onNext, onHome }) {
   const { session, selectProduct } = useSession();
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // 5분 동안 인터랙션이 없으면 HomePage로 이동
+  useInactivityTimeout(onHome, 300000);
 
   // 키오스크에 등록된 제품 불러오기
   useEffect(() => {

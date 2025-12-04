@@ -7,6 +7,7 @@ import { useBluetoothContext } from "../contexts/BluetoothContext";
 import scaleImg from "../assets/images/measurement.png";
 import pairImg from "../assets/images/pair.png"
 import { useSound } from "../contexts/SoundContext";
+import useInactivityTimeout from "../hooks/useInactivityTimeout";
 
 const REFILL_STEPS = {
   WELCOME: "welcome",
@@ -29,6 +30,9 @@ export default function RefillStartPage({ onNext, onHome }) {
 
   const displayWeight = devWeight !== null ? devWeight : btWeight;
   const isScaleConnected = isConnected || devWeight !== null;
+
+  // 5분 동안 인터랙션이 없으면 HomePage로 이동
+  useInactivityTimeout(onHome, 300000); // 300000ms = 5분
 
   // 개발용: 콘솔에서 무게를 설정할 수 있도록 전역 함수 노출
   useEffect(() => {

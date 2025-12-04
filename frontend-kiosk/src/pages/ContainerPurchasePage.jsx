@@ -4,9 +4,13 @@ import KioskHeader from "../components/KioskHeader";
 import "../styles/pages.css";
 import { useSession } from "../contexts/SessionContext";
 import bottlesImage from "../assets/images/bottles.png";
+import useInactivityTimeout from "../hooks/useInactivityTimeout";
 
 export default function ContainerPurchasePage({ onNext, onHome }) {
   const { setPurchaseContainer } = useSession();
+
+  // 5분 동안 인터랙션이 없으면 HomePage로 이동
+  useInactivityTimeout(onHome, 300000);
 
   const handlePurchase = () => {
     setPurchaseContainer(true);

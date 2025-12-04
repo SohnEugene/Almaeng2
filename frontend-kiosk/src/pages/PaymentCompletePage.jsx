@@ -3,9 +3,13 @@ import Button from "../components/Button";
 import KioskHeader from "../components/KioskHeader";
 import "../styles/pages.css";
 import { useSession } from "../contexts/SessionContext";
+import useInactivityTimeout from "../hooks/useInactivityTimeout";
 
 export default function PaymentCompletePage({ onHome }) {
   const { session } = useSession();
+
+  // 5분 동안 인터랙션이 없으면 HomePage로 이동
+  useInactivityTimeout(onHome, 300000);
 
   // 절약 금액 및 퍼센트 계산
   const calculateSavings = () => {
