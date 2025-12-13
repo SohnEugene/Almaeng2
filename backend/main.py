@@ -34,6 +34,8 @@ app.add_middleware(
         "http://127.0.0.1:8080",
         "https://almaeng2.vercel.app",
         "https://almaeng2-shop.vercel.app",
+        "https://sobunsobun.vercel.app",
+        "https://sobunsobun-dashboard.vercel.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],
