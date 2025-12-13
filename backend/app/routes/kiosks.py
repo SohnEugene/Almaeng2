@@ -22,10 +22,8 @@ from app.models import (
 from app.services.firebase import firebase_service
 
 
-router = APIRouter(
-    prefix="/kiosks",
-    tags=["kiosk"]
-)
+router = APIRouter(prefix="/kiosks", tags=["kiosk"])
+
 
 @router.get("/", response_model=List[dict], status_code=status.HTTP_200_OK)
 async def get_all_kiosks():
@@ -40,7 +38,10 @@ async def get_all_kiosks():
     """
     return firebase_service.get_all_kiosks()
 
-@router.post("/", response_model=RegisterKioskResponse, status_code=status.HTTP_201_CREATED)
+
+@router.post(
+    "/", response_model=RegisterKioskResponse, status_code=status.HTTP_201_CREATED
+)
 async def register_kiosk(request: RegisterKioskRequest):
     """
     Register a new kiosk.
@@ -61,7 +62,9 @@ async def register_kiosk(request: RegisterKioskRequest):
         raise KioskInvalidDataException("Kiosk name cannot be empty or whitespace only")
 
     if not request.location.strip():
-        raise KioskInvalidDataException("Kiosk location cannot be empty or whitespace only")
+        raise KioskInvalidDataException(
+            "Kiosk location cannot be empty or whitespace only"
+        )
 
     kiosk = Kiosk(
         name=request.name.strip(),
@@ -74,7 +77,6 @@ async def register_kiosk(request: RegisterKioskRequest):
     kiosk_data = kiosk.model_dump(exclude_none=True, exclude={"kid"})
     kiosk_id = firebase_service.register_kiosk(kiosk_data)
     return RegisterKioskResponse(kid=kiosk_id)
-
 
 
 @router.get("/{kid}", response_model=Kiosk, status_code=status.HTTP_200_OK)
@@ -95,7 +97,10 @@ async def get_kiosk(kid: str):
     kiosk = firebase_service.get_kiosk_by_id(kid)
     return kiosk
 
-@router.delete("/{kid}", response_model=DeleteKioskResponse, status_code=status.HTTP_200_OK)
+
+@router.delete(
+    "/{kid}", response_model=DeleteKioskResponse, status_code=status.HTTP_200_OK
+)
 async def delete_kiosk(kid: str):
     """
     Delete a kiosk by ID
@@ -114,8 +119,11 @@ async def delete_kiosk(kid: str):
     return DeleteKioskResponse(message=f"Kiosk {kid} deleted successfully")
 
 
-
-@router.get("/{kid}/products", response_model=GetKioskProductsResponse, status_code=status.HTTP_200_OK)
+@router.get(
+    "/{kid}/products",
+    response_model=GetKioskProductsResponse,
+    status_code=status.HTTP_200_OK,
+)
 async def get_kiosk_products(kid: str):
     """
     Get all products available at a specific kiosk with full product details
@@ -139,19 +147,21 @@ async def get_kiosk_products(kid: str):
 
     products = []
     for kiosk_prod in kiosk.products:
-        product_id = kiosk_prod.get('pid')
-        kiosk_available = kiosk_prod.get('available', False)
+        product_id = kiosk_prod.get("pid")
+        kiosk_available = kiosk_prod.get("available", False)
 
         product = firebase_service.get_product_by_id(product_id)
 
-        products.append({
-            "product": product,
-            "available": kiosk_available
-        })
+        products.append({"product": product, "available": kiosk_available})
 
     return GetKioskProductsResponse(products=products)
 
-@router.post("/{kid}/products", response_model=AddProductToKioskResponse, status_code=status.HTTP_200_OK)
+
+@router.post(
+    "/{kid}/products",
+    response_model=AddProductToKioskResponse,
+    status_code=status.HTTP_200_OK,
+)
 async def add_product_to_kiosk(kid: str, request: AddProductToKioskRequest):
     """
     Add a product to a kiosk
@@ -174,12 +184,11 @@ async def add_product_to_kiosk(kid: str, request: AddProductToKioskRequest):
     product = firebase_service.get_product_by_id(request.pid)
 
     if any(p.get("pid") == product.pid for p in kiosk.products):
-        raise ProductAlreadyExistsException(f"Product {product.pid} already exists in kiosk {kid}")
+        raise ProductAlreadyExistsException(
+            f"Product {product.pid} already exists in kiosk {kid}"
+        )
 
-    kiosk.products.append({
-        "pid": product.pid,
-        "available": True
-    })
+    kiosk.products.append({"pid": product.pid, "available": True})
 
     firebase_service.update_kiosk(kid, {"products": kiosk.products})
 
@@ -187,7 +196,12 @@ async def add_product_to_kiosk(kid: str, request: AddProductToKioskRequest):
         message=f"Product {product.pid} added to kiosk {kid}"
     )
 
-@router.delete("/{kid}/products/{pid}", response_model=DeleteProductFromKioskResponse, status_code=status.HTTP_200_OK)
+
+@router.delete(
+    "/{kid}/products/{pid}",
+    response_model=DeleteProductFromKioskResponse,
+    status_code=status.HTTP_200_OK,
+)
 async def remove_product_from_kiosk(kid: str, pid: str):
     """
     Delete a product from a kiosk
@@ -210,15 +224,17 @@ async def remove_product_from_kiosk(kid: str, pid: str):
     updated_products = []
 
     for kiosk_prod in kiosk.products:
-        prod_id = kiosk_prod.get('pid')
+        prod_id = kiosk_prod.get("pid")
         if prod_id == pid:
             product_found = True
         else:
             updated_products.append(kiosk_prod)
-    
+
     if not product_found:
         raise ProductNotAssignedException(pid=pid, kid=kid)
-    
+
     firebase_service.update_kiosk(kid, {"products": updated_products})
 
-    return DeleteProductFromKioskResponse(message=f"Product {pid} removed from kiosk {kid}")
+    return DeleteProductFromKioskResponse(
+        message=f"Product {pid} removed from kiosk {kid}"
+    )

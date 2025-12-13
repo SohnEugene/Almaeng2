@@ -21,10 +21,7 @@ from app.models import (
 from app.services.firebase import firebase_service
 from app.services.qrcode_generator import qrcode_service
 
-router = APIRouter(
-    prefix="/payments",
-    tags=["payments"]
-)
+router = APIRouter(prefix="/payments", tags=["payments"])
 
 
 @router.post("/", response_model=PaymentResponse, status_code=status.HTTP_200_OK)
@@ -72,21 +69,19 @@ async def request_payment(request: PaymentRequest):
     qr_img_io = qrcode_service.generate_qr_code(
         payment_method=request.payment_method,
         manager=request.manager.upper(),
-        amount=request.total_price
+        amount=request.total_price,
     )
     qr_base64 = base64.b64encode(qr_img_io.getvalue()).decode("utf-8")
 
     payment_data = request.model_dump()
     txid = firebase_service.create_transaction(payment_data)
 
-    return PaymentResponse(
-        txid=txid,
-        qr_code_base64=qr_base64
-    )
+    return PaymentResponse(txid=txid, qr_code_base64=qr_base64)
 
 
-
-@router.post("/approve", response_model=PaymentApproveResponse, status_code=status.HTTP_200_OK)
+@router.post(
+    "/approve", response_model=PaymentApproveResponse, status_code=status.HTTP_200_OK
+)
 async def approve_payment(request: PaymentApproveRequest):
     """
     Approve a payment after user completes payment
@@ -107,21 +102,16 @@ async def approve_payment(request: PaymentApproveRequest):
     if transaction.completed:
         raise PaymentAlreadyCompletedException(request.txid)
 
-    updates = {
-        "status": "COMPLETED",
-        "completed": True,
-        "approved_at": datetime.now()
-    }
+    updates = {"status": "COMPLETED", "completed": True, "approved_at": datetime.now()}
     firebase_service.update_transaction(request.txid, updates)
 
     return PaymentApproveResponse(message="success")
 
 
-
 @router.get("/transactions", response_model=List[dict], status_code=status.HTTP_200_OK)
 async def get_transactions(
     kiosk_id: Optional[str] = Query(None, description="Filter by kiosk ID"),
-    limit: Optional[int] = Query(None, description="Limit number of results")
+    limit: Optional[int] = Query(None, description="Limit number of results"),
 ):
     """
     Get all transactions with optional filters

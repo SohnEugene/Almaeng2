@@ -9,20 +9,27 @@ from app.models.products_model import Product
 class Kiosk(BaseModel):
     kid: Optional[str] = None
     name: str = Field(..., min_length=1, description="Kiosk name must not be empty")
-    location: str = Field(..., min_length=1, description="Kiosk location must not be empty")
+    location: str = Field(
+        ..., min_length=1, description="Kiosk location must not be empty"
+    )
     status: str = "active"
     products: List[Dict[str, Any]] = []  # List of {"pid": str, "available": bool}
+
 
 class KioskProductItem(BaseModel):
     product: "Product"
     available: bool
+
 
 KioskProductItem.model_rebuild()
 
 
 class RegisterKioskRequest(BaseModel):
     name: str = Field(..., min_length=1, description="Kiosk name must not be empty")
-    location: str = Field(..., min_length=1, description="Kiosk location must not be empty")
+    location: str = Field(
+        ..., min_length=1, description="Kiosk location must not be empty"
+    )
+
 
 class RegisterKioskResponse(BaseModel):
     kid: str
@@ -38,6 +45,7 @@ class GetKioskProductsResponse(BaseModel):
 
 class AddProductToKioskRequest(BaseModel):
     pid: str
+
 
 class AddProductToKioskResponse(BaseModel):
     message: str

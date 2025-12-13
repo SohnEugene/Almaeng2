@@ -4,17 +4,17 @@ from datetime import datetime
 
 
 class Payment(BaseModel):
-    txid: str # 거래 ID
+    txid: str  # 거래 ID
     kid: str
-    pid: str 
+    pid: str
     amount_grams: int
     extra_bottle: bool
     product_price: int
     total_price: int
-    payment_method: str 
+    payment_method: str
     manager: str
     status: str = "ONGOING"
-    completed: bool = False 
+    completed: bool = False
     created_at: datetime = datetime.now()
     approved_at: Optional[datetime] = None
 
@@ -29,6 +29,7 @@ class PaymentRequest(BaseModel):
     payment_method: str
     manager: str
 
+
 class PaymentResponse(BaseModel):
     txid: str
     qr_code_base64: Optional[str] = None
@@ -36,6 +37,7 @@ class PaymentResponse(BaseModel):
 
 class PaymentApproveRequest(BaseModel):
     txid: str
+
 
 class PaymentApproveResponse(BaseModel):
     message: str

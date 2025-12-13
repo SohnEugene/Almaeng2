@@ -16,10 +16,7 @@ from app.models import (
 from app.services.firebase import firebase_service
 
 
-router = APIRouter(
-    prefix="/products",
-    tags=["products"]
-)
+router = APIRouter(prefix="/products", tags=["products"])
 
 
 @router.get("/", response_model=List[Product], status_code=status.HTTP_200_OK)
@@ -36,7 +33,10 @@ async def get_all_products():
     """
     return firebase_service.get_all_products()
 
-@router.post("/", response_model=RegisterProductResponse, status_code=status.HTTP_201_CREATED)
+
+@router.post(
+    "/", response_model=RegisterProductResponse, status_code=status.HTTP_201_CREATED
+)
 async def register_product(product_request: RegisterProductRequest):
     """
     Register a new product
@@ -53,10 +53,7 @@ async def register_product(product_request: RegisterProductRequest):
     product_data = product_request.model_dump()
     product_id = firebase_service.register_product(product_data)
 
-    return RegisterProductResponse(
-        pid=product_id
-    )
-
+    return RegisterProductResponse(pid=product_id)
 
 
 @router.get("/{pid}", response_model=Product, status_code=status.HTTP_200_OK)
@@ -76,7 +73,10 @@ async def get_product_by_id(pid: str):
     """
     return firebase_service.get_product_by_id(pid)
 
-@router.put("/{pid}", response_model=UpdateProductResponse, status_code=status.HTTP_200_OK)
+
+@router.put(
+    "/{pid}", response_model=UpdateProductResponse, status_code=status.HTTP_200_OK
+)
 async def update_product(pid: str, product_request: RegisterProductRequest):
     """
     Update a product by ID
@@ -96,7 +96,10 @@ async def update_product(pid: str, product_request: RegisterProductRequest):
     firebase_service.update_product(pid, product_data)
     return UpdateProductResponse(message=f"Product {pid} updated successfully")
 
-@router.delete("/{pid}", response_model=DeleteProductResponse, status_code=status.HTTP_200_OK)
+
+@router.delete(
+    "/{pid}", response_model=DeleteProductResponse, status_code=status.HTTP_200_OK
+)
 async def delete_product(pid: str):
     """
     Delete a product by ID
@@ -115,8 +118,11 @@ async def delete_product(pid: str):
     return DeleteProductResponse(message=f"Product {pid} deleted successfully")
 
 
-
-@router.post("/{pid}/image", response_model=UploadProductImageResponse, status_code=status.HTTP_200_OK)
+@router.post(
+    "/{pid}/image",
+    response_model=UploadProductImageResponse,
+    status_code=status.HTTP_200_OK,
+)
 async def upload_product_image(pid: str, file: UploadFile = File(...)):
     """
     Upload an image for a product to S3
@@ -137,11 +143,20 @@ async def upload_product_image(pid: str, file: UploadFile = File(...)):
     content_type = file.content_type or "image/png"
     filename = file.filename or "image.png"
 
-    s3_key = firebase_service.upload_product_image(pid, file.file, filename, content_type)
+    s3_key = firebase_service.upload_product_image(
+        pid, file.file, filename, content_type
+    )
 
-    return UploadProductImageResponse(message="Image uploaded successfully", s3_key=s3_key)
+    return UploadProductImageResponse(
+        message="Image uploaded successfully", s3_key=s3_key
+    )
 
-@router.get("/{pid}/image", response_model=GetProductImageUrlResponse, status_code=status.HTTP_200_OK)
+
+@router.get(
+    "/{pid}/image",
+    response_model=GetProductImageUrlResponse,
+    status_code=status.HTTP_200_OK,
+)
 async def get_product_image_url(pid: str, expires_in: int = 3600):
     """
     Get presigned URL for product image

@@ -2,14 +2,14 @@ from .kiosks_exceptions import (
     KioskException,
     KioskAlreadyExistsException,
     KioskNotFoundException,
-    KioskInvalidDataException
+    KioskInvalidDataException,
 )
 from .products_exceptions import (
     ProductException,
     ProductNotFoundException,
     ProductAlreadyExistsException,
     ProductNotAssignedException,
-    ProductDataCorruptedException
+    ProductDataCorruptedException,
 )
 from .payments_exceptions import (
     PaymentException,
@@ -17,7 +17,7 @@ from .payments_exceptions import (
     PaymentNotFoundException,
     ProductNotAvailableException,
     InvalidPaymentTypeException,
-    InvalidManagerException
+    InvalidManagerException,
 )
 from .service_exceptions import (
     FirebaseException,
@@ -29,5 +29,5 @@ from .service_exceptions import (
     S3Exception,
     S3UploadException,
     S3PresignedException,
-    S3ConfigException
+    S3ConfigException,
 )

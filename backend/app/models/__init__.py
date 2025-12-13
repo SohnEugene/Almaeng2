@@ -16,7 +16,7 @@ from app.models.kiosks_model import (
     AddProductToKioskResponse,
     GetKioskProductsResponse,
     DeleteKioskResponse,
-    DeleteProductFromKioskResponse
+    DeleteProductFromKioskResponse,
 )
 
 # Product models
@@ -27,7 +27,7 @@ from app.models.products_model import (
     UpdateProductResponse,
     DeleteProductResponse,
     UploadProductImageResponse,
-    GetProductImageUrlResponse
+    GetProductImageUrlResponse,
 )
 
 # Payment models
@@ -36,7 +36,7 @@ from app.models.payments_model import (
     PaymentRequest,
     PaymentResponse,
     PaymentApproveRequest,
-    PaymentApproveResponse
+    PaymentApproveResponse,
 )
 
 __all__ = [

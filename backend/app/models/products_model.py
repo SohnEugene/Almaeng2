@@ -22,6 +22,7 @@ class RegisterProductRequest(BaseModel):
     original_price: Optional[int] = None
     original_gram: Optional[int] = None
 
+
 class RegisterProductResponse(BaseModel):
     pid: str  # product_id
 

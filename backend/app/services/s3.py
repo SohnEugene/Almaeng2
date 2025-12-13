@@ -14,6 +14,7 @@ from app.exceptions import (
 # lazy initialization
 _s3_client = None
 
+
 def get_s3_client():
     """Get or create S3 client with lazy initialization"""
     global _s3_client
@@ -33,6 +34,7 @@ def get_s3_client():
         )
     return _s3_client
 
+
 def get_bucket_name() -> str:
     """Get S3 bucket name from environment"""
     return os.getenv("S3_BUCKET_NAME", "almaeng2")
@@ -41,7 +43,7 @@ def get_bucket_name() -> str:
 class S3Service:
     @staticmethod
     def upload_file(file_obj, key: str, content_type: str = "image/png") -> bool:
-        """ Upload image file on S3 bucket"""
+        """Upload image file on S3 bucket"""
         try:
             client = get_s3_client()
             bucket = get_bucket_name()
@@ -50,7 +52,7 @@ class S3Service:
                 Fileobj=file_obj,
                 Bucket=bucket,
                 Key=key,
-                ExtraArgs={"ContentType": content_type}
+                ExtraArgs={"ContentType": content_type},
             )
             return True
 
@@ -61,14 +63,14 @@ class S3Service:
         except PartialCredentialsError as e:
             raise S3UploadException(key, "Incomplete AWS credentials") from e
         except ClientError as e:
-            error_code = e.response.get('Error', {}).get('Code', 'Unknown')
+            error_code = e.response.get("Error", {}).get("Code", "Unknown")
             raise S3UploadException(key, f"AWS error: {error_code}") from e
         except Exception as e:
             raise S3UploadException(key, str(e)) from e
 
     @staticmethod
     def generate_presigned_url(key: str, expires_in: int = 3600) -> str:
-        """ Generate S3 presigned URL"""
+        """Generate S3 presigned URL"""
         if not key:
             raise S3PresignedException(key, "S3 key is empty")
 
@@ -79,7 +81,7 @@ class S3Service:
             url = client.generate_presigned_url(
                 ClientMethod="get_object",
                 Params={"Bucket": bucket, "Key": key},
-                ExpiresIn=expires_in
+                ExpiresIn=expires_in,
             )
             return url
 
@@ -90,14 +92,16 @@ class S3Service:
         except PartialCredentialsError as e:
             raise S3PresignedException(key, "Incomplete AWS credentials") from e
         except ClientError as e:
-            error_code = e.response.get('Error', {}).get('Code', 'Unknown')
+            error_code = e.response.get("Error", {}).get("Code", "Unknown")
             raise S3PresignedException(key, f"AWS error: {error_code}") from e
         except Exception as e:
             raise S3PresignedException(key, str(e)) from e
 
     @staticmethod
-    def convert_to_presigned_url(image_url: Optional[str], expires_in: int = 3600) -> Optional[str]:
-        """ convert S3 key to presigned URL if image_url were S3 key"""
+    def convert_to_presigned_url(
+        image_url: Optional[str], expires_in: int = 3600
+    ) -> Optional[str]:
+        """convert S3 key to presigned URL if image_url were S3 key"""
         if not image_url:
             return None
 
