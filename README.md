@@ -1,4 +1,6 @@
 # 소분소분 (SobunSobun)
+<img width="1920" height="1080" alt="창연실 최종발표 - 초안의 사본" src="https://github.com/user-attachments/assets/da3266c5-28de-4103-abb4-ae4f9afb6892" />
+
 ### 일상이 리필이 되는 Mini Refill Station
 **리필을 일상으로 끌어오는 가장 작은 혁신**
 <br>
