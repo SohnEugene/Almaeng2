@@ -1,15 +1,17 @@
 # /products 로 들어오는 API 요청들을 처리하는 파일
 
-from fastapi import APIRouter, status, UploadFile, File
 from typing import List
+
+from fastapi import APIRouter, File, status, UploadFile
+
 from app.models import (
+    DeleteProductResponse,
+    GetProductImageUrlResponse,
+    Product,
     RegisterProductRequest,
     RegisterProductResponse,
     UpdateProductResponse,
-    DeleteProductResponse,
     UploadProductImageResponse,
-    GetProductImageUrlResponse,
-    Product
 )
 from app.services.firebase import firebase_service
 

@@ -1,6 +1,8 @@
-import qrcode
 from io import BytesIO
 from urllib.parse import quote
+
+import qrcode
+
 from app.exceptions import QRCodeGenerationException
 
 KAKAO_UID = {

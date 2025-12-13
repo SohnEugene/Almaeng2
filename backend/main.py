@@ -1,13 +1,11 @@
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from dotenv import load_dotenv
 import os
 
+from dotenv import load_dotenv
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
-# Import services
+from app.routes import kiosks, payments, products
 from app.services.firebase import firebase_service
-# Import routers
-from app.routes import kiosks, products, payments
 
 # Load environment variables
 load_dotenv()
